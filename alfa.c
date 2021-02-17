@@ -41,6 +41,7 @@ int main(void){
     //print userinfo
     printusers(totalusers, users);
 
+    free(users);
     return 0;
 }
 
