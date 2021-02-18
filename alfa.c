@@ -43,7 +43,7 @@ int main(void){
     //random calculations on struct info
     double avg_age = calc_avgage(users, totalusers);
 
-    find_age_match(users, totalusers, 0, avg_age);
+    find_age_match(users, totalusers, 6, avg_age);
     //print userinfo
     //printusers(totalusers, users);
 
@@ -89,10 +89,11 @@ double calc_avgage(user *users, int totalusers){
 }
 
 void find_age_match(user *users,int totalusers, int targetuser, double avg_age){
-    int t_user_age = (users[targetuser].age - (int) avg_age);
+    int t_user_age = users[targetuser].age;
     // user *agematches = ;
+    printf("targetuser age: %d\n", t_user_age);
     for(int i = 0; i < totalusers; i++){
-        if(t_user_age >=users[targetuser].age - users[i].age){
+        if(users[i].age <= t_user_age/2 + 7 || users[i].age <= t_user_age + 7){
             printf("Match: user %d at age %d\n", i+1, users[i].age);
         }
     }
