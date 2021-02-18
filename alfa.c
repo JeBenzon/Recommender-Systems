@@ -11,6 +11,8 @@ typedef struct user {
 //prototypes
 int calc_users(FILE *userfile);
 void load_users(FILE *userfile, int totalusers, user *users);
+double calc_avgage(user *users, int totalusers);
+void find_age_match(user *users,int totalusers, int targetuser, double avg_age);
 void printusers(int totalusers, user *users);
 
 
@@ -38,8 +40,12 @@ int main(void){
     //load userinfo into array
     load_users(userfile, totalusers, users);
 
+    //random calculations on struct info
+    double avg_age = calc_avgage(users, totalusers);
+
+    find_age_match(users, totalusers, 0, avg_age);
     //print userinfo
-    printusers(totalusers, users);
+    //printusers(totalusers, users);
 
     free(users);
     return 0;
@@ -69,6 +75,27 @@ void load_users(FILE *userfile, int totalusers, user *users){
         fgetc(userfile);
     }
 
+    return;
+}
+
+double calc_avgage(user *users, int totalusers){
+    double avg_age = 0;
+    for(int i = 0; i < totalusers; i++){
+        avg_age = avg_age + users[i].age;
+    }
+    avg_age = avg_age / totalusers;
+
+    return avg_age;
+}
+
+void find_age_match(user *users,int totalusers, int targetuser, double avg_age){
+    int t_user_age = (users[targetuser].age - (int) avg_age);
+    // user *agematches = ;
+    for(int i = 0; i < totalusers; i++){
+        if(t_user_age >=users[targetuser].age - users[i].age){
+            printf("Match: user %d at age %d\n", i+1, users[i].age);
+        }
+    }
     return;
 }
 
