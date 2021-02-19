@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 //basic user struct - needs more parameters later
 typedef struct user {
@@ -12,7 +13,7 @@ typedef struct user {
 int calc_users(FILE *userfile);
 void load_users(FILE *userfile, int totalusers, user *users);
 double calc_avgage(user *users, int totalusers);
-void find_age_match(user *users,int totalusers, int targetuser, double avg_age);
+user *find_age_match(user *users,int totalusers, int targetuser, int *matches);
 void printusers(int totalusers, user *users);
 
 
@@ -41,12 +42,20 @@ int main(void){
     load_users(userfile, totalusers, users);
 
     //random calculations on struct info
-    double avg_age = calc_avgage(users, totalusers);
+    //double avg_age = calc_avgage(users, totalusers);
 
-    find_age_match(users, totalusers, 6, avg_age);
-    //print userinfo
+    int matches = 0;
+    user *agematches = find_age_match(users, totalusers, 8, &matches);
+    
+    //test to show agematches gets filled
+    for(int i = 0; i < matches; i++){
+        printf("Match in array: name %s age %d gender %c\n", agematches[i].name,  agematches[i].age, agematches[i].gender);
+    }
+
+    //print all userinfo
     //printusers(totalusers, users);
 
+    free(agematches);
     free(users);
     return 0;
 }
@@ -88,16 +97,27 @@ double calc_avgage(user *users, int totalusers){
     return avg_age;
 }
 
-void find_age_match(user *users,int totalusers, int targetuser, double avg_age){
+user *find_age_match(user *users,int totalusers, int targetuser, int *matches){
     int t_user_age = users[targetuser].age;
-    // user *agematches = ;
+    int arr_index = 0;
+    user *agematches = (user *) malloc(5 * sizeof(user));
+    if(agematches == NULL){
+        printf("age array error.");
+        exit(EXIT_FAILURE);
+    }
+
     printf("targetuser age: %d\n", t_user_age);
     for(int i = 0; i < totalusers; i++){
-        if(users[i].age <= t_user_age/2 + 7 || users[i].age <= t_user_age + 7){
-            printf("Match: user %d at age %d\n", i+1, users[i].age);
+        if(users[i].age >= t_user_age/2 + 7 && users[i].age <= t_user_age + 7){
+            strcpy(agematches[arr_index].name, users[i].name);
+            agematches[arr_index].age = users[i].age;
+            agematches[arr_index].gender = users[i].gender;
+            arr_index++;
         }
     }
-    return;
+    *matches = arr_index;
+    
+    return agematches;
 }
 
 void printusers(int totalusers, user *users){
