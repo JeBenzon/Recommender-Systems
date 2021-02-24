@@ -1,11 +1,14 @@
-Tommy 36 m
-Oscar 22 m
-Pelle 25 m
-Frederik 24 m
-Jonathan 23 m
-Karl-Emil 26 m
-Gitte 30 l
-Lisa 20 b
-Michelle 18 t
-Charlotte 28 q
-Bente 45 f
+Tommy 36 m 3 10 1
+Oscar 22 m 4 2 10
+Pelle 25 m 4 5 8
+Frederik 24 m 9 5 2
+Jonathan 23 m 1 2 3
+Karl-Emil 26 m 6 9 7
+Gitte 30 l 4 8 10
+Lisa 20 b 3 7 9
+Michelle 18 t 4 7 5
+Charlotte 28 q 10 8 9
+Bente 45 f 6 1 1
+Vigga 32 f 8 6 3
+Sigrid 21 f 2 8 1
+Brian 32 m 9 7 6
