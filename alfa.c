@@ -97,7 +97,7 @@ double calc_avgage(user *users, int totalusers){
     return avg_age;
 }
 
-user *find_age_match(user *users,int totalusers, int targetuser, int *matches){
+user *find_age_match(user *users, int totalusers, int targetuser, int *matches) {
     int t_user_age = users[targetuser].age;
     int arr_index = 0;
     user *agematches = (user *) malloc(5 * sizeof(user));
