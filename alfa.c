@@ -3,11 +3,13 @@
 #include <string.h>
 #include <math.h>
 
-//constant to steer calcs
-#define TOTALCRITERIA 3;
+//constants to steer calcs
+#define TOTALCRITERIA 9
 #define K 4
 
-// basic user struct - needs more parameters later
+//TODO: make more functions 
+
+// basic user struct
 typedef struct user {
     int id;
     char name[25];
@@ -16,18 +18,24 @@ typedef struct user {
     double dog;
     double triangle;
     double football;
-    double pearsson;
+    double red;
+    double yellow;
+    double green;
+    double blue;
+    double spaghetti;
+    double pizza;
+    double pearsson; 
 } user;
 
 // prototypes
 void new_user(FILE *userfile);
 int calc_users(FILE *userfile);
-void load_users(FILE *userfile, int totalusers, user *users);
-double calc_avgage(user *users, int totalusers);
+void load_users(FILE *userfile, int total_users, user *users);
 double pearsson(user *users, int target, int compare);
+double calc_mean_of_user(user user);
+double calc_sqrt_of_user(user user, double mean);
 int cmpfunc(const void *a, const void *b);
-user *find_age_match(user *users, int totalusers, int targetuser, int *matches);
-void printusers(int totalusers, user *users);
+void print_matches(int total_users, user *users);
 
 int main(void) {
     // set user file path
@@ -40,7 +48,10 @@ int main(void) {
     exit(EXIT_FAILURE);
     }
 
-    //new user input
+    // calculate number of users in database
+    int total_users = calc_users(userfile);
+    
+    // new user input
     char answer;
     int sentinel = 1;
     while (sentinel) {
@@ -48,23 +59,23 @@ int main(void) {
         scanf(" %c", &answer);
         if(answer == 'y'){
             new_user(userfile);
+            //Update total users, if new user is created
+            total_users = calc_users(userfile);
+            printf("New user ID : %d \n", total_users);
         } else{
             sentinel = 0;
         }
     }
 
-    // calculate number of users in database
-    int totalusers = calc_users(userfile);
-
     // allocate memory for struct array with users
-    user *users = (user *)malloc(totalusers * sizeof(user));
+    user *users = (user *)malloc(total_users * sizeof(user));
     if (users == NULL) {
-    printf("struct array error.");
-    exit(EXIT_FAILURE);
+        printf("struct array error.");
+        exit(EXIT_FAILURE);
     }
 
     // load userinfo into array
-    load_users(userfile, totalusers, users);
+    load_users(userfile, total_users, users);
 
     //select target user
     int user_id;
@@ -73,32 +84,15 @@ int main(void) {
     printf("Calculating best matches for %s ...\n", users[user_id - 1].name);
 
     //calc user similarity
-    for (int i = 0; i < totalusers; i++) {
+    for (int i = 0; i < total_users; i++) {
         users[i].pearsson = pearsson(users, user_id - 1, users[i].id);
     }
+    
+    //Sort the coefficient based on highest similarity
+    qsort(users, total_users, sizeof(user), cmpfunc);
+    
+    print_matches(total_users, users);
 
-    qsort(users, totalusers, sizeof(user), cmpfunc);
-
-    for (int i = totalusers - K; i < totalusers - 1; i++){
-        printf("Username: %-10s \t Similarity: %lf\n", users[i].name,users[i].pearsson);
-    }
-
-    // random calculations on struct info
-    // double avg_age = calc_avgage(users, totalusers);
-
-    // int matches = 0;
-    // user *agematches = find_age_match(users, totalusers, 8, &matches);
-
-    // test to show agematches gets filled
-    // for(int i = 0; i < matches; i++){
-    //     printf("Match in array: name %s age %d gender %c\n",
-    //     agematches[i].name,  agematches[i].age, agematches[i].gender);
-    // }
-
-    // print all userinfo
-    //printusers(totalusers, users);
-
-    // free(agematches);
     fclose(userfile);
     free(users);
     return 0;
@@ -108,10 +102,9 @@ void new_user(FILE *userfile){
     char u_name[25];
     int u_age;
     char u_gender;
-    int u_dog;
-    int u_triangle;
-    int u_football;
-
+    int u_dog, u_triangle, u_football, u_red, u_yellow, 
+        u_green, u_blue, u_spaghetti, u_pizza;
+    
     printf("Enter your name: \n");
     scanf("%s", u_name);
     printf("Enter age: \n");
@@ -124,8 +117,22 @@ void new_user(FILE *userfile){
     scanf("%d", &u_triangle);
     printf("Enter football rating: \n");
     scanf("%d", &u_football);
-    
-    fprintf(userfile, "\n%s %d %c %d %d %d", u_name, u_age, u_gender, u_dog, u_triangle, u_football);
+    printf("Enter colour (red) rating: \n");
+    scanf("%d", &u_red);
+    printf("Enter colour (yellow) rating: \n");
+    scanf("%d", &u_yellow);
+    printf("Enter colour (green) rating: \n");
+    scanf("%d", &u_green);
+    printf("Enter colour (blue) rating: \n");
+    scanf("%d", &u_blue);
+    printf("Enter spaghetti rating: \n");
+    scanf("%d", &u_spaghetti);
+    printf("Enter pizza rating: \n");
+    scanf("%d", &u_pizza);
+    fprintf(userfile, "\n%s %d %c %d %d %d %d %d %d %d %d %d", u_name, u_age, u_gender, 
+                                                               u_dog, u_triangle, u_football, 
+                                                               u_red, u_yellow, u_green, u_blue, 
+                                                               u_spaghetti, u_pizza);
 
     fseek(userfile, 0, SEEK_SET);
     return;
@@ -133,73 +140,61 @@ void new_user(FILE *userfile){
 
 int calc_users(FILE *userfile) {
     char ch;
-    int totalusers = 1;
+    int total_users = 1;
     while (!feof(userfile)) {
         ch = fgetc(userfile);
         if (ch == '\n') {
-            totalusers++;
+            total_users++;
         }
     }
     fseek(userfile, 0, SEEK_SET);
-    return totalusers;
+    return total_users;
 }
 
-void load_users(FILE *userfile, int totalusers, user *users) {
-// scan in users from filepath
-for (int i = 0; i < (int)totalusers; i++) {
-    users[i].id = i;
-    fscanf(userfile, " %[^ ]", users[i].name);
-    fscanf(userfile, " %d", &users[i].age);
-    fgetc(userfile);
-    fscanf(userfile, " %1[^ ]", &users[i].gender);
-    fscanf(userfile, " %lf", &users[i].dog);
-    fscanf(userfile, " %lf", &users[i].triangle);
-    fscanf(userfile, " %lf", &users[i].football);
-    fgetc(userfile);
-}
-
-return;
-}
-
-double calc_avgage(user *users, int totalusers) {
-    double avg_age = 0;
-    for (int i = 0; i < totalusers; i++) {
-        avg_age = avg_age + users[i].age;
+void load_users(FILE *userfile, int total_users, user *users) {
+    // scan in users from filepath
+    for (int i = 0; i < (int)total_users; i++) {
+        users[i].id = i;
+        fscanf(userfile, " %[^ ]", users[i].name);
+        fscanf(userfile, " %d", &users[i].age);
+        fgetc(userfile);
+        fscanf(userfile, " %1[^ ]", &users[i].gender);
+        fscanf(userfile, " %lf", &users[i].dog);
+        fscanf(userfile, " %lf", &users[i].triangle);
+        fscanf(userfile, " %lf", &users[i].football);
+        fscanf(userfile, " %lf", &users[i].red);
+        fscanf(userfile, " %lf", &users[i].yellow);
+        fscanf(userfile, " %lf", &users[i].green);
+        fscanf(userfile, " %lf", &users[i].blue);
+        fscanf(userfile, " %lf", &users[i].spaghetti);
+        fscanf(userfile, " %lf", &users[i].pizza);
+        fgetc(userfile);
     }
-        avg_age = avg_age / totalusers;
-
-    return avg_age;
+    return;
 }
 
 double pearsson(user *users, int target, int compare){
-    user targetuser = users[target];
+    user target_user = users[target];
     user comp_user = users[compare];
     
     //finding user means
-    double t_mean = (targetuser.dog + targetuser.triangle + targetuser.football) / TOTALCRITERIA;
-    double c_mean = (comp_user.dog + comp_user.triangle + comp_user.football) / TOTALCRITERIA;
-
+    double t_mean = calc_mean_of_user(target_user);
+    double c_mean = calc_mean_of_user(comp_user);
+    
     //calc sqrt for each user
-    double t_sqrt = (sqrt (pow((targetuser.dog - t_mean),2)  + 
-                    (pow((targetuser.triangle - t_mean), 2 ) + 
-                    (pow((targetuser.football - t_mean), 2)))));
-
-    double c_sqrt = (sqrt(pow((comp_user.dog - c_mean), 2) + 
-                    (pow((comp_user.triangle - c_mean), 2) + 
-                    (pow((comp_user.football - c_mean), 2)))));
+    double t_sqrt = calc_sqrt_of_user(target_user, t_mean);
+    double c_sqrt = calc_sqrt_of_user(comp_user, c_mean);
     
     //calc similarity
-    double sim =    ((targetuser.dog - t_mean) * (comp_user.dog - c_mean)) + 
-                    ((targetuser.triangle - t_mean) * (comp_user.triangle - c_mean)) + 
-                    ((targetuser.football - t_mean) * (comp_user.football - c_mean));
-
-    //special case when users have rated same rating on all items to handle dividing by zero
-    if(t_mean == targetuser.dog && t_mean == targetuser.triangle && t_mean == targetuser.football){
-        t_mean += 0.1;
-    }
-    if(c_mean == comp_user.dog && c_mean == comp_user.triangle && c_mean == comp_user.football){
-        c_mean += 0.1;
-    }
+    double sim =    ((target_user.dog - t_mean) * (comp_user.dog - c_mean)) + 
+                    ((target_user.triangle - t_mean) * (comp_user.triangle - c_mean)) + 
+                    ((target_user.football - t_mean) * (comp_user.football - c_mean)) +
+                    ((target_user.red - t_mean ) * (comp_user.red - c_mean)) +
+                    ((target_user.yellow - t_mean) * (comp_user.yellow - c_mean)) +
+                    ((target_user.green - t_mean) * (comp_user.green - c_mean)) +
+                    ((target_user.blue - t_mean) * (comp_user.blue - c_mean)) +
+                    ((target_user.spaghetti - t_mean) * (comp_user.spaghetti - c_mean)) +
+                    ((target_user.pizza - t_mean) * (comp_user.pizza - c_mean));
 
     //calculating similarity coeficient
     long double coeficient = sim / (t_sqrt * c_sqrt);
@@ -207,28 +202,32 @@ double pearsson(user *users, int target, int compare){
     return coeficient; 
 }
 
+double calc_mean_of_user(user user){
+    double mean = (user.dog + user.triangle + user.football + 
+                   user.red + user.yellow + user.green + 
+                   user.blue + user.spaghetti + user.pizza) / TOTALCRITERIA;
 
-user *find_age_match(user *users, int totalusers, int targetuser, int *matches) {
-    int t_user_age = users[targetuser].age;
-    int arr_index = 0;
-    user *agematches = (user *)malloc(5 * sizeof(user));
-    if (agematches == NULL) {
-        printf("age array error.");
-        exit(EXIT_FAILURE);
+    //special case when users have rated same rating on all items to handle dividing by zero
+    if(mean == user.dog && mean == user.triangle && mean == user.football && 
+       mean == user.red && mean == user.yellow && mean == user.green && 
+       mean == user.blue && mean == user.spaghetti && mean == user.pizza){
+       mean += 0.1;
     }
 
-    printf("targetuser age: %d\n", t_user_age);
-    for (int i = 0; i < totalusers; i++) {
-    if (users[i].age >= t_user_age / 2 + 7 && users[i].age <= t_user_age + 7) {
-        strcpy(agematches[arr_index].name, users[i].name);
-        agematches[arr_index].age = users[i].age;
-        agematches[arr_index].gender = users[i].gender;
-        arr_index++;
-    }
+    return mean;
 }
-    *matches = arr_index;
 
-return agematches;
+double calc_sqrt_of_user(user user, double mean){
+    double user_sqrt = sqrt (pow((user.dog - mean),2) + 
+                       pow((user.triangle - mean), 2) + 
+                       pow((user.football - mean), 2) +
+                       pow((user.red - mean),2) +
+                       pow((user.yellow - mean),2) +
+                       pow((user.green - mean),2) +
+                       pow((user.blue - mean),2) +
+                       pow((user.spaghetti - mean),2) +
+                       pow((user.pizza - mean),2));
+    return user_sqrt;
 }
 
 int cmpfunc(const void *a, const void *b) {
@@ -246,14 +245,15 @@ int cmpfunc(const void *a, const void *b) {
     }
 }
 
-void printusers(int totalusers, user *users) {
-    // test that struct array is filled
-    printf("total users: %d\n", totalusers);
-    for (int i = 0; i < (int)totalusers; i++) {
-        printf("user %2d: name: %s, age: %d, gender %c chiaua: %lf triangle: %lf football: %lf\n",
-        i + 1, users[i].name, users[i].age, users[i].gender, users[i].dog, users[i].triangle, users[i].football);
+void print_matches(int total_users, user *users){
+
+    for (int i = total_users - K; i < total_users - 1; i++){
+        printf("Username: %-10s \t Similarity: %lf\n", users[i].name,users[i].pearsson);
     }
+    // printf("total users: %d\n", total_users);
+    // for (int i = 0; i < (int)total_users; i++) {
+    //     printf("user %2d: name: %s, age: %d, gender %c chiaua: %lf triangle: %lf football: %lf\n",
+    //     i + 1, users[i].name, users[i].age, users[i].gender, users[i].dog, users[i].triangle, users[i].football);
+    // }
     return;
 }
-
-
