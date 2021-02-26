@@ -1,0 +1,29 @@
+h1{
+    font-family: "Times New Roman";
+    font-size: 72px;
+    color:darkolivegreen;
+    border: 3px solid darkolivegreen;
+    margin: auto;
+    width: 50%;
+    text-align: center;
+}
+
+.relative{
+    padding: 10px;
+    position: relative;
+    background-color: #fff;
+    margin: 10px;
+}
+.button{
+    display: inline-block;
+    width: 150px;
+    height: 50px;
+    text-align: center;
+    border: gray;
+    color: black;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 22.5%;
+    border: 2px solid black;
+    margin-top: 30px;
+}
