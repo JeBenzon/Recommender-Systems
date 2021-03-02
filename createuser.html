@@ -5,6 +5,37 @@
     <title>Human app</title>
 </head>
 <body>
-<h1>DET VIRKEDE</h1>
+<h1>Human App</h1>
+<script src="script/script.js"></script>
+<link rel="stylesheet" href="style/style.css">
+
+<div class="textbox1">
+    <form>
+        <input type="text" id="fname" name="fname" placeholder="First name"><br><br>
+        <input type="number" id="age" name="age" placeholder="Age"><br><br>
+        <input type="text" id="gender" name="gender" placeholder="Gender"><br><br>
+        <input type="number" id="dog" name="dog" placeholder="Dog"><br><br>
+    </form>
+</div>
+<div class="textbox2">
+    <form action="/script/script.js">
+        <input type="number" id="tri" name="tri" placeholder="Triangle"><br><br>
+        <input type="number" id="foot" name="foot" placeholder="Football"><br><br>
+        <input type="number" id="red" name="red" placeholder="Red"><br><br>
+        <input type="number" id="yellow" name="yellow" placeholder="Yellow"><br><br>
+    </form>
+</div>
+<div class="textbox3">
+    <form action="index.html" method="GET">
+        <input type="number" id="green" name="green" placeholder="Green"><br><br>
+        <input type="number" id="blue" name="blue" placeholder="Blue"><br><br>
+        <input type="number" id="spag" name="spag" placeholder="Spaghetti"><br><br>
+        <input type="number" id="pizza" name="pizza" placeholder="Pizza"><br><br>
+        <input type="submit" value="Create user" class="createUser" onclick ="writeFile()">
+    </form>
+</div>
+<input type="submit" value="Create user" class="createUser" onclick ="writeFile()">
+
+
 </body>
 </html>

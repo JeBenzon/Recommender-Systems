@@ -21,6 +21,16 @@
         location.href = "findmatch.html";
     };
 </script>
+<script>
+    function writeFile() {
+        const resultList = document.getElementById('results');
+        new URLSearchParams(window.location.search).forEach((value,name) => {
+            resultList.append(`${name}: ${value}`);
+            resultList.append(document.createElement('br'));
+        })
+    }
+</script>
+<div id="results"></div>
 
 <!INCLUDE css AND JavaScript>
 <script src="script/script.js"></script>
