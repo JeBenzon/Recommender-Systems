@@ -51,3 +51,7 @@ h1{
     margin-left: 85%;
 
 }
+
+.displayNone{
+    display: none;
+}

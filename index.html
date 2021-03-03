@@ -7,30 +7,38 @@
 <body>
 
 <h1>Human App</h1>
-
+<div id="index" style="display: none;"></div>
 <div class="relative">
     <button id="createbutton" class="button">Create user!</button>
     <button id="findmatch" class="button">Find matches!</button>
 </div>
 
-<script type="text/javascript">
+<script>
+
     document.getElementById("createbutton").onclick = function () {
         location.href = "createuser.html";
     };
     document.getElementById("findmatch").onclick = function () {
         location.href = "findmatch.html";
     };
-</script>
-<script>
-    function writeFile() {
-        const resultList = document.getElementById('results');
+        const resultList = document.getElementById('index');
         new URLSearchParams(window.location.search).forEach((value,name) => {
-            resultList.append(`${name}: ${value}`);
-            resultList.append(document.createElement('br'));
+            resultList.append(`${value} `);
+            //resultList.append(document.createElement('br'));
         })
-    }
+            let x = document.getElementById('index').innerText;
+            //console.log(resultList);
+    let y = x.split(' ');
+    console.log(y);
+    const fs = require('fs');
+    const jsonContent = JSON.stringify(y);
+    fs.writeFile("./resultlist.json", jsonContent, 'utf8', function (err) {
+        if (err) {
+            return console.log(err);
+        }
+
+    });
 </script>
-<div id="results"></div>
 
 <!INCLUDE css AND JavaScript>
 <script src="script/script.js"></script>
