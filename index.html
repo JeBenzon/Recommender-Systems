@@ -6,7 +6,9 @@
 </head>
 <body>
 
-<h1>Human App</h1>
+<form action="index.html" method="GET">
+    <button class="h1copy" type="submit"> Human App</button>
+</form>
 <div id="index" style="display: none;"></div>
 <div class="relative">
     <button id="createbutton" class="button">Create user!</button>
@@ -30,14 +32,6 @@
             //console.log(resultList);
     let y = x.split(' ');
     console.log(y);
-    const fs = require('fs');
-    const jsonContent = JSON.stringify(y);
-    fs.writeFile("./resultlist.json", jsonContent, 'utf8', function (err) {
-        if (err) {
-            return console.log(err);
-        }
-
-    });
 </script>
 
 <!INCLUDE css AND JavaScript>

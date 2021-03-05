@@ -5,7 +5,9 @@
     <title>Human app</title>
 </head>
 <body>
-<h1>Human App</h1>
+<form action="index.html" method="GET">
+    <button class="h1copy" type="submit"> Human App</button>
+</form>
 <script src="script/script.js"></script>
 <link rel="stylesheet" href="style/style.css">
 
@@ -13,9 +15,12 @@
     <div class="textbox1">
         <input name="name" type="text" id="fname"  placeholder="First name" required><br><br>
         <input type="number" id="age" name="age" placeholder="Age" required><br><br>
-        <input type="text" id="gender" name="gender" placeholder="Gender" required><br><br>
+        <select name="gender" id="gender" required>
+            <option value="female">female</option>
+            <option value="male">male</option>
+            <option value="other">other</option>
+        </select><br><br>
         <input type="number" id="dog" name="dog" placeholder="Dog (1-10)" max="10"><br><br>
-
     </div>
     <div class="textbox2">
         <input type="number" id="tri" name="tri" placeholder="Triangle (1-10)" max="10"><br><br>
