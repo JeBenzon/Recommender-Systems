@@ -5,17 +5,19 @@
     <title>Human app</title>
 </head>
 <body>
+<! Homebutton >
 <form action="index.html" method="GET">
     <button class="h1copy" type="submit"> Human App</button>
 </form>
-<script src="script/script.js"></script>
-<link rel="stylesheet" href="style/style.css">
 
+
+<! Userform with input from user. Method GET is used for local running. Use other method to send data to server.
 <form action="index.html" method="GET">
     <div class="textbox1">
         <input name="name" type="text" id="fname"  placeholder="First name" required><br><br>
         <input type="number" id="age" name="age" placeholder="Age" required><br><br>
-        <select name="gender" id="gender" required>
+        <select required >
+            <option value="" disabled selected hidden>Gender</option>
             <option value="female">female</option>
             <option value="male">male</option>
             <option value="other">other</option>
@@ -37,5 +39,10 @@
     </div>
     <button type="submit"  class="createUser">Create User!</button>
 </form>
+
+<!INCLUDE css AND JavaScript>
+<script src="script/script.js"></script>
+<link rel="stylesheet" href="style/style.css">
+
 </body>
 </html>

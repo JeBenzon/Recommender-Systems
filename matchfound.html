@@ -5,15 +5,54 @@
     <title>Human App</title>
 </head>
 <body>
+
+<! Homebutton >
 <form action="index.html" method="GET">
     <button class="h1copy" type="submit"> Human App</button>
 </form>
 
-<h2>Here are your top three matches!</h2>
+<!Prints out user ID via div ID (look script) >
+<div class="inLineBlock" id="matchfound">
+    <b>Top three matches for user:</b>
+</div>
 
-<h2></h2>
+
+<div class="align-text">
+     User1
+     <! This value should be the name of the match from server data. >
+     <! Consider datatypes to insert userdata >
+    <button class="align-button" type="submit">More info</button>
+    <button  class="button-color" type="submit">Start chat</button>
+</div>
+<div class="align-text">
+     User2
+    <! This value should be the name of the match from server data. >
+    <! Consider datatypes to insert userdata >
+    <button class="align-button" type="submit">More info</button>
+    <button class="button-color" type="submit">Start chat</button>
+
+</div>
+<div class="align-text">
+     User3
+    <! This value should be the name of the match from server data. >
+    <! Consider datatypes to insert userdata >
+    <button class="align-button" type="submit">More info</button>
+    <button  class="button-color" type="submit">Start chat</button>
+</div>
+
+<form action="FindMoreMatches.html" method="GET">
+    <button type="submit" class="FindMoreMatches">Find more matches!</button>
+</form>
 
 
+
+<script>
+    //Gets user ID from prevouis page findmatch.
+    const resultList = document.getElementById('matchfound');
+    new URLSearchParams(window.location.search).forEach((value,name) => {
+        resultList.append(`${value} `);
+    })
+</script>
 
 
 

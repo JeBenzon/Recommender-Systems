@@ -5,33 +5,44 @@
     <title>Human app</title>
 </head>
 <body>
+<! Button that send you to homepage (index) >
+
 
 <form action="index.html" method="GET">
     <button class="h1copy" type="submit"> Human App</button>
 </form>
+
+<! In order to get info from form (createUser) the site needs an ID, the ID is not shown-
+because it isn't needed (display:none)>
+
 <div id="index" style="display: none;"></div>
+
+<! Two buttons >
 <div class="relative">
     <button id="createbutton" class="button">Create user!</button>
     <button id="findmatch" class="button">Find matches!</button>
 </div>
 
-<script>
 
+
+<script>
+    // Sends user to createUser site
     document.getElementById("createbutton").onclick = function () {
         location.href = "createuser.html";
     };
+    // Sends user to findMatch site
     document.getElementById("findmatch").onclick = function () {
         location.href = "findmatch.html";
     };
+    // Gets results from CreateUser form
         const resultList = document.getElementById('index');
         new URLSearchParams(window.location.search).forEach((value,name) => {
             resultList.append(`${value} `);
-            //resultList.append(document.createElement('br'));
         })
-            let x = document.getElementById('index').innerText;
-            //console.log(resultList);
-    let y = x.split(' ');
-    console.log(y);
+            let x = document.getElementById('index').innerText; //Gets values in raw text
+
+    let y = x.split(' '); //Splits results into an array (y)
+    console.log(y); //writes array in console
 </script>
 
 <!INCLUDE css AND JavaScript>
