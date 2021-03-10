@@ -44,10 +44,10 @@ hbs.registerPartials(partialsPath)
 // Setup static directory to serve
 app.use(express.static(publicDirectoryPath))
 
-
+//GET; SET; PUT; DELETE
 app.get('', (req, res) => {
     res.render('loginpage', {
-        title: 'login'
+        title: 'login',
     })
 })
 
@@ -92,10 +92,11 @@ app.get('/test/*', (req, res) => {
 })
 
 app.get('/search', (req, res) => {
-    console.log(req.query.id)
+    
     if (!req.query.id) {
         return res.send('You must provide a search word')
     }
+    console.log(req.query.id)
     if(!UserExsist(req.query.id)){
         return res.send('User does not excist')
     }
