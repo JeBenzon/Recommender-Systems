@@ -1,0 +1,32 @@
+[
+    {
+        "id" : 1,
+        "name": "Jonathan",
+        "gender": "m"
+    },
+    {
+        "id" : 2,
+        "name": "Tommy",
+        "gender": "m"
+    },
+    {
+        "id" : 3,
+        "name": "Pelle",
+        "gender": "m"
+    },
+    {
+        "id" : 4,
+        "name": "Frederik",
+        "gender": "m"
+    },
+    {
+        "id" : 5,
+        "name": "Oscar",
+        "gender": "m"
+    },
+    {
+        "id" : 6,
+        "name": "Karl-Emil",
+        "gender": "m"
+    }
+]
