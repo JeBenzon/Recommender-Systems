@@ -1,6 +1,7 @@
 const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
+const functions = require('./functions')
 
 
 
@@ -45,6 +46,24 @@ hbs.registerPartials(partialsPath)
 app.use(express.static(publicDirectoryPath))
 
 //GET; SET; PUT; DELETE
+app.get('/getmatch', (req,res) => {
+
+    
+    if(!req.query.matchid) {
+        let match = 'Null'
+    }
+    else if(req.query.matchid){
+        match = (functions.textToJSON(functions.sendConsoleCommand('alfainport.exe', `getmatch ${req.query.matchid}`))[0].Username)
+    }
+
+    let match = (functions.textToJSON(functions.sendConsoleCommand('alfainport.exe', 'getmatch 2'))[0].Username)
+    res.render('getmatch', {
+        title: 'Get Match',
+        matchname: match
+    })
+})
+
+
 app.get('', (req, res) => {
     res.render('loginpage', {
         title: 'login',
