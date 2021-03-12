@@ -48,15 +48,11 @@ app.use(express.static(publicDirectoryPath))
 //GET; SET; PUT; DELETE
 app.get('/getmatch', (req,res) => {
 
-    
-    if(!req.query.matchid) {
-        let match = 'Null'
-    }
-    else if(req.query.matchid){
-        match = (functions.textToJSON(functions.sendConsoleCommand('alfainport.exe', `getmatch ${req.query.matchid}`))[0].Username)
-    }
+    let match = 'Null'
 
-    let match = (functions.textToJSON(functions.sendConsoleCommand('alfainport.exe', 'getmatch 2'))[0].Username)
+    if(req.query.matchid){
+        match = (functions.textToJSON(functions.sendConsoleCommand('alfa.exe', `getmatch ${req.query.matchid}`))[0].Username)
+    }
     res.render('getmatch', {
         title: 'Get Match',
         matchname: match

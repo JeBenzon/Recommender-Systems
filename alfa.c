@@ -61,26 +61,33 @@ int main(int argc, char *argv[]) {
 
     // load userinfo into array
     load_users(userfile, total_users, users);
-    printf("Det er %s \n",argv[2]);
-    if(strcmp(argv[1], "getmatch") == 0) {
-        //printf("%s %d \n",argv[1], atoi(argv[2]));
-        
-        //select target user
-        int user_id = atoi(argv[2]);
-        //printf("Calculating best matches for %s ...\n", users[user_id - 1].name);
+    if(argc == 2){
+        //printf("%s %d #1 \n",argv[1], atoi(argv[2]));
+        printf("[{\"Username\":\"Gilbert\",\"Similarity\":0.268926}]");
 
-        //calc user similarity
-        for (int i = 0; i < total_users; i++) {
-            users[i].pearsson = pearsson(users, user_id - 1, users[i].id);
+    }else if(argc > 2) {
+        if(strcmp(argv[1], "getmatch") == 0) {
+            //printf("%s %d #2 \n",argv[1], atoi(argv[2]));
+            
+            //select target user
+            int user_id = atoi(argv[2]);
+            //printf("Calculating best matches for %s ...\n", users[user_id - 1].name);
+
+            //calc user similarity
+            for (int i = 0; i < total_users; i++) {
+                users[i].pearsson = pearsson(users, user_id - 1, users[i].id);
+            }
+            
+            //Sort the coefficient based on highest similarity
+            qsort(users, total_users, sizeof(user), cmpfunc);
+            
+            print_matches(total_users, users);
+            //printf("[{\"Username\": \"%s\", \"Similarity\": %lf}]", users[0].name,users[0].pearsson);
+            
+    
+            fclose(userfile);
+            free(users);
         }
-        
-        //Sort the coefficient based on highest similarity
-        qsort(users, total_users, sizeof(user), cmpfunc);
-        
-        print_matches(total_users, users);
-        
-        fclose(userfile);
-        free(users);
     }
     else {
         printf("One argument expected.\n");
@@ -273,11 +280,11 @@ int cmpfunc(const void *a, const void *b) {
 }
 
 void print_matches(int total_users, user *users){
-    printf("[\n");
+    printf("[");
     for (int i = total_users - K; i < total_users - 1; i++){
-        printf("{\"Username\": \"%s\", \"Similarity\": %lf},\n", users[i].name,users[i].pearsson);
+        printf("{\"Username\": \"%s\", \"Similarity\": %lf},", users[i].name,users[i].pearsson);
     }
-    printf("]");
+    printf("{\"Username\": \"sidste\", \"Similarity\": -1}]");
     // printf("total users: %d\n", total_users);
     // for (int i = 0; i < (int)total_users; i++) {
     //     printf("user %2d: name: %s, age: %d, gender %c chiaua: %lf triangle: %lf football: %lf\n",
