@@ -1,10 +1,9 @@
+const cp = require('child_process');
 
-//Kører et childprocces i baggrunden af programmet og vi har ikke fundet ud af hvordan vi får data'en ud af stdout og ind i main program igen.
-const {exec} = require("child_process");
+//Vi bruger spawnSync to at kommunikere med c-programmet (child process)
+const { stdout, stderr} = cp.spawnSync('alfa.exe', ['getmatch']);
 
-let data = [];
+const dataJSON = stdout.toString() //output om til string
+data = JSON.parse(dataJSON) //laver stringoutput om til datajson
+console.log(data[0].Username) //printer
 
-exec("alfa.exe test", (error, stdout, stderr) =>{
-    const dataJSON = stdout.toString()
-    data = JSON.parse(dataJSON)
-});
