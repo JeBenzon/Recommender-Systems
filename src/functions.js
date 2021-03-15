@@ -14,7 +14,7 @@ function textToJSON(text){
     return data
 }
 
-console.log(textToJSON(sendConsoleCommand('alfa.exe', 'getmatch 2'))[0].Username)
+//console.log(textToJSON(sendConsoleCommand('alfa.exe', 'getmatch 2'))[0].Username)
 
 //Module export
 module.exports = {

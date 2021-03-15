@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
         }
     }
     else {
-        printf("One argument expected.\n");
+        printf("there was only One argument.\n");
 
         // new user input
         char answer;

@@ -4,7 +4,6 @@ const hbs = require('hbs')
 const functions = require('./functions')
 
 
-
 class User {
     constructor(id, name, gender){
         this.id = id
@@ -51,6 +50,7 @@ app.get('/getmatch', (req,res) => {
     let match = 'Null'
 
     if(req.query.matchid){
+        
         match = (functions.textToJSON(functions.sendConsoleCommand('alfa.exe', `getmatch ${req.query.matchid}`))[0].Username)
     }
     res.render('getmatch', {
@@ -127,7 +127,6 @@ app.get('*',(req, res) => {
         errorMessage: 'Could not find page'
     })
 })
-
 
 
 // Make the server on port 3000
