@@ -3,9 +3,13 @@ const cp = require('child_process');
 
 //gir command og får string output ud.
 function sendConsoleCommand(programPath, parameters){
-    let par = parameters.split(" ");
-    const {stdout, stderr} = cp.spawnSync(programPath, [par[0], par[1]]);
-    return stdout.toString()
+    try{
+        let par = parameters.split(" ");
+        const {stdout, stderr} = cp.spawnSync(programPath, [par[0], par[1]]);
+        return stdout.toString()
+    }catch(e){
+        console.log('C kommunikations fejl errorcode:' + e)
+    }
 }
 
 //function der tager string output og laver til json
@@ -19,6 +23,6 @@ function textToJSON(text){
 //Module export
 module.exports = {
     sendConsoleCommand,
-    textToJSON
+    textToJSON,
 }
 

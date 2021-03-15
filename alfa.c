@@ -36,6 +36,7 @@ double calc_mean_of_user(user user);
 double calc_sqrt_of_user(user user, double mean);
 int cmpfunc(const void *a, const void *b);
 void print_matches(int total_users, user *users);
+void print_user(int userid, user *users);
 
 int main(int argc, char *argv[]) {
 
@@ -87,6 +88,12 @@ int main(int argc, char *argv[]) {
     
             fclose(userfile);
             free(users);
+        }
+        if(strcmp(argv[1], "getuser") == 0){
+            //select target user
+            int user_id = atoi(argv[2]);
+            print_user(user_id, users);
+            
         }
     }
     else {
@@ -279,10 +286,14 @@ int cmpfunc(const void *a, const void *b) {
     }
 }
 
+void print_user(int userid, user *users){
+    printf("[{\"Username\": \"%s\"}]", users[userid].name);
+}
+
 void print_matches(int total_users, user *users){
     printf("[");
     for (int i = total_users - K; i < total_users - 1; i++){
-        printf("{\"Username\": \"%s\", \"Similarity\": %lf},", users[i].name,users[i].pearsson);
+        printf("{\"Username\": \"%s\", \"Similarity\": %lf},", users[i].name, users[i].pearsson);
     }
     printf("{\"Username\": \"sidste\", \"Similarity\": -1}]");
     // printf("total users: %d\n", total_users);

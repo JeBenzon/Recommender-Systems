@@ -45,17 +45,24 @@ hbs.registerPartials(partialsPath)
 app.use(express.static(publicDirectoryPath))
 
 //GET; SET; PUT; DELETE
-app.get('/getmatch', (req,res) => {
+app.get('/matchfound', (req,res) => {
 
     let match = 'Null'
+    let user = 'defaultusername'
 
-    if(req.query.matchid){
+    if(req.query.userid){
         
-        match = (functions.textToJSON(functions.sendConsoleCommand('alfa.exe', `getmatch ${req.query.matchid}`))[0].Username)
+        match = (functions.textToJSON(functions.sendConsoleCommand('alfa.exe', `getmatch ${req.query.userid}`)))
+        user = (functions.textToJSON(functions.sendConsoleCommand('alfa.exe', `getuser ${req.query.userid}`))[0].Username)
+
     }
-    res.render('getmatch', {
-        title: 'Get Match',
-        matchname: match
+    res.render('matchfound', {
+        title: 'Match found',
+        username: user,
+        matchname1: match[0].Username,
+        matchname2: match[1].Username,
+        matchname3: match[2].Username,
+
     })
 })
 
