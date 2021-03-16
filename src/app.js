@@ -3,29 +3,7 @@ const express = require('express')
 const hbs = require('hbs')
 const functions = require('./functions')
 
-
-class User {
-    constructor(id, name, gender){
-        this.id = id
-        this.name = name
-        this.gender = gender
-    }
-}
-
-let Users = [];
-Users[0] = new User(1, "Jonathan", "m");
-Users[1] = new User(2, "Pelle", "m");
-Users[2] = new User(3, "Frederik", "m");
-
-function UserExsist(id){
-    for(let i = 0; i < Users.length; i++){
-        if(id == Users[i].id){
-            return true;
-        }
-    }
-    return false;
-}
-
+//makes express app
 const app = express()
 
 // Define paths for express config
@@ -34,27 +12,23 @@ const viewsPath = path.join(__dirname, '../templates/views')
 const partialsPath = path.join(__dirname, '../templates/partials')
 const filePath = path.join(__dirname, '../public/')
 
-
 // Setup handlebars engine and views location
 app.set('view engine', 'hbs')
 app.set('views', viewsPath)
 hbs.registerPartials(partialsPath)
 
-
 // Setup static directory to serve
 app.use(express.static(publicDirectoryPath))
 
-//GET; SET; PUT; DELETE
+//CRUD (create, update, delete )
 app.get('/matchfound', (req,res) => {
 
     let match = 'Null'
     let user = 'defaultusername'
 
     if(req.query.userid){
-        
         match = (functions.textToJSON(functions.sendConsoleCommand('alfa.exe', `getmatch ${req.query.userid}`)))
         user = (functions.textToJSON(functions.sendConsoleCommand('alfa.exe', `getuser ${req.query.userid}`))[0].Username)
-
     }
     res.render('matchfound', {
         title: 'Match found',
@@ -62,14 +36,12 @@ app.get('/matchfound', (req,res) => {
         matchname1: match[0].Username,
         matchname2: match[1].Username,
         matchname3: match[2].Username,
-
     })
 })
 
-
 app.get('', (req, res) => {
     res.render('loginpage', {
-        title: 'login',
+        title: 'Login',
     })
 })
 
@@ -93,7 +65,7 @@ app.get('/findmorematches', (req, res) => {
 
 app.get('/findmatch', (req, res) => {
     res.render('findmatch', {
-        title: 'find a match'
+        title: 'Find a match'
     })
 })
 
@@ -103,30 +75,16 @@ app.get('/createuser', (req, res) => {
     })
 })
 
-app.get('/test', (req, res) => {
-    res.render('test', {
-        title: 'Test page',
-    })
-})
-
-app.get('/test/*', (req, res) => {
-    res.send('No test result found');
-})
-
 app.get('/search', (req, res) => {
-    
     if (!req.query.id) {
         return res.send('You must provide a search word')
     }
-    console.log(req.query.id)
+    //console.log(req.query.id)
     if(!UserExsist(req.query.id)){
         return res.send('User does not excist')
-    }
-      
+    } 
     res.send('id ' + req.query.id + ' excists: with name: ' + Users[req.query.id].name);
 })
-
-
 
 app.get('*',(req, res) => {
     res.render('404', {
@@ -134,7 +92,6 @@ app.get('*',(req, res) => {
         errorMessage: 'Could not find page'
     })
 })
-
 
 // Make the server on port 3000
 app.listen(3000, () => {

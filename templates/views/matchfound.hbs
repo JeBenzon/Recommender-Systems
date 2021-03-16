@@ -9,44 +9,38 @@
         <!--Partials header-->
         {{>header}}
     </header>
-    <h1>{{title}}</h1>
+    
 
+    <div class="container">
+        <h1 class="text-center">{{title}}</h1>
+        <hr>
+        <!--Prints out user ID via div ID (look script) -->
+        <div class="inLineBlock" id="matchfound">
+            <b>Top three matches for user: {{username}}</b>
+        </div>
 
-    <!--Prints out user ID via div ID (look script) -->
-    <div class="inLineBlock" id="matchfound">
-        <b>Top three matches for user: {{username}}</b>
+        <table class="table">
+            <tr>
+                <td class="col-md-8"><p class="font-weight-bold">{{matchname1}}</p></td>
+                <td class="col-md-3"><a class="btn btn-primary" href="#">more info</a></td>
+                <td class="col-md-3"><a class="btn btn-primary" href="#">start chat</a></td>
+            </tr>
+            <tr>
+                <td class="col-md-8"><p class="font-weight-bold">{{matchname2}}</p></td>
+                <td><a class="btn btn-primary" href="#">more info</a></td>
+                <td><a class="btn btn-primary" href="#">start chat</a></td>
+            </tr>
+                    <tr>
+                <td class="col-md-8"><p class="font-weight-bold">{{matchname3}}</p></td>
+                <td><a class="btn btn-primary" href="#">more info</a></td>
+                <td><a class="btn btn-primary" href="#">start chat</a></td>
+            </tr>
+        </table>
+
+        <form action="#" method="GET">
+            <button type="submit" class="btn btn-outline-secondary">Find more matches!</button>
+        </form>
     </div>
-
-
-    <div class="align-text">
-        {{matchname1}}
-        <!-- This value should be the name of the match from server data. -->
-        <!-- Consider datatypes to insert userdata -->
-        <button class="align-button" type="submit">More info</button>
-        <button  class="button-color" type="submit">Start chat</button>
-    </div>
-    <div class="align-text">
-        {{matchname2}}
-        <!-- This value should be the name of the match from server data. -->
-        <!-- Consider datatypes to insert userdata -->
-        <button class="align-button" type="submit">More info</button>
-        <button class="button-color" type="submit">Start chat</button>
-
-    </div>
-    <div class="align-text">
-        {{matchname3}}
-        <!-- This value should be the name of the match from server data. -->
-        <!-- Consider datatypes to insert userdata -->
-        <button class="align-button" type="submit">More info</button>
-        <button  class="button-color" type="submit">Start chat</button>
-    </div>
-
-
-
-    <form action="FindMoreMatches.html" method="GET">
-        <button type="submit" class="FindMoreMatches">Find more matches!</button>
-    </form>
-
     <!--
     <script>
         //Gets user ID from prevouis page findmatch.
