@@ -3,6 +3,8 @@
 #include <string.h>
 #include <math.h>
 
+
+
 //constants to steer calcs
 #define TOTALCRITERIA 9
 #define K 4
@@ -28,7 +30,8 @@ typedef struct user {
 } user;
 
 // prototypes
-void new_user(FILE *userfile);
+void internal_new_user(FILE *userfile);
+void external_new_user(FILE *userfile, char *name, int age, char gender, int dog, int triangle, int football,int red, int yellow, int green, int blue, int spaghetti, int pizza);
 int calc_users(FILE *userfile);
 void load_users(FILE *userfile, int total_users, user *users);
 double pearsson(user *users, int target, int compare);
@@ -37,6 +40,7 @@ double calc_sqrt_of_user(user user, double mean);
 int cmpfunc(const void *a, const void *b);
 void print_matches(int total_users, user *users);
 void print_user(int userid, user *users);
+
 
 int main(int argc, char *argv[]) {
 
@@ -62,11 +66,7 @@ int main(int argc, char *argv[]) {
 
     // load userinfo into array
     load_users(userfile, total_users, users);
-    if(argc == 2){
-        //printf("%s %d #1 \n",argv[1], atoi(argv[2]));
-        printf("[{\"Username\":\"Gilbert\",\"Similarity\":0.268926}]");
-
-    }else if(argc > 2) {
+    if(argc > 2) {
         if(strcmp(argv[1], "getmatch") == 0) {
             //printf("%s %d #2 \n",argv[1], atoi(argv[2]));
             
@@ -95,6 +95,13 @@ int main(int argc, char *argv[]) {
             print_user(user_id, users);
             
         }
+        if(strcmp(argv[1], "createuser") == 0){
+            
+
+            external_new_user(userfile, argv[2], atoi(argv[3]), argv[4][0], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), atoi(argv[10]), atoi(argv[11]), atoi(argv[12]), atoi(argv[13]));
+            printf("true");
+            
+        }
     }
     else {
         printf("there was only One argument.\n");
@@ -106,7 +113,7 @@ int main(int argc, char *argv[]) {
             printf("Wish to enter new user? (y/n)\n");
             scanf(" %c", &answer);
             if(answer == 'y'){
-                new_user(userfile);
+                internal_new_user(userfile);
                 //Update total users, if new user is created
                 total_users = calc_users(userfile);
                 printf("New user ID : %d \n", total_users);
@@ -139,7 +146,17 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-void new_user(FILE *userfile){
+void external_new_user(FILE *userfile, char *name, int age, char gender, int dog, int triangle, int football,int red, int yellow, 
+        int green, int blue, int spaghetti, int pizza){
+
+    
+    fprintf(userfile, "\n%s %d %c %d %d %d %d %d %d %d %d %d", name, age, gender, dog, triangle, football, red, yellow, green, blue, spaghetti, pizza);
+
+    fseek(userfile, 0, SEEK_SET);
+    return;
+}
+
+void internal_new_user(FILE *userfile){
     char u_name[25];
     int u_age;
     char u_gender;

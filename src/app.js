@@ -2,9 +2,13 @@ const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
 const functions = require('./functions')
+const bodyParser= require('body-parser')
 
 //makes express app
 const app = express()
+const c_fil_sti = "alfa.exe"
+
+let Users = []
 
 // Define paths for express config
 const publicDirectoryPath = path.join(__dirname, '../public')
@@ -17,8 +21,19 @@ app.set('view engine', 'hbs')
 app.set('views', viewsPath)
 hbs.registerPartials(partialsPath)
 
+// parse application/json
+app.use(bodyParser.json());
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+// parse the raw data
+app.use(bodyParser.raw());
+// parse text
+app.use(bodyParser.text());
+
 // Setup static directory to serve
 app.use(express.static(publicDirectoryPath))
+//
+
 
 //CRUD (create, update, delete )
 app.get('/matchfound', (req,res) => {
@@ -27,8 +42,8 @@ app.get('/matchfound', (req,res) => {
     let user = 'defaultusername'
 
     if(req.query.userid){
-        match = (functions.textToJSON(functions.sendConsoleCommand('alfa.exe', `getmatch ${req.query.userid}`)))
-        user = (functions.textToJSON(functions.sendConsoleCommand('alfa.exe', `getuser ${req.query.userid}`))[0].Username)
+        match = (functions.textToJSON(functions.sendConsoleCommand(c_fil_sti, `getmatch ${req.query.userid}`)))
+        user = (functions.textToJSON(functions.sendConsoleCommand(c_fil_sti, `getuser ${req.query.userid}`))[0].Username)
     }
     res.render('matchfound', {
         title: 'Match found',
@@ -37,6 +52,19 @@ app.get('/matchfound', (req,res) => {
         matchname2: match[1].Username,
         matchname3: match[2].Username,
     })
+})
+
+app.get('/register', (req, res) => {
+    res.render('register', {
+        title: 'Register'
+    })
+})
+
+app.post('/register', (req, res) => {
+    Users[0] = req.body.username
+    Users[1] = req.body.email
+    Users[2] = req.body.password
+    console.log(Users)
 })
 
 app.get('', (req, res) => {
@@ -73,6 +101,16 @@ app.get('/createuser', (req, res) => {
     res.render('createuser', {
         title: 'Create User'
     })
+})
+
+app.post('/createuser', (req, res) => {
+
+    console.log(req.body)
+    
+    if(1){
+        console.log("det var sandt")
+    }
+    functions.createuser(c_fil_sti, "createuser", req.body.name.toString(), parseInt(req.body.age), req.body.gender.toString(), parseInt(req.body.dog), parseInt(req.body.tri), parseInt(req.body.foot), parseInt(req.body.red), parseInt(req.body.yellow), parseInt(req.body.green), parseInt(req.body.blue), parseInt(req.body.spag), parseInt(req.body.pizza))
 })
 
 app.get('/search', (req, res) => {

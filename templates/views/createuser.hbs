@@ -15,35 +15,39 @@
         <hr>
 
         <!-- Userform with input from user. Method GET is used for local running. Use other method to send data to server.-->
-        <form action="index.html" method="GET">
-            <div class="container">
-                <div class="textbox1">
-                    <input name="name" type="text" id="fname"  placeholder="First name" required><br><br>
-                    <input type="number" id="age" name="age" placeholder="Age" required><br><br>
-                    <select required >
-                    <option value="" disabled selected hidden>Gender</option>
-                    <option value="female">female</option>
-                    <option value="male">male</option>
-                    <option value="other">other</option>
+        <form action="/createuser" method="POST">
+            <div class="row px-2 form-group">
+                <div class="col-md-4 px-2">
+                    <input class="form-control" name="name" type="text" id="fname"  placeholder="First name" required><br><br>
+                    <input class="form-control" type="number" id="age" name="age" placeholder="Age" required><br><br>
+                    <select name="gender" class="form-control" required >
+                        <option value="" disabled selected hidden>Gender</option>
+                        <option value="female">female</option>
+                        <option value="male">male</option>
+                        <option value="other">other</option>
                     </select><br><br>
-                    <input type="number" id="dog" name="dog" placeholder="Dog (1-10)" max="10"><br><br>
+                    <input class="form-control" type="number" id="dog" name="dog" placeholder="Dog (1-10)" max="10"><br><br>
                 </div>
 
-                <div class="textbox2">
-                    <input type="number" id="tri" name="tri" placeholder="Triangle (1-10)" max="10"><br><br>
-                    <input type="number" id="foot" name="foot" placeholder="Football (1-10)" max="10"><br><br>
-                    <input type="number" id="red" name="red" placeholder="Red (1-10)" max="10"><br><br>
-                    <input type="number" id="yellow" name="yellow" placeholder="Yellow (1-10)" max="10"><br><br>
+                <div class="col-md-4 px-2">
+                    <input class="form-control" type="number" id="tri" name="tri" placeholder="Triangle (1-10)" max="10"><br><br>
+                    <input class="form-control"type="number" id="foot" name="foot" placeholder="Football (1-10)" max="10"><br><br>
+                    <input class="form-control" type="number" id="red" name="red" placeholder="Red (1-10)" max="10"><br><br>
+                    <input class="form-control" type="number" id="yellow" name="yellow" placeholder="Yellow (1-10)" max="10"><br><br>
                 </div>
-                <div class="textbox3">
-                    <input type="number" id="green" name="green" placeholder="Green (1-10)" max="10"><br><br>
-                    <input type="number" id="blue" name="blue" placeholder="Blue (1-10)" max="10"><br><br>
-                    <input type="number" id="spag" name="spag" placeholder="Spaghetti (1-10)" max="10"><br><br>
-                    <input type="number" id="pizza" name="pizza" placeholder="Pizza (1-10)" max="10"><br><br>
+                <div class="col-md-4 px-2">
+                    <input class="form-control" type="number" id="green" name="green" placeholder="Green (1-10)" max="10"><br><br>
+                    <input class="form-control" type="number" id="blue" name="blue" placeholder="Blue (1-10)" max="10"><br><br>
+                    <input class="form-control" type="number" id="spag" name="spag" placeholder="Spaghetti (1-10)" max="10"><br><br>
+                    <input class="form-control" type="number" id="pizza" name="pizza" placeholder="Pizza (1-10)" max="10"><br><br>
 
                 </div>
-                <button class="btn btn-dark" type="submit"  class="createUser">Create User!</button>
+                
             </div>
+            <div>
+                <button  class="btn btn-dark float-right" type="submit">Create User!</button>
+            </div>
+            
         </form>
     </div>
     <footer>
