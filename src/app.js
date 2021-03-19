@@ -10,6 +10,8 @@ const c_fil_sti = "alfa.exe"
 
 let Users = []
 
+
+
 // Define paths for express config
 const publicDirectoryPath = path.join(__dirname, '../public')
 const viewsPath = path.join(__dirname, '../templates/views')
@@ -65,13 +67,37 @@ app.post('/register', (req, res) => {
     Users[1] = req.body.email
     Users[2] = req.body.password
     console.log(Users)
+    res.redirect('/loginpage')
 })
 
-app.get('', (req, res) => {
+app.get('/', (req, res) => {
+    res.render('index', {
+        title: 'Home page',
+    })
+})
+
+app.get('/loginpage', (req, res) => {
     res.render('loginpage', {
         title: 'Login',
     })
 })
+
+
+app.post('/loginpage', (req, res) => {
+    console.log(functions.usercheck(req.body.username, req.body.password, Users))
+
+    if(functions.usercheck(req.body.username, req.body.password, Users)){
+        res.redirect('/matchfound')
+    }else {
+        res.render('loginpage', {
+            title: 'Login',
+            message: 'Wrong username or password!'
+        })
+    }
+    
+
+})
+
 
 app.get('/matchfound', (req, res) => {
     res.render('matchfound', {

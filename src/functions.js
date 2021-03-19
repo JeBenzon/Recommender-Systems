@@ -32,6 +32,15 @@ function createuser(programPath, createuser, name, age, gender, dog, triangle, f
     return true
 }
 
+function usercheck(username, password, users){
+    //console.log(username + ' ' + password + ' ' + users[0] + ' '  + users[2])
+    if(username === users[0] && password === users[2]){
+        return true
+    } else {
+    return false
+    }
+}
+
 //console.log(textToJSON(sendConsoleCommand('alfa.exe', 'getmatch 2'))[0].Username)
 
 //console.log(createuser("alfa.exe", "createuser", "Jonathan", 22, "m", 1, 2, 3, 1, 4, 4, 2, 1, 2))
@@ -41,6 +50,7 @@ module.exports = {
     sendConsoleCommand,
     textToJSON,
     createuser,
+    usercheck
 }
 
 //Wo
