@@ -1,16 +1,30 @@
+//Loader procces variables ind og sætter dem i process.env (enviroment variabler som f.eks vores salt/secret)
+/*if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config()
+}*/
+
 const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
 const functions = require('./functions')
-const bodyParser= require('body-parser')
+const bodyParser = require('body-parser')
+const bcrypt = require('bcrypt')
+const passport = require('passport')
+const flash = require('express-flash')
+const session = require('express-session')
+
+
+
+const initializePassport = require('./passport-config')
+initializePassport.initialize(
+    passport, 
+    email  => users.find(user => user.email === email)
+)
+
 
 //makes express app
 const app = express()
 const c_fil_sti = "alfa.exe"
-
-let Users = []
-
-
 
 // Define paths for express config
 const publicDirectoryPath = path.join(__dirname, '../public')
@@ -23,6 +37,7 @@ app.set('view engine', 'hbs')
 app.set('views', viewsPath)
 hbs.registerPartials(partialsPath)
 
+//APP.USE EXSTENTIONS
 // parse application/json
 app.use(bodyParser.json());
 // parse application/x-www-form-urlencoded
@@ -34,10 +49,72 @@ app.use(bodyParser.text());
 
 // Setup static directory to serve
 app.use(express.static(publicDirectoryPath))
-//
+//express flash exstension, der kan håndtere beskeder /:messages
+app.use(flash())
+//express session exstension
+app.use(session({
+    //bliver sat fra enviroment variable
+    //secret: process.env.SESSION_SECRET,
+    secret: "hemmelighed",
+    //siden vi aldrig ændre på Enviroment variablerne aldrig skal ændre sig
+    resave: false,
+    //Vi vil ikke gemme en tom variable for denne session; false
+    saveUninitialized: false
+}))
+app.use(passport.initialize())
+app.use(passport.session())
 
+
+let users = []
 
 //CRUD (create, update, delete )
+app.get('/', (req, res) => {
+    res.render('index', {
+        title: 'Home page',
+    })
+})
+
+app.get('/register', (req, res) => {
+
+    res.render('register', {
+        title: 'Register'
+    })
+})
+
+app.post('/register', async (req, res) => {
+    //https://github.com/WebDevSimplified/Nodejs-Passport-Login
+    try{
+        //hasher password med bcrypt
+        const hashedPass = await bcrypt.hash(req.body.password, 10)
+        users.push({
+            id: Date.now().toString(),
+            name: req.body.username,
+            email: req.body.email,
+            password: hashedPass
+        })
+        res.redirect('/loginpage')
+    }catch{
+        res.redirect('/register')
+    }
+    console.log(users)
+
+})
+
+
+app.get('/loginpage', (req, res) => {
+    res.render('loginpage', {
+        title: 'Login',
+    })
+})
+
+
+app.post('/loginpage', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/loginpage',
+    failureFlash: true
+}))
+
+
 app.get('/matchfound', (req,res) => {
 
     let match = 'Null'
@@ -55,49 +132,6 @@ app.get('/matchfound', (req,res) => {
         matchname3: match[2].Username,
     })
 })
-
-app.get('/register', (req, res) => {
-    res.render('register', {
-        title: 'Register'
-    })
-})
-
-app.post('/register', (req, res) => {
-    Users[0] = req.body.username
-    Users[1] = req.body.email
-    Users[2] = req.body.password
-    console.log(Users)
-    res.redirect('/loginpage')
-})
-
-app.get('/', (req, res) => {
-    res.render('index', {
-        title: 'Home page',
-    })
-})
-
-app.get('/loginpage', (req, res) => {
-    res.render('loginpage', {
-        title: 'Login',
-    })
-})
-
-
-app.post('/loginpage', (req, res) => {
-    console.log(functions.usercheck(req.body.username, req.body.password, Users))
-
-    if(functions.usercheck(req.body.username, req.body.password, Users)){
-        res.redirect('/matchfound')
-    }else {
-        res.render('loginpage', {
-            title: 'Login',
-            message: 'Wrong username or password!'
-        })
-    }
-    
-
-})
-
 
 app.get('/matchfound', (req, res) => {
     res.render('matchfound', {

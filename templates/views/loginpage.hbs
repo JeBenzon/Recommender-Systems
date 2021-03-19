@@ -21,10 +21,15 @@
 		<h1 class="text-center">{{title}}</h1>
 		<hr>
 		<div class="container">
-			<p>{{message}}</p>
+			{{#if message.error}}
+				<p>{{message.error}}</p>
+			{{/if}}
+				<p>{{message.error}}</p>
+				<p>{{message}}</p>
+				<p>{{error}}</p>
 			<form class="form-group" action="/loginpage" method="POST">
 				<div class="input-group mb-3">
-					<input type="text" name="username" class="form-control input_user" value="" placeholder="username">
+					<input type="email" name="email" class="form-control input_user" value="" placeholder="email">
 				</div>
 				<div class="input-group mb-2">
 					<input type="password" name="password" class="form-control input_pass" value="" placeholder="password">
