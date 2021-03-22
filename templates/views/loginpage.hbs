@@ -21,12 +21,9 @@
 		<h1 class="text-center">{{title}}</h1>
 		<hr>
 		<div class="container">
-			{{#if message.error}}
-				<p>{{message.error}}</p>
+			{{#if messages.error}}
+				<p>{{messages.error}}</p>
 			{{/if}}
-				<p>{{message.error}}</p>
-				<p>{{message}}</p>
-				<p>{{error}}</p>
 			<form class="form-group" action="/loginpage" method="POST">
 				<div class="input-group mb-3">
 					<input type="email" name="email" class="form-control input_user" value="" placeholder="email">

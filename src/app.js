@@ -12,13 +12,16 @@ const bcrypt = require('bcrypt')
 const passport = require('passport')
 const flash = require('express-flash')
 const session = require('express-session')
+const methodOverride = require('method-override')
 
-
+let users = []
 
 const initializePassport = require('./passport-config')
+
 initializePassport.initialize(
     passport, 
-    email  => users.find(user => user.email === email)
+    email  => users.find(user => user.email === email),
+    id => users.find(user => user.id === id)
 )
 
 
@@ -63,25 +66,28 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
+//bruges til at overskrive f.eks. Delete 
+app.use(methodOverride('_method'))
 
 
-let users = []
+
 
 //CRUD (create, update, delete )
-app.get('/', (req, res) => {
+app.get('/', functions.checkAuthenticated, (req, res) => {
     res.render('index', {
         title: 'Home page',
+        name: req.user.name
     })
 })
 
-app.get('/register', (req, res) => {
+app.get('/register', functions.checkNotAuthenticated, (req, res) => {
 
     res.render('register', {
         title: 'Register'
     })
 })
 
-app.post('/register', async (req, res) => {
+app.post('/register', functions.checkNotAuthenticated, async (req, res) => {
     //https://github.com/WebDevSimplified/Nodejs-Passport-Login
     try{
         //hasher password med bcrypt
@@ -101,18 +107,24 @@ app.post('/register', async (req, res) => {
 })
 
 
-app.get('/loginpage', (req, res) => {
+app.get('/loginpage', functions.checkNotAuthenticated, (req, res) => {
     res.render('loginpage', {
         title: 'Login',
     })
 })
 
 
-app.post('/loginpage', passport.authenticate('local', {
+app.post('/loginpage', functions.checkNotAuthenticated, passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/loginpage',
     failureFlash: true
 }))
+
+app.delete('/logout', functions.checkAuthenticated, (req, res) => {
+    //Logger ud (en function fra passport der rydder op i session)
+    req.logOut()
+    res.redirect('/loginpage')
+})
 
 
 app.get('/matchfound', (req,res) => {

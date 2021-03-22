@@ -41,6 +41,23 @@ function usercheck(username, password, users){
     }
 }
 
+//tjekker om en bruger er authenticated
+function checkAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next()
+    }
+
+    res.redirect('/loginpage')
+}
+
+function checkNotAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return res.redirect('/')
+    }
+    next()
+}
+
+
 //console.log(textToJSON(sendConsoleCommand('alfa.exe', 'getmatch 2'))[0].Username)
 
 //console.log(createuser("alfa.exe", "createuser", "Jonathan", 22, "m", 1, 2, 3, 1, 4, 4, 2, 1, 2))
@@ -50,7 +67,9 @@ module.exports = {
     sendConsoleCommand,
     textToJSON,
     createuser,
-    usercheck
+    usercheck,
+    checkAuthenticated,
+    checkNotAuthenticated
 }
 
 //Wo
