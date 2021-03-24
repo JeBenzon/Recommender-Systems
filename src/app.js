@@ -41,13 +41,13 @@ app.set('views', viewsPath)
 hbs.registerPartials(partialsPath)
 
 //APP.USE EXSTENTIONS
-// parse application/json
+// parse application/json !Måske ikke bruges
 app.use(bodyParser.json());
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
-// parse the raw data
+// parse the raw data !Måske ikke bruges
 app.use(bodyParser.raw());
-// parse text
+// parse text !Måske ikke bruges
 app.use(bodyParser.text());
 
 // Setup static directory to serve
@@ -73,8 +73,6 @@ app.use(function(req, res, next) {
     res.locals.isAuthenticated = req.isAuthenticated()
     next()
 })
-
-
 
 
 //CRUD (create, update, delete )

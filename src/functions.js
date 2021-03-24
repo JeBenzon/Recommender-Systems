@@ -32,14 +32,6 @@ function createuser(programPath, createuser, name, age, gender, dog, triangle, f
     return true
 }
 
-function usercheck(username, password, users){
-    //console.log(username + ' ' + password + ' ' + users[0] + ' '  + users[2])
-    if(username === users[0] && password === users[2]){
-        return true
-    } else {
-    return false
-    }
-}
 
 //tjekker om en bruger er authenticated
 function checkAuthenticated(req, res, next) {
