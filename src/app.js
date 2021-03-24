@@ -75,7 +75,7 @@ app.use(function(req, res, next) {
 })
 
 
-//CRUD (create, update, delete )
+//CRUD (create, update, delete)
 app.get('/', functions.checkAuthenticated, (req, res) => {
     res.render('index', {
         title: 'Home page',
@@ -95,6 +95,7 @@ app.post('/register', functions.checkNotAuthenticated, async (req, res) => {
     try{
         //hasher password med bcrypt
         const hashedPass = await bcrypt.hash(req.body.password, 10)
+        //Communikation til Userfile/C 
         users.push({
             id: Date.now().toString(),
             name: req.body.username,
@@ -182,10 +183,8 @@ app.post('/createuser', (req, res) => {
 
     console.log(req.body)
     
-    if(1){
-        console.log("det var sandt")
-    }
     functions.createuser(c_fil_sti, "createuser", req.body.name.toString(), parseInt(req.body.age), req.body.gender.toString(), parseInt(req.body.dog), parseInt(req.body.tri), parseInt(req.body.foot), parseInt(req.body.red), parseInt(req.body.yellow), parseInt(req.body.green), parseInt(req.body.blue), parseInt(req.body.spag), parseInt(req.body.pizza))
+    //redirect
 })
 
 app.get('/search', (req, res) => {

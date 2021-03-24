@@ -59,7 +59,6 @@ module.exports = {
     sendConsoleCommand,
     textToJSON,
     createuser,
-    usercheck,
     checkAuthenticated,
     checkNotAuthenticated
 }
