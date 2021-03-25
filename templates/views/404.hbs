@@ -10,16 +10,18 @@
         <!--Partials header-->
         {{>header}}
     </header>
-    <h1>{{title}}</h1>
-    <!--Homebutton -->
-    <div>
-        <a href="/">
-        <button class="h1copy" type="submit"> Human App</button>
-        </a>
+    <div class="container">
+        <h1 class="firofir text-center">{{title}}</h1>
+        <img class="cat" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f3d6f7f2-9d27-41e0-871a-d02e4fc4168b/d5jpx8k-97a761f8-e672-403f-8dc3-20b0d0858f40.png/v1/fill/w_900,h_840,strp/black_cat_png_by_camelfobia_d5jpx8k-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3siaGVpZ2h0IjoiPD04NDAiLCJwYXRoIjoiXC9mXC9mM2Q2ZjdmMi05ZDI3LTQxZTAtODcxYS1kMDJlNGZjNDE2OGJcL2Q1anB4OGstOTdhNzYxZjgtZTY3Mi00MDNmLThkYzMtMjBiMGQwODU4ZjQwLnBuZyIsIndpZHRoIjoiPD05MDAifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.7u4p8j96UCIwvUUsXPfxAArChmRhbfJwKzI-JNMQhX0" alt="404">
+        <p class=" text-center">{{errorMessage}}</p>
+        <div class="text-center">
+            <a href="/">
+                <button class=" text-center btn btn-dark" type="submit"> GO back to safety</button>
+            </a>
+        </div>
+
+        
     </div>
-
-    <p>{{errorMessage}}</p>
-
     <footer>
     <!--Partials footer-->
     {{>footer}}

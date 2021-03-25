@@ -41,14 +41,10 @@ app.set('views', viewsPath)
 hbs.registerPartials(partialsPath)
 
 //APP.USE EXSTENTIONS
-// parse application/json !Måske ikke bruges
-app.use(bodyParser.json());
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
-// parse the raw data !Måske ikke bruges
-app.use(bodyParser.raw());
-// parse text !Måske ikke bruges
-app.use(bodyParser.text());
+
 
 // Setup static directory to serve
 app.use(express.static(publicDirectoryPath))
@@ -64,6 +60,7 @@ app.use(session({
     //Vi vil ikke gemme en tom variable for denne session; false
     saveUninitialized: false
 }))
+
 app.use(passport.initialize())
 app.use(passport.session())
 //bruges til at overskrive f.eks. Delete 
@@ -74,15 +71,9 @@ app.use(function(req, res, next) {
     next()
 })
 
-
 //CRUD (create, update, delete)
-app.get('/', functions.checkAuthenticated, (req, res) => {
-    res.render('index', {
-        title: 'Home page',
-        name: req.user.name
-    })
-})
 
+//Register
 app.get('/register', functions.checkNotAuthenticated, (req, res) => {
 
     res.render('register', {
@@ -97,12 +88,12 @@ app.post('/register', functions.checkNotAuthenticated, async (req, res) => {
         const hashedPass = await bcrypt.hash(req.body.password, 10)
         //Communikation til Userfile/C 
         users.push({
-            id: Date.now().toString(),
+            id: Date.now().toString() + '' + Math.floor(Math.random() * 10000).toString(),
             name: req.body.username,
             email: req.body.email,
             password: hashedPass
         })
-        res.redirect('/loginpage')
+        res.redirect('/')
     }catch{
         res.redirect('/register')
     }
@@ -110,69 +101,7 @@ app.post('/register', functions.checkNotAuthenticated, async (req, res) => {
 
 })
 
-
-app.get('/loginpage', functions.checkNotAuthenticated, (req, res) => {
-    res.render('loginpage', {
-        title: 'Login',
-    })
-})
-
-
-app.post('/loginpage', functions.checkNotAuthenticated, passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/loginpage',
-    failureFlash: true
-}))
-
-app.delete('/logout', functions.checkAuthenticated, (req, res) => {
-    //Logger ud (en function fra passport der rydder op i session)
-    req.logOut()
-    res.redirect('/loginpage')
-})
-
-
-app.get('/matchfound', (req,res) => {
-
-    let match = 'Null'
-    let user = 'defaultusername'
-
-    if(req.query.userid){
-        match = (functions.textToJSON(functions.sendConsoleCommand(c_fil_sti, `getmatch ${req.query.userid}`)))
-        user = (functions.textToJSON(functions.sendConsoleCommand(c_fil_sti, `getuser ${req.query.userid}`))[0].Username)
-    }
-    res.render('matchfound', {
-        title: 'Match found',
-        username: user,
-        matchname1: match[0].Username,
-        matchname2: match[1].Username,
-        matchname3: match[2].Username,
-    })
-})
-
-app.get('/matchfound', (req, res) => {
-    res.render('matchfound', {
-        title: 'Match found'
-    })
-})
-
-app.get('/mypage', (req, res) => {
-    res.render('userpage', {
-        title: 'Username'+' page'
-    })
-})
-
-app.get('/findmorematches', (req, res) => {
-    res.render('findmorematches', {
-        title: 'Find More Matches'
-    })
-})
-
-app.get('/findmatch', (req, res) => {
-    res.render('findmatch', {
-        title: 'Find a match'
-    })
-})
-
+//Create User
 app.get('/createuser', (req, res) => {
     res.render('createuser', {
         title: 'Create User'
@@ -187,17 +116,65 @@ app.post('/createuser', (req, res) => {
     //redirect
 })
 
-app.get('/search', (req, res) => {
-    if (!req.query.id) {
-        return res.send('You must provide a search word')
-    }
-    //console.log(req.query.id)
-    if(!UserExsist(req.query.id)){
-        return res.send('User does not excist')
-    } 
-    res.send('id ' + req.query.id + ' excists: with name: ' + Users[req.query.id].name);
+//Login / Logout
+app.get('/', functions.checkNotAuthenticated, (req, res) => {
+    res.render('loginpage', {
+        title: 'Login',
+    })
 })
 
+app.post('/loginpage', functions.checkNotAuthenticated, passport.authenticate('local', {
+    successRedirect: '/matchfound',
+    failureRedirect: '/',
+    failureFlash: true
+}))
+
+app.delete('/logout', functions.checkAuthenticated, (req, res) => {
+    //Logger ud (en function fra passport der rydder op i session)
+    req.logOut()
+    res.redirect('/')
+})
+
+//Find match
+app.get('/findmatch', (req, res) => {
+    res.render('findmatch', {
+        title: 'Find a match'
+    })
+})
+
+app.get('/matchfound',functions.checkAuthenticated, (req, res) => {
+    let user = functions.usercheck(req.user.id)
+    
+    
+
+    if(user) {
+        
+        
+        let matches = (functions.sendConsoleCommand(c_fil_sti, `getmatch2 1237`))
+        console.log(matches)
+        let match = matches.split(" ")
+        console.log(req.user.name)
+
+        let match1 = functions.usercheck(match[0])
+        let match2 = functions.usercheck(match[1])
+        let match3 = functions.usercheck(match[2])
+        
+        res.render('matchfound', {
+            title: 'Match found',
+            username: req.user.name,
+            matchname1: match1,
+            matchname2: match2,
+            matchname3: match3,
+        })
+        
+    } else {
+        res.send("FEJL")
+    }
+
+
+})
+
+// 404
 app.get('*',(req, res) => {
     res.render('404', {
         title: '404',

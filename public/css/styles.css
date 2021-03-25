@@ -1,3 +1,4 @@
+/*
 h1{
     font-family: "Times New Roman";
     font-size: 72px;
@@ -126,4 +127,16 @@ select:required:invalid{
 }
 option [value=""][disabled]{
     display: none;
+}
+*/
+
+.firofir {
+    font-size: 100px;
+}
+
+.cat {
+    width: 400px;
+    display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
