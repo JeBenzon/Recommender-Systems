@@ -27,6 +27,7 @@ initializePassport.initialize(
 
 //makes express app
 const app = express()
+//Windows: "alfa.exe", Linux: "./a.out"
 const c_fil_sti = "alfa.exe"
 
 // Define paths for express config
@@ -168,7 +169,8 @@ app.get('/matchfound',functions.checkAuthenticated, (req, res) => {
         })
         
     } else {
-        res.send("FEJL")
+        //res.send("FEJL")
+        res.redirect('/createuser')
     }
 
 
