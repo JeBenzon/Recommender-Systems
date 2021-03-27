@@ -123,10 +123,12 @@ app.get('/', functions.checkNotAuthenticated, (req, res) => {
     })
 })
 
-app.post('/loginpage', functions.checkNotAuthenticated, passport.authenticate('local', {
-    successRedirect: '/matchfound',
-    failureRedirect: '/',
-    failureFlash: true
+app.post('/loginpage', 
+    functions.checkNotAuthenticated, 
+    passport.authenticate('local', {
+        successRedirect: '/matchfound',
+        failureRedirect: '/',
+        failureFlash: true
 }))
 
 app.delete('/logout', functions.checkAuthenticated, (req, res) => {
