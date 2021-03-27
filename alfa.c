@@ -13,7 +13,7 @@
 
 // basic user struct
 typedef struct user {
-    long long int id;
+    int id;
     char name[25];
     int age;
     char gender;
@@ -31,7 +31,7 @@ typedef struct user {
 
 // prototypes
 void internal_new_user(FILE *userfile);
-void external_new_user(FILE *userfile, char *name, int age, char gender, int dog, int triangle, int football,int red, int yellow, int green, int blue, int spaghetti, int pizza);
+void external_new_user(FILE *userfile, char *name, int age, char gender, int dog, int triangle, int football,int red, int yellow, int green, int blue, int spaghetti, int pizza, int total_users);
 int calc_users(FILE *userfile);
 void load_users(FILE *userfile, int total_users, user *users);
 double pearsson(user *users, int target, int compare);
@@ -39,8 +39,8 @@ double calc_mean_of_user(user user);
 double calc_sqrt_of_user(user user, double mean);
 int cmpfunc(const void *a, const void *b);
 void print_matches(int total_users, user *users);
-void print_user(long long int userid, user *users);
-int id_converter_to_index(long long int id, user *users, int total_users);
+void print_user( int userid, user *users);
+int id_converter_to_index(int id, user *users, int total_users);
 void print_matches_id(int total_users, user *users);
 
 
@@ -96,14 +96,14 @@ int main(int argc, char *argv[]) {
         
         if(strcmp(argv[1], "getuser") == 0){
             //select target user
-            long long int user_id = atoi(argv[2]);
+            int user_id = atoi(argv[2]);
             print_user(user_id, users);
             
         }
         if(strcmp(argv[1], "createuser") == 0){
             
 
-            external_new_user(userfile, argv[2], atoi(argv[3]), argv[4][0], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), atoi(argv[10]), atoi(argv[11]), atoi(argv[12]), atoi(argv[13]));
+            external_new_user(userfile, argv[2], atoi(argv[3]), argv[4][0], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), atoi(argv[10]), atoi(argv[11]), atoi(argv[12]), atoi(argv[13]), total_users);
             printf("true");
             
         }
@@ -112,13 +112,13 @@ int main(int argc, char *argv[]) {
             //select target user
             //int user_id = atoi(argv[2]);
             
-            long long int userid = id_converter_to_index(atoi(argv[2]), users, total_users);
+            int userid = id_converter_to_index(atoi(argv[2]), users, total_users);
             //printf("Calculating best matches for %s ...\n", users[user_id - 1].name);
             
             //calc user similarity
             for (int i = 0; i < total_users; i++) {
                 
-                long long int targetuser = id_converter_to_index(users[i].id, users, total_users);
+                int targetuser = id_converter_to_index(users[i].id, users, total_users);
 
                 users[i].pearsson = pearsson(users, userid, targetuser);
             }
@@ -156,14 +156,15 @@ int main(int argc, char *argv[]) {
 
         
         //select target user
-        long long int user_id;
+        int user_id;
         printf("Enter your user id to get match:\n");
         scanf("%d", &user_id);
         printf("Calculating best matches for %s ...\n", users[user_id - 1].name);
 
         //calc user similarity
+    
         for (int i = 0; i < total_users; i++) {
-            printf("vi kom til linje: %d", i);
+            printf("vi kom til linje: %d\n", i);
             users[i].pearsson = pearsson(users, user_id - 1, users[i].id);
         }
         
@@ -179,7 +180,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 //tager et id og tjekker om det findes, hvis det findes returnere den index'et (linjen hvorpå den står)
-int id_converter_to_index(long long int id, user *users, int total_users){
+int id_converter_to_index(int id, user *users, int total_users){
     int index = -1;
 
     for(int i = 0; i < total_users; i++){
@@ -192,10 +193,10 @@ int id_converter_to_index(long long int id, user *users, int total_users){
 }
 
 void external_new_user(FILE *userfile, char *name, int age, char gender, int dog, int triangle, int football,int red, int yellow, 
-        int green, int blue, int spaghetti, int pizza){
-
+        int green, int blue, int spaghetti, int pizza, int total_users){
     
-    fprintf(userfile, "\n%s %d %c %d %d %d %d %d %d %d %d %d", name, age, gender, dog, triangle, football, red, yellow, green, blue, spaghetti, pizza);
+    int id = total_users + 1;
+    fprintf(userfile, "\n%d %s %d %c %d %d %d %d %d %d %d %d %d", id, name, age, gender, dog, triangle, football, red, yellow, green, blue, spaghetti, pizza);
 
     fseek(userfile, 0, SEEK_SET);
     return;
@@ -209,7 +210,7 @@ void internal_new_user(FILE *userfile){
         u_green, u_blue, u_spaghetti, u_pizza;
     //skal måske ændres senere
     printf("Enter your id: \n");
-    scanf("%lld", &u_id);
+    scanf("%d", &u_id);
     printf("Enter your name: \n");
     scanf("%s", u_name);
     printf("Enter age: \n");
@@ -234,7 +235,7 @@ void internal_new_user(FILE *userfile){
     scanf("%d", &u_spaghetti);
     printf("Enter pizza rating: \n");
     scanf("%d", &u_pizza);
-    fprintf(userfile, "\n%lld %s %d %c %d %d %d %d %d %d %d %d %d", u_id, u_name, u_age, u_gender, 
+    fprintf(userfile, "\n%d %s %d %c %d %d %d %d %d %d %d %d %d", u_id, u_name, u_age, u_gender, 
                                                                u_dog, u_triangle, u_football, 
                                                                u_red, u_yellow, u_green, u_blue, 
                                                                u_spaghetti, u_pizza);
@@ -261,7 +262,8 @@ void load_users(FILE *userfile, int total_users, user *users) {
     for (int i = 0; i < (int)total_users; i++) {
         
         //users[i].id = i;
-        fscanf(userfile, " %lld", &users[i].id);
+        fscanf(userfile, "%d", &users[i].id);
+        //users[i].id = i;
         fscanf(userfile, " %[^ ]", users[i].name);
         fscanf(userfile, " %d", &users[i].age);
         fgetc(userfile);
@@ -352,7 +354,7 @@ int cmpfunc(const void *a, const void *b) {
     }
 }
 
-void print_user(long long int userid, user *users){
+void print_user(int userid, user *users){
     printf("[{\"Username\": \"%s\"}]", users[userid].name);
 }
 
@@ -372,6 +374,6 @@ void print_matches(int total_users, user *users){
 
 void print_matches_id(int total_users, user *users){
     for (int i = total_users - K; i < total_users - 1; i++){
-        printf("%lld ", users[i].id);
+        printf("%d ", users[i].id);
     }
 }
