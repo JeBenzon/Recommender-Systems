@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--Partials head-->
+    {{>head}}
+</head>
+<body>
+    <header>
+        <!--Partials header-->
+        {{>header}}
+    </header>
+
+    <div class="container">
+        <h1 class="text-center">{{title}}</h1>
+        <hr>
+
+        <!-- Userform with input from user. Method GET is used for local running. Use other method to send data to server.-->
+        <form action="/register" method="POST">
+            <div class="row px-2 form-group">
+                <div class="col-md-4"></div>
+                <div class="col-md-4 px-2">
+                    <p>Enter your username</p>
+                    <input class="form-control" type="text" id="username" name="username" placeholder="username" required><br>
+                    <p>Enter your email adress</p>
+                    <input class="form-control" type="email" id="email" name="email" placeholder="email" required><br>
+                    <p>Enter your password</p>
+                    <input class="form-control" type="password" id="password" name="password" placeholder="password" required><br>
+                    <button  class="btn btn-dark float-right" type="submit">Register Account!</button>
+                </div>
+                <div class="col-md-4"></div>
+            </div>   
+        </form>
+    </div>
+    <footer>
+        <!--Partials footer-->
+        {{>footer}}
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--Partials head-->
+    {{>head}}
+</head>
+<body>
+    <header>
+        <!--Partials header-->
+        {{>header}}
+    </header>
+    
+    <div class="container">
+
+        <h1 class="text-center">{{title}}</h1>
+        <hr>
+        <div>
+            <h2>Enter ID to find match!</h2>
+        </div>
+        
+        <div class="divclass">
+            <form action="matchfound" method="GET">
+                <input class="biggerButton" name="userid" type="number" placeholder="User ID" id="userid" required>
+                <button class="btn btn-primary" type="submit">Find matches!</button>
+            </form>
+        </div>
+    </div>
+    <footer>
+        <!--Partials footer-->
+        {{>footer}}
+    </footer>
+</body>
+</html>
