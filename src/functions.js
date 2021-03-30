@@ -51,52 +51,69 @@ function checkNotAuthenticated(req, res, next) {
     next()
 }
 
-function usercheck(userid) {
-    //Begge variabler bliver sat til false, for at søge filerne igennem korrekt
-    let usersAccountTjek = false;
-    let usersInterestTjek = false;
-    //tjek på users_account (om de har id'et)
-    let username
-    try {
-        const data = fs.readFileSync(usersAccountPath, 'utf8')
-        //users indeholder alle brugeren
-        let users = textToJSON(data.toString())
-    
-        //finde ud af om id eksistere
-        for(let i = 0; i < users.length; i++) {
-            //console.log("I er " + i)
-            if(users[i].id == userid){
-                username = users[i].name
-                usersAccountTjek = true;
-                break;
-            }
-        }
-    }catch (e) {
-        console.error(e)
-    }
-    //tjek på users_interests.(id)
-    try {
-        const data = fs.readFileSync(usersInterestsPath, 'utf8')
-        let lines = data.split("\n");
-        for(let i = 0; i < lines.length; i++){
-            let useridWord = lines[i].split(" ")[0]
-            if(useridWord == userid){
-                usersInterestTjek = true
-            }
-        }
-    }catch (e) {
-        console.error(e)
-    }
+function getUserCheck(id) {
 
-    //hvis alt dette findes return true else false.
-    if(usersInterestTjek && usersAccountTjek) {
-        console.log(username)
-        return username
+    let user = getUser(id, null)
+    if(user && userInterestCheck(id)) {
+        //console.log(username)
+        return user
     }
     return false
 }
 
-//add Users to files
+function getUser(id, username){
+    try {
+        const data = getData(usersAccountPath)
+        //users indeholder alle brugeren
+        let users = textToJSON(data.toString())
+    
+        //finde ud af om der endten eksistere et id der matcher eller et navn der matcher.
+        for(let i = 0; i < users.length; i++) {
+            if(id != null){
+                if(users[i].id == id){
+                    return users[i]
+                }
+            }else if( username != null) {
+                if(users[i].username == username){
+                    return users[i]
+                }
+            }
+            
+        }
+    }catch (e) {
+        console.error(e)
+    }
+    return false
+}
+
+
+function userInterestCheck(id){
+    //tjek på users_interests.(id)
+    try {
+        const data = getData(usersInterestsPath)
+        let lines = data.split("\n");
+        for(let i = 0; i < lines.length; i++){
+            let useridWord = lines[i].split(" ")[0]
+            if(useridWord == id){
+                return true
+            }
+        }
+    }catch (e) {
+        console.error(e)
+    }
+    return false
+}
+
+function getData(path){
+    const data = fs.readFileSync(path, 'utf8')
+    return data;
+}
+
+
+
+
+//add Users to files 
+//Dette er ikke en asynkron funktion, hvilket gør det svære at tilføje to brugere med samme ID
 function addUser(u_id, u_username, u_email, u_password){
 
     try{
@@ -122,6 +139,47 @@ function addUser(u_id, u_username, u_email, u_password){
     }
 }
 
+function findById(id, cb){
+    process.nextTick(function () {
+        let user = getUser(id, null)
+        if(user) {
+            cb(null, user)
+        }else{
+            cb(new Error('User ' + id + ' does not exist'));
+        }
+    })
+  }
+
+function findByUsername(username, cb){
+    process.nextTick(function () {
+        let user = getUser(null, username)
+        if(user){
+            return cb(null, user)
+        }
+    
+        return cb(null, null)
+    })
+}
+
+//tjekker om en bruger er authenticated
+function checkAuthenticated(req, res, next) { 
+    if (req.isAuthenticated()) {
+        return next()
+    }
+
+    res.redirect('/')
+}
+
+function checkNotAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return res.redirect('/matchfound')
+    }
+    next()
+}
+
+
+//console.log(getUser(3, null))
+//console.log(getUser(null, "Pelle"))
 
 module.exports = {
     sendConsoleCommand,
@@ -129,6 +187,12 @@ module.exports = {
     createuser,
     checkAuthenticated,
     checkNotAuthenticated,
-    usercheck,
-    addUser
+    getUser,
+    getUserCheck,
+    userInterestCheck,
+    addUser,
+    getData,
+    findById,
+    findByUsername  
 }
+

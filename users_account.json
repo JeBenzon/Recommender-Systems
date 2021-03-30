@@ -1,110 +1,122 @@
 [
   {
     "id": 1,
-    "name": "Tommy",
+    "username": "Tommy",
     "email": "katbak@mail.dk",
     "password": "hassword"
   },
   {
     "id": 2,
-    "name": "Oscar",
+    "username": "Oscar",
     "email": "email@hotmail.com",
-    "password": "password123"
+    "password": "123"
   },
   {
     "id": 3,
-    "name": "Pelle",
+    "username": "Pelle",
     "email": "email@hotmail.com",
     "password": "password123"
   },
   {
     "id": 4,
-    "name": "Frederik",
+    "username": "Frederik",
     "email": "email@hotmail.com",
     "password": "password123"
   },
   {
     "id": 643634,
-    "name": "Jonathan",
+    "username": "Jonathan",
     "email": "email@hotmail.com",
     "password": "password123"
   },
   {
     "id": 6,
-    "name": "Karl-Emil",
+    "username": "Karl-Emil",
     "email": "email@hotmail.com",
     "password": "password123"
   },
   {
     "id": 7,
-    "name": "Gitte",
+    "username": "Gitte",
     "email": "email@hotmail.com",
     "password": "password123"
   },
   {
     "id": 8,
-    "name": "Lisa",
+    "username": "Lisa",
     "email": "email@hotmail.com",
     "password": "password123"
   },
   {
     "id": 9,
-    "name": "Michelle",
+    "username": "Michelle",
     "email": "email@hotmail.com",
     "password": "password123"
   },
   {
     "id": 10,
-    "name": "Charlotte",
+    "username": "Charlotte",
     "email": "email@hotmail.com",
     "password": "password123"
   },
   {
     "id": 11,
-    "name": "Bente",
+    "username": "Bente",
     "email": "email@hotmail.com",
     "password": "password123"
   },
   {
     "id": 4382,
-    "name": "Vigga",
+    "username": "Vigga",
     "email": "email@hotmail.com",
     "password": "password123"
   },
   {
     "id": 13,
-    "name": "Sigrid",
+    "username": "Sigrid",
     "email": "email@hotmail.com",
     "password": "password123"
   },
   {
     "id": 1237,
-    "name": "Brian",
+    "username": "Brian",
     "email": "email@hotmail.com",
     "password": "password123"
   },
   {
     "id": 15,
-    "name": "Gilbert",
+    "username": "Gilbert",
     "email": "email@hotmail.com",
     "password": "password123"
   },
   {
-    "id": 16,
-    "name": "BrianJensen",
+    "id": 17,
+    "username": "BrianJensen",
     "email": "email@hotmail.com",
     "password": "password123"
   },
   {
     "id": 18,
-    "name": "Frederik",
+    "username": "Frederik",
     "email": "email@hotmail.com",
     "password": "password123"
   },
   {
     "id": 16166832445996220,
-    "name": "kasper",
+    "username": "kasper",
     "email": "k@k.dk",
     "password": "$2b$10$AAAZqDHQGQIVenTp9E4wF.JICb9iWDPGF0WIBERondvxVugH2Lte."
+  },
+  {
+    "id": 16170901647852848,
+    "username": "eeeeee",
+    "email": "e@e.dk",
+    "password": "$2b$10$7eagFepa6tN/qCTDT5FoTe4NcE8vZTdr5OkD12Uu9O.aeCLcBvA6e"
+  },
+  {
+    "id": 16171035215726236,
+    "username": "Vol",
+    "email": "eee@gmail.com",
+    "password": "123"
   }
 ]

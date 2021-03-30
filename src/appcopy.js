@@ -1,35 +1,23 @@
-//Loader procces variables ind og sætter dem i process.env (enviroment variabler som f.eks vores salt/secret)
-/*if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config()
-}*/
-
-const path = require('path')
-const express = require('express')
-const hbs = require('hbs')
-const functions = require('./functions')
-const bodyParser = require('body-parser')
-const bcrypt = require('bcrypt')
-const passport = require('passport')
-const flash = require('express-flash')
-const session = require('express-session')
-const methodOverride = require('method-override')
-
-
-let users = []
-
-const initializePassport = require('./passport-config')
-
-initializePassport.initialize(
-    passport, 
-    email => users.find(user => user.email === email),
-    id => users.find(user => user.id === id)
-)
+const path              = require('path')
+const express           = require('express')
+const hbs               = require('hbs')
+const functions         = require('./functions')
+const bcrypt            = require('bcrypt')
+const passport          = require('passport')
+const flash             = require('express-flash')
+const session           = require('express-session')
+const methodOverride    = require('method-override')
+let Strategy            = require('passport-local').Strategy
+const app               = express()
+const ensureLogin       = require('connect-ensure-login')
+const morgan            = require('morgan')
+const bodyParser        = require('body-parser')
 
 
-//makes express app
-const app = express()
+
 //Windows: "alfa.exe", Linux: "./a.out"
 const c_fil_sti = "alfa.exe"
+
 
 // Define paths for express config
 const publicDirectoryPath = path.join(__dirname, '../public')
@@ -37,18 +25,13 @@ const viewsPath = path.join(__dirname, '../templates/views')
 const partialsPath = path.join(__dirname, '../templates/partials')
 const filePath = path.join(__dirname, '../public/')
 
-// Setup handlebars engine and views location
+
+// Middleware
 app.set('view engine', 'hbs')
 app.set('views', viewsPath)
 hbs.registerPartials(partialsPath)
 
-//APP.USE EXSTENTIONS
-
-// parse application/x-www-form-urlencoded
-//app.use(express.urlencoded({ extended: false })); //Denne kan vi måske bruge
 app.use(bodyParser.urlencoded({ extended: false }));
-
-
 // Setup static directory to serve
 app.use(express.static(publicDirectoryPath))
 //express flash exstension, der kan håndtere beskeder /:messages
@@ -60,22 +43,53 @@ app.use(session({
     secret: "hemmelighed",
     //siden vi aldrig ændre på Enviroment variablerne aldrig skal ændre sig
     resave: false,
-    //Vi vil ikke gemme en tom variable for denne session; false
-    saveUninitialized: false
+    //Vi vil ikke gemme en tom variable for denne session; true
+    saveUninitialized: true
 }))
-
-app.use(passport.initialize())
-app.use(passport.session())
 //bruges til at overskrive f.eks. Delete 
 app.use(methodOverride('_method'))
-
 app.use(function(req, res, next) {
     res.locals.isAuthenticated = req.isAuthenticated()
     next()
 })
+app.use(express.json())
+//app.use(require('morgan')('combined'));
+app.use(bodyParser.urlencoded({ extended: true }))
+
+//passport local configure:
+
+app.use(passport.initialize())
+app.use(passport.session())
+
+//app.use(require('morgan')('combined'))
+
+//Strategien kræver en 'verify' funktion som modtager ('username' og 'password')
+//fra brugeren. Funktionen skal verificere at password er korrekt, og returnere cb (call back) med et userobject
+// som bliver sat in ved 'req.user' route handlers efter authentication.
+passport.use(new Strategy(
+    function(username, password, cb) {
+        functions.findByUsername(username, function(err, user) {
+            if (err) { return cb(err); }
+            if (!user) { return cb(null, false); }
+            if (user.password != password) { return cb(null, false); }
+        return cb(null, user);
+    });
+}));
+
+//sørger for at indsætte users ind i session (sætte id ind i session)
+passport.serializeUser(function(user, cb) {
+        cb(null, user.id);
+});
+//sørger for at fjerne users i session (ud fra id)
+passport.deserializeUser(function(id, cb) {
+    functions.findById(id, function (err, user) {
+        if (err) { return cb(err); }
+        cb(null, user);
+    });
+});
+
 
 //CRUD (create, update, delete)
-
 //Register
 app.get('/register', functions.checkNotAuthenticated, (req, res) => {
 
@@ -102,7 +116,7 @@ app.post('/register', functions.checkNotAuthenticated, async (req, res) => {
     }catch{
         res.redirect('/register')
     }
-    console.log(users)
+    //console.log(users)
 
 })
 
@@ -122,18 +136,17 @@ app.post('/createuser', (req, res) => {
 })
 
 //Login / Logout
-app.get('/', functions.checkNotAuthenticated, (req, res) => {
+app.get('/',functions.checkNotAuthenticated , (req, res) => {
     res.render('loginpage', {
         title: 'Login',
     })
 })
+  
 
-app.post('/loginpage', 
-    functions.checkNotAuthenticated, 
+app.post('/loginpage', functions.checkNotAuthenticated, 
     passport.authenticate('local', {
         successRedirect: '/matchfound',
         failureRedirect: '/',
-        failureFlash: true
 }))
 
 app.delete('/logout', functions.checkAuthenticated, (req, res) => {
@@ -143,42 +156,39 @@ app.delete('/logout', functions.checkAuthenticated, (req, res) => {
 })
 
 //Find match
-app.get('/findmatch', (req, res) => {
+app.get('/findmatch',functions.checkAuthenticated, (req, res) => {
     res.render('findmatch', {
         title: 'Find a match'
     })
 })
 
-app.get('/matchfound',functions.checkAuthenticated, (req, res) => {
-    let user = functions.usercheck(req.user.id)
-    
-    
-
+app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
+    let user = functions.getUserCheck(req.user.id)
     if(user) {
         
         
         let matches = (functions.sendConsoleCommand(c_fil_sti, `getmatch2 1237`))
         console.log(matches)
         let match = matches.split(" ")
-        console.log(req.user.name)
+        console.log(req.user.username)
 
-        let match1 = functions.usercheck(match[0])
-        let match2 = functions.usercheck(match[1])
-        let match3 = functions.usercheck(match[2])
+        let match1 = functions.getUserCheck(match[0], null)
+        let match2 = functions.getUserCheck(match[1], null)
+        let match3 = functions.getUserCheck(match[2], null)
+
         
         res.render('matchfound', {
             title: 'Match found',
-            username: req.user.name,
-            matchname1: match1,
-            matchname2: match2,
-            matchname3: match3,
+            username: req.user.username,
+            matchname1: match1.username,
+            matchname2: match2.username,
+            matchname3: match3.username,
         })
         
     } else {
         res.send("FEJL, kunne ikke finde bruger")
         //res.redirect('/createuser')
     }
-
 
 })
 

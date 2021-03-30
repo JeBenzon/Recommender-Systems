@@ -1,23 +1,23 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="/">Friend Recommender</a>
-  {{#if isAuthenticated}}
+  {{#unless User}}
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  {{/if}}
+  {{/unless}}
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     
     <ul class="navbar-nav mr-auto">
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      {{#if isAuthenticated}}
+      {{#unless User}}
       <li>
         <form action="/logout?_method=DELETE" method="POST">
           <button class="btn btn-dark" type="submit">Logout</button>
         </form>
       </li>
-      {{/if}}
+      {{/unless}}
   </div>
   
 </nav>
