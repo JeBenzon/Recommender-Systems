@@ -36,7 +36,7 @@ function createuser(programPath, createuser, name, age, gender, dog, triangle, f
 }
 
 //tjekker om en bruger er authenticated
-function checkAuthenticated(req, res, next) {
+function checkAuthenticated(req, res, next) { 
     if (req.isAuthenticated()) {
         return next()
     }
@@ -96,6 +96,31 @@ function usercheck(userid) {
     return false
 }
 
+//add Users to files
+function addUser(u_id, u_username, u_email, u_password){
+
+    try{
+        let userobj = {
+            id: u_id,
+            name: u_username,
+            email: u_email,
+            password: u_password,
+        }
+
+        let jsonUsers = fs.readFileSync(usersAccountPath, "utf-8")
+        let users = JSON.parse(jsonUsers)
+
+        users.push(userobj)
+        //stringify tager value, replacer og spacer. (replacer er null)
+        jsonUsers = JSON.stringify(users, null, 2)
+
+        fs.writeFileSync(usersAccountPath, jsonUsers, "utf-8")
+        return true
+    } catch(e){
+        console.log('Der skete en fejl ved tilføjelse af bruger til json_fil')
+        return false
+    }
+}
 
 
 module.exports = {
@@ -104,5 +129,6 @@ module.exports = {
     createuser,
     checkAuthenticated,
     checkNotAuthenticated,
-    usercheck
+    usercheck,
+    addUser
 }

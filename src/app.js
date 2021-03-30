@@ -20,7 +20,7 @@ const initializePassport = require('./passport-config')
 
 initializePassport.initialize(
     passport, 
-    email  => users.find(user => user.email === email),
+    email => users.find(user => user.email === email),
     id => users.find(user => user.id === id)
 )
 
@@ -88,12 +88,14 @@ app.post('/register', functions.checkNotAuthenticated, async (req, res) => {
         //hasher password med bcrypt
         const hashedPass = await bcrypt.hash(req.body.password, 10)
         //Communikation til Userfile/C 
+        functions.addUser(parseInt(Date.now().toString() + '' + Math.floor(Math.random() * 10000).toString()), req.body.username, req.body.email, hashedPass)
+        /*
         users.push({
-            id: Date.now().toString() + '' + Math.floor(Math.random() * 10000).toString(),
+            id: parseInt(Date.now().toString() + '' + Math.floor(Math.random() * 10000).toString()),
             name: req.body.username,
             email: req.body.email,
             password: hashedPass
-        })
+        })*/
         res.redirect('/')
     }catch{
         res.redirect('/register')
@@ -171,8 +173,8 @@ app.get('/matchfound',functions.checkAuthenticated, (req, res) => {
         })
         
     } else {
-        //res.send("FEJL")
-        res.redirect('/createuser')
+        res.send("FEJL, kunne ikke finde bruger")
+        //res.redirect('/createuser')
     }
 
 

@@ -162,10 +162,13 @@ int main(int argc, char *argv[]) {
         printf("Calculating best matches for %s ...\n", users[user_id - 1].name);
 
         //calc user similarity
-    
+
+      
+
+
         for (int i = 0; i < total_users; i++) {
             printf("vi kom til linje: %d\n", i);
-            users[i].pearsson = pearsson(users, user_id - 1, users[i].id);
+            users[i].pearsson = pearsson(users, id_converter_to_index(user_id - 1, users, total_users), id_converter_to_index(users[i].id, users, total_users));
         }
         
         //Sort the coefficient based on highest similarity
@@ -283,17 +286,18 @@ void load_users(FILE *userfile, int total_users, user *users) {
 }
 
 double pearsson(user *users, int target, int compare){
+    printf("linje 286");
     user target_user = users[target];
     user comp_user = users[compare];
-    
+    printf("linje 288");
     //finding user means
     double t_mean = calc_mean_of_user(target_user);
     double c_mean = calc_mean_of_user(comp_user);
-    
+    printf("linje 292");
     //calc sqrt for each user
     double t_sqrt = calc_sqrt_of_user(target_user, t_mean);
     double c_sqrt = calc_sqrt_of_user(comp_user, c_mean);
-    
+    printf("linje 296");
     //calc similarity
     double sim =    ((target_user.dog - t_mean) * (comp_user.dog - c_mean)) + 
                     ((target_user.triangle - t_mean) * (comp_user.triangle - c_mean)) + 
@@ -307,7 +311,7 @@ double pearsson(user *users, int target, int compare){
 
     //calculating similarity coeficient
     long double coeficient = sim / (t_sqrt * c_sqrt);
-
+    printf("linje 310");
     return coeficient; 
 }
 
