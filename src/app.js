@@ -10,9 +10,7 @@ const methodOverride    = require('method-override')
 let Strategy            = require('passport-local').Strategy
 const app               = express()
 const ensureLogin       = require('connect-ensure-login')
-const morgan            = require('morgan')
 const bodyParser        = require('body-parser')
-
 
 
 //Windows: "alfa.exe", Linux: "./a.out"
@@ -52,16 +50,14 @@ app.use(function(req, res, next) {
     res.locals.isAuthenticated = req.isAuthenticated()
     next()
 })
+
 app.use(express.json())
-//app.use(require('morgan')('combined'));
 app.use(bodyParser.urlencoded({ extended: true }))
 
 //passport local configure:
-
 app.use(passport.initialize())
 app.use(passport.session())
 
-//app.use(require('morgan')('combined'))
 
 //Strategien kræver en 'verify' funktion som modtager ('username' og 'password')
 //fra brugeren. Funktionen skal verificere at password er korrekt, og returnere cb (call back) med et userobject
@@ -71,6 +67,8 @@ passport.use(new Strategy(
         functions.findByUsername(username, function(err, user) {
             if (err) { return cb(err); }
             if (!user) { return cb(null, false); }
+            //let hashedPass = functions.passwordConverter(password)
+            //console.log(password + '' + username + '' + hashedPass)
             if (user.password != password) { return cb(null, false); }
         return cb(null, user);
     });
@@ -99,21 +97,15 @@ app.get('/register', functions.checkNotAuthenticated, (req, res) => {
 })
 
 app.post('/register', functions.checkNotAuthenticated, async (req, res) => {
-    //https://github.com/WebDevSimplified/Nodejs-Passport-Login
     try{
-        //hasher password med bcrypt
-        const hashedPass = await bcrypt.hash(req.body.password, 10)
-        //Communikation til Userfile/C 
-        functions.addUser(parseInt(Date.now().toString() + '' + Math.floor(Math.random() * 10000).toString()), req.body.username, req.body.email, hashedPass)
-        /*
-        users.push({
-            id: parseInt(Date.now().toString() + '' + Math.floor(Math.random() * 10000).toString()),
-            name: req.body.username,
-            email: req.body.email,
-            password: hashedPass
-        })*/
+        //hasher password
+        //const hashedPass = await bcrypt.hash(req.body.password, 10)
+        let userId = functions.getLastUserId()+1
+        functions.addUser(userId, req.body.username, req.body.email, req.body.password)
+        
         res.redirect('/')
-    }catch{
+    }catch (e){
+        console.log('Error + ' + e)
         res.redirect('/register')
     }
     //console.log(users)
@@ -121,18 +113,23 @@ app.post('/register', functions.checkNotAuthenticated, async (req, res) => {
 })
 
 //Create User
-app.get('/createuser', (req, res) => {
-    res.render('createuser', {
-        title: 'Create User'
+app.get('/createaccinfo',functions.checkAuthenticated, (req, res) => {
+    //
+    if(functions.getUserCheck(req.user.id, null)){
+        res.redirect('/matchfound')
+    }else {
+        res.render('createaccinfo', {
+        title: 'Fill in account information before you can get matches',
+        loggedIn: true
     })
+    }
 })
 
-app.post('/createuser', (req, res) => {
+app.post('/createaccinfo', (req, res) => {
 
-    console.log(req.body)
-    
-    functions.createuser(c_fil_sti, "createuser", req.body.name.toString(), parseInt(req.body.age), req.body.gender.toString(), parseInt(req.body.dog), parseInt(req.body.tri), parseInt(req.body.foot), parseInt(req.body.red), parseInt(req.body.yellow), parseInt(req.body.green), parseInt(req.body.blue), parseInt(req.body.spag), parseInt(req.body.pizza))
-    //redirect
+    let parameterarray = [req.body.name, req.body.age, req.body.gender, req.body.sport, req.body.food, req.body.music, req.body.movies, req.body.drinking, req.body.cars, req.body.hiking, req.body.magic, req.body.djing]
+    functions.createAccInfo(req.user.id, parameterarray)
+    res.redirect('/matchfound')
 })
 
 //Login / Logout
@@ -143,10 +140,9 @@ app.get('/',functions.checkNotAuthenticated , (req, res) => {
 })
   
 
-app.post('/loginpage', functions.checkNotAuthenticated, 
-    passport.authenticate('local', {
+app.post('/loginpage', functions.checkNotAuthenticated, passport.authenticate('local', {
         successRedirect: '/matchfound',
-        failureRedirect: '/',
+        failureRedirect: '/'
 }))
 
 app.delete('/logout', functions.checkAuthenticated, (req, res) => {
@@ -163,22 +159,19 @@ app.get('/findmatch',functions.checkAuthenticated, (req, res) => {
 })
 
 app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
-    let user = functions.getUserCheck(req.user.id)
+
+    let user = functions.getUserCheck(req.user.id, null)
     if(user) {
         
-        
-        let matches = (functions.sendConsoleCommand(c_fil_sti, `getmatch2 1237`))
-        console.log(matches)
+        let matches = (functions.sendConsoleCommand(c_fil_sti, `getmatch2 ${req.user.id}`))
         let match = matches.split(" ")
-        console.log(req.user.username)
-
         let match1 = functions.getUserCheck(match[0], null)
         let match2 = functions.getUserCheck(match[1], null)
         let match3 = functions.getUserCheck(match[2], null)
 
-        
         res.render('matchfound', {
             title: 'Match found',
+            loggedIn: true,
             username: req.user.username,
             matchname1: match1.username,
             matchname2: match2.username,
@@ -186,10 +179,9 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
         })
         
     } else {
-        res.send("FEJL, kunne ikke finde bruger")
-        //res.redirect('/createuser')
+        //res.send("FEJL, kunne ikke finde bruger")
+        res.redirect('/createaccinfo')
     }
-
 })
 
 // 404
