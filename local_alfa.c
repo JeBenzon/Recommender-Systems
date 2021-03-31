@@ -3,15 +3,13 @@
 #include <string.h>
 #include <math.h>
 
-
-
 //constants to steer calcs
-#define TOTALCRITERIA 9 //var antallet af parametre - har vi 9?
-#define K 4 //var 3 - skal det være 4?
+#define TOTALCRITERIA 9
+#define K 3 
 
 //TODO: lav parametre i struct om
 
-// basic user struct
+//user struct
 typedef struct user {
     int id;
     char name[25];
@@ -30,18 +28,17 @@ typedef struct user {
 } user;
 
 // prototypes
-void internal_new_user(FILE *userfile);
-void external_new_user(FILE *userfile, char *name, int age, char gender, int dog, int triangle, int football,int red, int yellow, int green, int blue, int spaghetti, int pizza, int total_users);
+void new_user(FILE *userfile);
 int calc_users(FILE *userfile);
 void load_users(FILE *userfile, int total_users, user *users);
+void getmatch_java(char **argv, user* users, int total_users);
+void getmatch_c(FILE *userfile, user* users, int total_users);
 double pearson(user *users, int target, int compare);
 double calc_mean_of_user(user user);
 double calc_sqrt_of_user(user user, double mean);
 int cmpfunc(const void *a, const void *b);
 void print_matches(int total_users, user *users);
 void print_user( int userid, user *users);
-int id_converter_to_index(int id, user *users, int total_users);
-void print_matches_id(int total_users, user *users);
 
 
 int main(int argc, char *argv[]) {
@@ -55,10 +52,10 @@ int main(int argc, char *argv[]) {
         printf("filepath error.");
         exit(EXIT_FAILURE);
     }
-    
+
     // calculate number of users in database
     int total_users = calc_users(userfile);
-   
+
     // allocate memory for struct array with users
     user *users = (user *)malloc(total_users * sizeof(user));
     if (users == NULL) {
@@ -68,72 +65,82 @@ int main(int argc, char *argv[]) {
     
     // load userinfo into array
     load_users(userfile, total_users, users);
-  
+
     if(argc > 2) {
-        if(strcmp(argv[1], "getmatch") == 0) {
-            //printf("%s %d #2 \n",argv[1], atoi(argv[2]));
-            
-            //select target user
-            int argument_id = atoi(argv[2]);
-            //printf("Calculating best matches for %s ...\n", users[user_id - 1].name);
-
-            //calc user similarity
-            for (int i = 0; i < total_users; i++) {
-                users[i].pearson = pearson(users, argument_id - 1, users[i].id);
-            }
-            
-            //Sort the coefficient based on highest similarity
-            qsort(users, total_users, sizeof(user), cmpfunc);
-            
-            print_matches(total_users, users);
-            //printf("[{\"Username\": \"%s\", \"Similarity\": %lf}]", users[0].name,users[0].pearson);
-            
-    
-            fclose(userfile);
-            free(users);
-        }
-        
-        if(strcmp(argv[1], "getuser") == 0){
-            //select target user
-            int user_id = atoi(argv[2]);
-            print_user(user_id, users);
-            
-        }
-        if(strcmp(argv[1], "createuser") == 0){
-            //create new user from info from javascript
-            external_new_user(userfile, argv[2], atoi(argv[3]), argv[4][0], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), atoi(argv[10]), atoi(argv[11]), atoi(argv[12]), atoi(argv[13]), total_users);
-            printf("true");
-            
-        }
+        // //tror en af disse er overflødig??
+        // if(strcmp(argv[1], "getmatch") == 0) {
+        //     getmatch_java(argv, users, total_users);            
+        // }
+        //tror en af disse er overflødig??
         if(strcmp(argv[1], "getmatch2") == 0){
-            
-            //select target user
-            //int user_id = atoi(argv[2]);
-            
-            int userid = id_converter_to_index(atoi(argv[2]), users, total_users);
-            //printf("Calculating best matches for %s ...\n", users[user_id - 1].name);
-            
-            //calc user similarity
-            for (int i = 0; i < total_users; i++) {
-                
-                int targetuser = id_converter_to_index(users[i].id, users, total_users);
-
-                users[i].pearson = pearson(users, userid, targetuser);
-            }
-            
-            //Sort the coefficient based on highest similarity
-            qsort(users, total_users, sizeof(user), cmpfunc);
-            
-            print_matches_id(total_users, users);
-            //printf("[{\"Username\": \"%s\", \"Similarity\": %lf}]", users[0].name,users[0].pearson);
-            
-    
-            fclose(userfile);
-            free(users);
+            getmatch_java(argv, users, total_users);
         }
     }
     else {
-        printf("there was only One argument.\n");
+        getmatch_c(userfile, users, total_users);
+    }
+
+    fclose(userfile);
+    free(users);
+
+    return 0;
+}
+
+int calc_users(FILE *userfile) {
+    char ch;
+    int total_users = 1;
+    while (!feof(userfile)) {
+        ch = fgetc(userfile);
+        if (ch == '\n') {
+            total_users++;
+        }
+    }
+    fseek(userfile, 0, SEEK_SET);
+    return total_users;
+}
+
+void load_users(FILE *userfile, int total_users, user *users) {
+    // scan in users from filepath
+    for (int i = 0; i < (int)total_users; i++) {
+
+        users[i].id = i;
+        fscanf(userfile, " %[^ ]", users[i].name);
+        fscanf(userfile, " %d", &users[i].age);
+        fgetc(userfile);
+        fscanf(userfile, " %1[^ ]", &users[i].gender);
+        fscanf(userfile, " %lf", &users[i].dog);
+        fscanf(userfile, " %lf", &users[i].triangle);
+        fscanf(userfile, " %lf", &users[i].football);
+        fscanf(userfile, " %lf", &users[i].red);
+        fscanf(userfile, " %lf", &users[i].yellow);
+        fscanf(userfile, " %lf", &users[i].green);
+        fscanf(userfile, " %lf", &users[i].blue);
+        fscanf(userfile, " %lf", &users[i].spaghetti);
+        fscanf(userfile, " %lf", &users[i].pizza);
+        fgetc(userfile);
+    }
+    return;
+}
+
+void getmatch_java(char **argv, user* users, int total_users){
+    //select target user
+    int targetuser = atoi(argv[2]);
+    
+    //calc user similarity
+    for (int i = 0; i < total_users; i++) {
+        users[i].pearson = pearson(users, targetuser - 1, users[i].id);
+    }
+    
+    //Sort the coefficient based on highest similarity
+    qsort(users, total_users, sizeof(user), cmpfunc);
+    
+    //print matches back to javascript
+    print_matches(total_users, users);
+    return;        
+}
+
+void getmatch_c(FILE *userfile, user* users, int total_users){
+    printf("One argument.\n");
 
         // new user input
         char answer;
@@ -141,69 +148,35 @@ int main(int argc, char *argv[]) {
         while (sentinel) {
             printf("Wish to enter new user? (y/n)\n");
             scanf(" %c", &answer);
+            
             if(answer == 'y'){
-                internal_new_user(userfile);
+                new_user(userfile);                
                 //Update total users, if new user is created
-                total_users = calc_users(userfile);
-                //printf("New user ID : %d \n", total_users);
-                printf("CONGRATULATIONS! New user created!");
+                total_users++;    
             } else{
                 sentinel = 0;
             }
         }
 
-        
         //select target user
         int user_id;
         printf("Enter your user id to get match:\n");
         scanf("%d", &user_id);
-        printf("Calculating best matches for %s ...\n", users[user_id - 1].name);
+        printf("Calculating best matches for %s ...\n", users[user_id].name);
 
         //calc user similarity
-
-      
-
-
         for (int i = 0; i < total_users; i++) {
-            printf("vi kom til linje: %d\n", i);
-            users[i].pearson = pearson(users, id_converter_to_index(user_id - 1, users, total_users), id_converter_to_index(users[i].id, users, total_users));
+            users[i].pearson = pearson(users, user_id, users[i].id);
         }
         
         //Sort the coefficient based on highest similarity
         qsort(users, total_users, sizeof(user), cmpfunc);
         
+        //prints matches to terminal
         print_matches(total_users, users);
-
-        fclose(userfile);
-        free(users);
-
-    }
-    return 0;
-}
-//tager et id og tjekker om det findes, hvis det findes returnere den index'et (linjen hvorpå den står)
-int id_converter_to_index(int id, user *users, int total_users){
-    int index = -1;
-
-    for(int i = 0; i < total_users; i++){
-        if(id == users[i].id) {
-            return i;
-        }
-    }
-
-    return index;
 }
 
-void external_new_user(FILE *userfile, char *name, int age, char gender, int dog, int triangle, int football,int red, int yellow, 
-        int green, int blue, int spaghetti, int pizza, int total_users){
-    
-    int id = total_users + 1;
-    fprintf(userfile, "\n%d %s %d %c %d %d %d %d %d %d %d %d %d", id, name, age, gender, dog, triangle, football, red, yellow, green, blue, spaghetti, pizza);
-
-    fseek(userfile, 0, SEEK_SET);
-    return;
-}
-
-void internal_new_user(FILE *userfile){
+void new_user(FILE *userfile){
     char u_name[25];
     int u_age;
     char u_gender;
@@ -245,59 +218,18 @@ void internal_new_user(FILE *userfile){
     return;
 }
 
-int calc_users(FILE *userfile) {
-    char ch;
-    int total_users = 1;
-    while (!feof(userfile)) {
-        ch = fgetc(userfile);
-        if (ch == '\n') {
-            total_users++;
-            printf("totalusers = %d", total_users);
-        }
-    }
-    
-    fseek(userfile, 0, SEEK_SET);
-    return total_users;
-}
-
-void load_users(FILE *userfile, int total_users, user *users) {
-    // scan in users from filepath
-    for (int i = 0; i < (int)total_users; i++) {
-        
-        //users[i].id = i;
-        fscanf(userfile, "%d", &users[i].id);
-        //users[i].id = i;
-        fscanf(userfile, " %[^ ]", users[i].name);
-        fscanf(userfile, " %d", &users[i].age);
-        fgetc(userfile);
-        fscanf(userfile, " %1[^ ]", &users[i].gender);
-        fscanf(userfile, " %lf", &users[i].dog);
-        fscanf(userfile, " %lf", &users[i].triangle);
-        fscanf(userfile, " %lf", &users[i].football);
-        fscanf(userfile, " %lf", &users[i].red);
-        fscanf(userfile, " %lf", &users[i].yellow);
-        fscanf(userfile, " %lf", &users[i].green);
-        fscanf(userfile, " %lf", &users[i].blue);
-        fscanf(userfile, " %lf", &users[i].spaghetti);
-        fscanf(userfile, " %lf", &users[i].pizza);
-        fgetc(userfile);
-    }
-    return;
-}
-
 double pearson(user *users, int target, int compare){
-    printf("linje 286");
     user target_user = users[target];
     user comp_user = users[compare];
-    printf("linje 288");
+
     //finding user means
     double t_mean = calc_mean_of_user(target_user);
     double c_mean = calc_mean_of_user(comp_user);
-    printf("linje 292");
+    
     //calc sqrt for each user
     double t_sqrt = calc_sqrt_of_user(target_user, t_mean);
     double c_sqrt = calc_sqrt_of_user(comp_user, c_mean);
-    printf("linje 296");
+
     //calc similarity
     double sim =    ((target_user.dog - t_mean) * (comp_user.dog - c_mean)) + 
                     ((target_user.triangle - t_mean) * (comp_user.triangle - c_mean)) + 
@@ -311,7 +243,8 @@ double pearson(user *users, int target, int compare){
 
     //calculating similarity coeficient
     long double coeficient = sim / (t_sqrt * c_sqrt);
-    printf("linje 310");
+    printf("target: %d, compare: %d\n", target, compare);
+    printf("t_mean: %lf, c_mean: %lf, t_sqrt: %lf, c_sqrt: %lf, sim: %lf \n", t_mean, c_mean, t_sqrt, c_sqrt, sim);
     return coeficient; 
 }
 
@@ -324,7 +257,7 @@ double calc_mean_of_user(user user){
     if(mean == user.dog && mean == user.triangle && mean == user.football && 
        mean == user.red && mean == user.yellow && mean == user.green && 
        mean == user.blue && mean == user.spaghetti && mean == user.pizza){
-       mean += 0.1;
+       mean += 0.001;
     }
 
     return mean;
@@ -364,20 +297,13 @@ void print_user(int userid, user *users){
 
 void print_matches(int total_users, user *users){
     printf("[");
-    for (int i = total_users - K; i < total_users - 1; i++){
-        printf("{\"Username\": \"%s\", \"Similarity\": %lf},", users[i].name, users[i].pearson);
+    for (int i = (total_users-1) - K; i < total_users - 1; i++){
+        printf("{\"Userid\": \"%d\", \"Username\": \"%s\", \"Similarity\": %lf},", users[i].id, users[i].name, users[i].pearson);
     }
-    printf("{\"Username\": \"sidste\", \"Similarity\": -1}]");
     // printf("total users: %d\n", total_users);
     // for (int i = 0; i < (int)total_users; i++) {
-    //     printf("user %2d: name: %s, age: %d, gender %c chiaua: %lf triangle: %lf football: %lf\n",
-    //     i + 1, users[i].name, users[i].age, users[i].gender, users[i].dog, users[i].triangle, users[i].football);
+    //     printf("#%2d Name: %s, Pearson: %lf\n", i+1, users[i].name, users[i].pearson);
     // }
     return;
 }
 
-void print_matches_id(int total_users, user *users){
-    for (int i = total_users - K; i < total_users - 1; i++){
-        printf("%d ", users[i].id);
-    }
-}
