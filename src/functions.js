@@ -22,19 +22,6 @@ function textToJSON(text){
     return data
 }
 
-function createuser(programPath, createuser, name, age, gender, dog, triangle, football, red, yellow, green, blue, spaghetti, pizza){
-    try{
-        cp.exec(`${programPath} ${createuser} ${name} ${age} ${gender} ${dog} ${triangle} ${football} ${red} ${yellow} ${green} ${blue} ${spaghetti} ${pizza}`, (err, stdout, stderr) => {
-            
-        })
-        
-    }catch(e){
-        console.log('C kommunikations fejl errorcode:' + e)
-        return false
-    }
-    return true
-}
-
 //tjekker om en bruger er authenticated
 function checkAuthenticated(req, res, next) { 
     if (req.isAuthenticated()) {
@@ -66,7 +53,7 @@ function getUser(id, username){
         const data = getData(usersAccountPath)
         //users indeholder alle brugeren
         let users = textToJSON(data.toString())
-    
+        //console.log(users) Debugger
         //finde ud af om der endten eksistere et id der matcher eller et navn der matcher.
         for(let i = 0; i < users.length; i++) {
             if(id != null){
@@ -109,7 +96,16 @@ function getData(path){
     return data;
 }
 
+function getLastUserId(){
+    let data = getData(usersAccountPath)
+    let users = textToJSON(data)
+    
+    return users[users.length-1].id
+}
 
+async function passwordConverter(password){
+    return hashedPass = await bcrypt.hash(password, 10)
+}
 
 
 //add Users to files 
@@ -119,7 +115,7 @@ function addUser(u_id, u_username, u_email, u_password){
     try{
         let userobj = {
             id: u_id,
-            name: u_username,
+            username: u_username,
             email: u_email,
             password: u_password,
         }
@@ -138,7 +134,25 @@ function addUser(u_id, u_username, u_email, u_password){
         return false
     }
 }
+//Funktionen skriver brugeroplysninger fra brugeren til vores textfil
+function createAccInfo(id, parameters) {
+    try{
+        let register = `\n${id} ${parameters[0]} ${parameters[1]} ${parameters[2]} ${parameters[3]} ${parameters[4]} ${parameters[5]} ${parameters[6]} ${parameters[7]} ${parameters[8]} ${parameters[9]} ${parameters[10]} ${parameters[11]}`
+        
+        fs.appendFile(usersInterestsPath, register, function (err) {
+            if (err) throw err;
+          });
 
+        return true
+    }catch(e) {
+        console.log('Der skete en fejl ved tilføjelse af bruger til fil')
+        return false
+    }
+}
+
+
+//Funktioner fra passport, som vi har omskrevet til at benytte nogle af vores egne funktioner
+//Denne funktion finder en bruger udfra et ID
 function findById(id, cb){
     process.nextTick(function () {
         let user = getUser(id, null)
@@ -149,7 +163,7 @@ function findById(id, cb){
         }
     })
   }
-
+//Finder en bruger ud fra et username
 function findByUsername(username, cb){
     process.nextTick(function () {
         let user = getUser(null, username)
@@ -166,10 +180,10 @@ function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next()
     }
-
+    
     res.redirect('/')
 }
-
+//Tjekker om en bruger IKKE er authenticated
 function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return res.redirect('/matchfound')
@@ -184,7 +198,7 @@ function checkNotAuthenticated(req, res, next) {
 module.exports = {
     sendConsoleCommand,
     textToJSON,
-    createuser,
+    createAccInfo,
     checkAuthenticated,
     checkNotAuthenticated,
     getUser,
@@ -193,6 +207,8 @@ module.exports = {
     addUser,
     getData,
     findById,
-    findByUsername  
+    findByUsername,
+    getLastUserId,
+    passwordConverter
 }
 
