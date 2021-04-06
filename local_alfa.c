@@ -67,12 +67,7 @@ int main(int argc, char *argv[]) {
     load_users(userfile, total_users, users);
 
     if(argc > 2) {
-        // //tror en af disse er overflødig??
-        // if(strcmp(argv[1], "getmatch") == 0) {
-        //     getmatch_java(argv, users, total_users);            
-        // }
-        //tror en af disse er overflødig??
-        if(strcmp(argv[1], "getmatch2") == 0){
+        if(strcmp(argv[1], "getmatch") == 0){
             getmatch_java(argv, users, total_users);
         }
     }
@@ -103,7 +98,7 @@ void load_users(FILE *userfile, int total_users, user *users) {
     // scan in users from filepath
     for (int i = 0; i < (int)total_users; i++) {
 
-        users[i].id = i;
+        fscanf(userfile, " %d", &users[i].id);
         fscanf(userfile, " %[^ ]", users[i].name);
         fscanf(userfile, " %d", &users[i].age);
         fgetc(userfile);
@@ -162,7 +157,7 @@ void getmatch_c(FILE *userfile, user* users, int total_users){
         int user_id;
         printf("Enter your user id to get match:\n");
         scanf("%d", &user_id);
-        printf("Calculating best matches for %s ...\n", users[user_id].name);
+        printf("Calculating best matches for %s ...\n", users[user_id-1].name);
 
         //calc user similarity
         for (int i = 0; i < total_users; i++) {
@@ -244,7 +239,7 @@ double pearson(user *users, int target, int compare){
     //calculating similarity coeficient
     long double coeficient = sim / (t_sqrt * c_sqrt);
     printf("target: %d, compare: %d\n", target, compare);
-    printf("t_mean: %lf, c_mean: %lf, t_sqrt: %lf, c_sqrt: %lf, sim: %lf \n", t_mean, c_mean, t_sqrt, c_sqrt, sim);
+    printf("t_mean: %lf, c_mean: %lf, t_sqrt: %lf, c_sqrt: %lf, sim: %lf\n", t_mean, c_mean, t_sqrt, c_sqrt, sim);
     return coeficient; 
 }
 
@@ -298,8 +293,12 @@ void print_user(int userid, user *users){
 void print_matches(int total_users, user *users){
     printf("[");
     for (int i = (total_users-1) - K; i < total_users - 1; i++){
-        printf("{\"Userid\": \"%d\", \"Username\": \"%s\", \"Similarity\": %lf},", users[i].id, users[i].name, users[i].pearson);
+        printf("{\"Userid\": \"%d\", \"Username\": \"%s\", \"Similarity\": %lf}", users[i].id, users[i].name, users[i].pearson);
+        if(i < total_users -2){
+            printf(",");
+        }
     }
+    printf("]");
     // printf("total users: %d\n", total_users);
     // for (int i = 0; i < (int)total_users; i++) {
     //     printf("#%2d Name: %s, Pearson: %lf\n", i+1, users[i].name, users[i].pearson);
