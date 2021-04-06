@@ -6,113 +6,99 @@ const usersAccountPath = 'users_account.json'
 const usersInterestsPath = 'users.txt'
 
 //gir command og får string output ud.
-function sendConsoleCommand(programPath, parameters){
-    try{
+function sendConsoleCommand(programPath, parameters) {
+    try {
         let par = parameters.split(" ");
-        const {stdout, stderr} = cp.spawnSync(programPath, [par[0], par[1]]);
+        const { stdout, stderr } = cp.spawnSync(programPath, [par[0], par[1]]);
         return stdout.toString()
-    }catch(e){
+    } catch (e) {
         console.log('C kommunikations fejl errorcode:' + e)
     }
 }
 
 //function der tager string output og laver til json
-function textToJSON(text){
+function textToJSON(text) {
     let data = JSON.parse(text)
     return data
 }
 
-//tjekker om en bruger er authenticated
-function checkAuthenticated(req, res, next) { 
-    if (req.isAuthenticated()) {
-        return next()
-    }
-
-    res.redirect('/')
-}
-
-function checkNotAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return res.redirect('/matchfound')
-    }
-    next()
-}
 
 function getUserCheck(id) {
 
     let user = getUser(id, null)
-    if(user && userInterestCheck(id)) {
+    if (user && userInterestCheck(id)) {
         //console.log(username)
         return user
     }
     return false
 }
 
-function getUser(id, username){
+function getUser(id, username) {
     try {
         const data = getData(usersAccountPath)
         //users indeholder alle brugeren
         let users = textToJSON(data.toString())
         //console.log(users) Debugger
         //finde ud af om der endten eksistere et id der matcher eller et navn der matcher.
-        for(let i = 0; i < users.length; i++) {
-            if(id != null){
-                if(users[i].id == id){
+        for (let i = 0; i < users.length; i++) {
+            if (id != null) {
+                if (users[i].id == id) {
                     return users[i]
                 }
-            }else if( username != null) {
-                if(users[i].username == username){
+            } else if (username != null) {
+                if (users[i].username == username) {
                     return users[i]
                 }
             }
-            
+
         }
-    }catch (e) {
+    } catch (e) {
         console.error(e)
     }
     return false
 }
 
 
-function userInterestCheck(id){
+function userInterestCheck(id) {
     //tjek på users_interests.(id)
     try {
         const data = getData(usersInterestsPath)
         let lines = data.split("\n");
-        for(let i = 0; i < lines.length; i++){
+        for (let i = 0; i < lines.length; i++) {
             let useridWord = lines[i].split(" ")[0]
-            if(useridWord == id){
+            if (useridWord == id) {
                 return true
             }
         }
-    }catch (e) {
+    } catch (e) {
         console.error(e)
     }
     return false
 }
 
-function getData(path){
+function getData(path) {
     const data = fs.readFileSync(path, 'utf8')
     return data;
 }
 
-function getLastUserId(){
+//Giver det sidste id i userAccountPath
+function getLastUserId() {
     let data = getData(usersAccountPath)
     let users = textToJSON(data)
-    
-    return users[users.length-1].id
+
+    return users[users.length - 1].id
 }
 
-async function passwordConverter(password){
+async function passwordConverter(password) {
     return hashedPass = await bcrypt.hash(password, 10)
 }
 
 
 //add Users to files 
 //Dette er ikke en asynkron funktion, hvilket gør det svære at tilføje to brugere med samme ID
-function addUser(u_id, u_username, u_email, u_password){
+function addUser(u_id, u_username, u_email, u_password) {
 
-    try{
+    try {
         let userobj = {
             id: u_id,
             username: u_username,
@@ -129,22 +115,22 @@ function addUser(u_id, u_username, u_email, u_password){
 
         fs.writeFileSync(usersAccountPath, jsonUsers, "utf-8")
         return true
-    } catch(e){
+    } catch (e) {
         console.log('Der skete en fejl ved tilføjelse af bruger til json_fil')
         return false
     }
 }
 //Funktionen skriver brugeroplysninger fra brugeren til vores textfil
 function createAccInfo(id, parameters) {
-    try{
+    try {
         let register = `\n${id} ${parameters[0]} ${parameters[1]} ${parameters[2]} ${parameters[3]} ${parameters[4]} ${parameters[5]} ${parameters[6]} ${parameters[7]} ${parameters[8]} ${parameters[9]} ${parameters[10]} ${parameters[11]}`
-        
+
         fs.appendFile(usersInterestsPath, register, function (err) {
             if (err) throw err;
-          });
+        });
 
         return true
-    }catch(e) {
+    } catch (e) {
         console.log('Der skete en fejl ved tilføjelse af bruger til fil')
         return false
     }
@@ -153,34 +139,34 @@ function createAccInfo(id, parameters) {
 
 //Funktioner fra passport, som vi har omskrevet til at benytte nogle af vores egne funktioner
 //Denne funktion finder en bruger udfra et ID
-function findById(id, cb){
+function findById(id, cb) {
     process.nextTick(function () {
         let user = getUser(id, null)
-        if(user) {
+        if (user) {
             cb(null, user)
-        }else{
+        } else {
             cb(new Error('User ' + id + ' does not exist'));
         }
     })
-  }
+}
 //Finder en bruger ud fra et username
-function findByUsername(username, cb){
+function findByUsername(username, cb) {
     process.nextTick(function () {
         let user = getUser(null, username)
-        if(user){
+        if (user) {
             return cb(null, user)
         }
-    
+
         return cb(null, null)
     })
 }
 
 //tjekker om en bruger er authenticated
-function checkAuthenticated(req, res, next) { 
+function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next()
     }
-    
+
     res.redirect('/')
 }
 //Tjekker om en bruger IKKE er authenticated
