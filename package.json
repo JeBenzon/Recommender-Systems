@@ -1,10 +1,10 @@
 {
-  "name": "Test",
+  "name": "test",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "devstart": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +22,19 @@
     "method-override": "^3.0.0",
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
-    "passport-local": "^1.0.0"
-  }
+    "passport-local": "^1.0.0",
+    "socket.io": "^4.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JeBenzon/Recommender-Systems.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JeBenzon/Recommender-Systems/issues"
+  },
+  "homepage": "https://github.com/JeBenzon/Recommender-Systems#readme",
+  "description": ""
 }

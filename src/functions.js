@@ -15,6 +15,7 @@ function sendConsoleCommand(programPath, parameters){
         console.log('C kommunikations fejl errorcode:' + e)
     }
 }
+console.log(sendConsoleCommand('ls','-C'))
 
 //function der tager string output og laver til json
 function textToJSON(text){
