@@ -1,3 +1,4 @@
+//https://www.w3schools.com/howto/howto_js_password_validation.asp
 let myInput = document.getElementById("password");
 let letter = document.getElementById("letter");
 let capital = document.getElementById("capital");
@@ -19,7 +20,7 @@ myInput.onblur = function () {
 // When the user starts to type something inside the password field
 myInput.onkeyup = function () {
     // Validate lowercase letters
-    var lowerCaseLetters = /[a-z]/g;
+    let lowerCaseLetters = /[a-z]/g;
     if (myInput.value.match(lowerCaseLetters)) {
         letter.classList.remove("invalid");
         letter.classList.add("valid");

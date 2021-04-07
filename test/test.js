@@ -2,7 +2,7 @@ const request = require("supertest");
 const functions = require('../src/functions')
 const app = require('../src/app')
 
-
+//Jest
 test('Getmatch user 2 giver rigtige output', () => {
   expect(functions.sendConsoleCommand('alfa.exe', 'getmatch2 2')).toMatch(/8 3 17/)
 })
