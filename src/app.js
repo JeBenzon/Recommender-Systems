@@ -162,7 +162,7 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
     let user = functions.getUserCheck(req.user.id, null)
     if(user) {
         
-        let matches = (functions.sendConsoleCommand(c_fil_sti, `getmatch2 ${req.user.id}`))
+        let matches = (functions.sendConsoleCommand(c_fil_sti, `getmatch ${req.user.id}`))
         let match = matches.split(" ")
         let match1 = functions.getUserCheck(match[0], null)
         let match2 = functions.getUserCheck(match[1], null)
