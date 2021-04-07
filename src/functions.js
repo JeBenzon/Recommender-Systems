@@ -1,5 +1,5 @@
-const cp = require('child_process');
-const { stdout } = require('process');
+const cp = require('child_process')
+const { stdout } = require('process')
 const fs = require('fs')
 
 const usersAccountPath = 'users_account.json'
@@ -9,7 +9,7 @@ const usersInterestsPath = 'users.txt'
 function sendConsoleCommand(programPath, parameters) {
     try {
         let par = parameters.split(" ");
-        const { stdout, stderr } = cp.spawnSync(programPath, [par[0], par[1]]);
+        const { stdout, stderr } = cp.spawnSync(programPath, [par[0], par[1]])
         return stdout.toString()
     } catch (e) {
         console.log('C kommunikations fejl errorcode:' + e)
@@ -22,7 +22,7 @@ function textToJSON(text) {
     return data
 }
 
-
+// Tjekker om bruger eksistere i både users_account.json og users.text
 function getUserCheck(id) {
 
     let user = getUser(id, null)
@@ -33,6 +33,7 @@ function getUserCheck(id) {
     return false
 }
 
+// Tjekker om user eksistere i users_account.json
 function getUser(id, username) {
     try {
         const data = getData(usersAccountPath)
@@ -58,7 +59,7 @@ function getUser(id, username) {
     return false
 }
 
-
+//Tjekker om user eksistere i users.txt 
 function userInterestCheck(id) {
     //tjek på users_interests.(id)
     try {
@@ -76,6 +77,7 @@ function userInterestCheck(id) {
     return false
 }
 
+//læser fil og giver string output
 function getData(path) {
     const data = fs.readFileSync(path, 'utf8')
     return data;
@@ -89,9 +91,11 @@ function getLastUserId() {
     return users[users.length - 1].id
 }
 
+/*
+// Cryptere password
 async function passwordConverter(password) {
     return hashedPass = await bcrypt.hash(password, 10)
-}
+}*/
 
 
 //add Users to files 
@@ -122,6 +126,18 @@ function addUser(u_id, u_username, u_email, u_password) {
 }
 //Funktionen skriver brugeroplysninger fra brugeren til vores textfil
 function createAccInfo(id, parameters) {
+
+    if (!(parameters[0].length < 50 && parameters[1] >= 0 && parameters[1] <= 125 && parameters[2].length == 1)) {
+
+        return false
+    }
+
+    for (let i = 3; i <= 11; i++) {
+        if (!(parameters[i] <= 11 && parameters[i] >= 0)) {
+            return false
+        }
+    }
+
     try {
         let register = `\n${id} ${parameters[0]} ${parameters[1]} ${parameters[2]} ${parameters[3]} ${parameters[4]} ${parameters[5]} ${parameters[6]} ${parameters[7]} ${parameters[8]} ${parameters[9]} ${parameters[10]} ${parameters[11]}`
 
@@ -135,8 +151,7 @@ function createAccInfo(id, parameters) {
         return false
     }
 }
-
-
+//TODO Frederik og Jonathan finde github hvor denne stykke kode er fundet fra.
 //Funktioner fra passport, som vi har omskrevet til at benytte nogle af vores egne funktioner
 //Denne funktion finder en bruger udfra et ID
 function findById(id, cb) {
@@ -149,6 +164,7 @@ function findById(id, cb) {
         }
     })
 }
+
 //Finder en bruger ud fra et username
 function findByUsername(username, cb) {
     process.nextTick(function () {
@@ -194,7 +210,6 @@ module.exports = {
     getData,
     findById,
     findByUsername,
-    getLastUserId,
-    passwordConverter
+    getLastUserId
 }
 
