@@ -1,0 +1,6 @@
+
+
+GET http://localhost:3000/createaccinfo
+
+GET http://localhost:3000/404
+

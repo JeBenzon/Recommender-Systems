@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!--Partials head-->
     {{>head}}
 </head>
+
 <body>
     <header>
         <!--Partials header-->
@@ -20,21 +22,34 @@
                 <div class="col-md-4"></div>
                 <div class="col-md-4 px-2">
                     <p>Enter your username</p>
-                    <input class="form-control" type="text" id="username" name="username" placeholder="username" required><br>
+                    <input class="form-control" type="text" id="username" name="username" placeholder="username"
+                        required><br>
                     <p>Enter your email adress</p>
                     <input class="form-control" type="email" id="email" name="email" placeholder="email" required><br>
                     <p>Enter your password</p>
-                    <input class="form-control" type="password" id="password" name="password" placeholder="password" required><br>
-                    <button  class="btn btn-dark float-right" type="submit">Register Account!</button>
+                    <div id="message">
+                        <div><b>Requirements:</b></div>
+                        <p id="letter" class="invalid inlineblock"><b>lowercase</b>,</p>
+                        <p id="capital" class="invalid inlineblock"><b>capital</b>,</p>
+                        <p id="number" class="invalid inlineblock"><b>number</b> and </p>
+                        <p id="length" class="invalid inlineblock"><b>8 characters</b></p>
+                    </div>
+                    <input class="form-control" type="password" id="password" name="password" placeholder="password"
+                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                        title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                        required><br>
+                    <button class="btn btn-dark float-right" type="submit">Register Account!</button>
                 </div>
                 <div class="col-md-4"></div>
-            </div>   
+            </div>
         </form>
     </div>
     <footer>
         <!--Partials footer-->
         {{>footer}}
+        <script src="js/pwValidation.js"></script>
     </footer>
 
 </body>
+
 </html>

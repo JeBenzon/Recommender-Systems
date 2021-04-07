@@ -1,14 +1,11 @@
-const functions = require('./functions')
-
-function sum(a, b) {
-  return a + b;
-}
+const request = require("supertest");
+const functions = require('../src/functions')
+const app = require('../src/app')
 
 
 test('Getmatch user 2 giver rigtige output', () => {
   expect(functions.sendConsoleCommand('alfa.exe', 'getmatch2 2')).toMatch(/8 3 17/)
 })
-
 
 test('TextToJSON giver et korrekt output', () => {
   let string = '{"id": 18, "username": "Erik","email": "email@hotmail.com","password": "123"}'
@@ -65,42 +62,53 @@ test('createAccInfo rigistrere user info', () => {
   expect(functions.createAccInfo(222, parametre)).toBeTruthy()
 });
 
-
-
-/*
-https://jestjs.io/docs/expect#tomatchobjectobject
-test('onPress gets called with the right thing', () => {
-  const onPress = jest.fn();
-  simulatePresses(onPress);
-  expect(onPress).toBeCalledWith(
-    expect.objectContaining({
-      x: expect.any(Number),
-      y: expect.any(Number),
-    }),
-  );
+//Supertest
+describe("Test the root path", () => {
+  test("It should response the GET method", () => {
+    return request("localhost:3000")
+      .get("/")
+      .then(response => {
+        expect(response.statusCode).toBe(200);
+      });
+  });
 });
 
-
-
-test('id should match', () => {
-  const obj = {
-    id: '111',
-    productName: 'Jest Handbook',
-    url: 'https://jesthandbook.com'
-  };
-  expect(obj.id).toEqual('111');
+describe("Test that we get redirected, when not logged in", () => {
+  test("It should response the GET method", () => {
+    return request("localhost:3000")
+      .get("/createaccinfo")
+      .then(response => {
+        expect(response.statusCode).toBe(302);
+      });
+  });
 });
 
-expect(state.active.ID).toEqual(expect.any(String))
+describe("Test the 404 page", () => {
+  test("It should response the GET method", () => {
+    return request("localhost:3000")
+      .get("/404")
+      .then(response => {
+        expect(response.statusCode).toBe(200);
+      });
+  });
+});
 
-expect(brokers).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({
-        nodeId: expect.any(Number),
-        host: expect.any(String),
-        port: expect.any(Number),
-      }),
-    ])
-  )
+describe("Test the register page", () => {
+  test("It should response the GET method", () => {
+    return request("localhost:3000")
+      .get("/register")
+      .then(response => {
+        expect(response.statusCode).toBe(200);
+      });
+  });
+});
 
-*/
+describe("Test matchfound redirect when not logged in", () => {
+  test("It should response the GET method", () => {
+    return request("localhost:3000")
+      .get("/matchfound")
+      .then(response => {
+        expect(response.statusCode).toBe(302);
+      });
+  });
+});
