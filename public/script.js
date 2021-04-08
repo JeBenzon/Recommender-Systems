@@ -4,7 +4,7 @@ const roomContainer = document.getElementById('room-container')
 const messageForm = document.getElementById('send-container')
 const messageInput = document.getElementById('message-input')
 
-if (messageform != null) {
+if (messageForm != null) {
   const name = prompt('What is your name?')
   appendMessage('You joined')
   socket.emit('new-user', roomName, name)

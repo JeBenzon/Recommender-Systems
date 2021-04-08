@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 
 
 app.post('/room', (req, res) => {
-  if (rooms[req.body.room != null]) {
+  if (rooms[req.body.room] != null) {
     return res.redirect('/')
   }
   rooms[req.body.room] = { users: {} }
@@ -29,7 +29,7 @@ app.get('/:room', (req, res) => {
   if (rooms[req.params.room] == null) {
     return res.redirect('/')
   }
-  res.render('room', { roomsName: req.params.room })
+  res.render('room', { roomName: req.params.room })
 })
 
 server.listen(3000)
@@ -49,13 +49,13 @@ io.on('connection', socket => {
   socket.on('disconnect', () => {
     getUserRooms(socket).forEach(room => {
       socket.to(room).broadcast.emit('user-disconnected', rooms[room].users[socket.id])
-      delete users[socket.id]
+      delete rooms[room].users[socket.id]
     })
   })
 })
 
 function getUserRooms(socket) {
-  return Object.entries(room).reduce((names, [name, room]) => {
+  return Object.entries(rooms).reduce((names, [name, room]) => {
     if (room.users[socket.id] != null) names.push(name)
     return names
   }, [])
