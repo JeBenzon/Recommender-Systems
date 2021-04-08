@@ -1,7 +1,6 @@
-const { create } = require('domain')
 const express = require('express')
 const app = express()
-const server = require('http').server(app)
+const server = require('http').Server(app)
 const io = require('socket.io')(server)
 
 app.set('views', './views')
@@ -9,14 +8,14 @@ app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 
-const rooms = {}
+const rooms = { }
 
 app.get('/', (req, res) => {
   res.render('index', { rooms: rooms })
 })
 
 
-app.post('/room', (res, req) => {
+app.post('/room', (req, res) => {
   if (rooms[req.body.room != null]) {
     return res.redirect('/')
   }
@@ -30,7 +29,7 @@ app.get('/:room', (req, res) => {
   if (rooms[req.params.room] == null) {
     return res.redirect('/')
   }
-  res.render('index', { roomsName: req.params.room })
+  res.render('room', { roomsName: req.params.room })
 })
 
 server.listen(3000)
