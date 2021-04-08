@@ -5,14 +5,14 @@ const messageForm = document.getElementById('send-container')
 const messageInput = document.getElementById('message-input')
 
 if (messageForm != null) {
-  const name = prompt('What is your name?')
-  appendMessage('You joined')
+  const name = prompt('Hvad er dit navn?')
+  appendMessage('Du tilsluttede rummet')
   socket.emit('new-user', roomName, name)
 
   messageForm.addEventListener('submit', e => {
     e.preventDefault()
     const message = messageInput.value
-    appendMessage(`You: ${message}`)
+    appendMessage(`Dig: ${message}`)
     socket.emit('send-chat-message', roomName, message)
     messageInput.value = ''
   })
@@ -32,11 +32,11 @@ socket.on('chat-message', data => {
 })
 
 socket.on('user-connected', name => {
-  appendMessage(`${name} connected`)
+  appendMessage(`${name} tilsluttede rummet`)
 })
 
 socket.on('user-disconnected', name => {
-  appendMessage(`${name} disconnected`)
+  appendMessage(`${name} forlod rummet`)
 })
 
 
