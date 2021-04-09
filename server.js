@@ -19,7 +19,7 @@ app.post('/room', (req, res) => {
   if (rooms[req.body.room] != null) {
     return res.redirect('/')
   }
-  rooms[req.body.room] = { users: {} }
+  rooms[req.body.room] = { users: {} } //Holder data på users
   res.redirect(req.body.room)
   //Send message that new room was created
   io.emit('room-created', req.body.room)
@@ -35,21 +35,21 @@ app.get('/:room', (req, res) => {
 server.listen(3000)
 
 io.on('connection', socket => { //Første gang bruger loader hjemmeside -> kalder funktion og giver dem et socket
-  socket.on('new-user', (room, name) => {
+  socket.on('new-user', (room, name) => { //Funktion bliver kaldt i "scripts.js"
     socket.join(room)
-    rooms[room].users[socket.id] = name
-    socket.to(room).broadcast.emit('user-connected', name) //Sender even 'user-connected' med besked "name"
+    rooms[room].users[socket.id] = name //Sammensætter navn på bruger med socket id
+    socket.to(room).broadcast.emit('user-connected', name) //Sender event 'user-connected' med besked "name" -> broadcast gør så brugeren ikke selv får det
   })
   socket.on('send-chat-message', (room, message) => { //Aktivere når eventen sker "Send-chat-message" med data "room" "message"
     socket.to(room).broadcast.emit('chat-message', { //Sender beskeden til alle undtagen brugeren som sender den selv "broadcast" gør så brugeren ikke selv modtager
-      message: message,
-      name: rooms[room].users[socket.id]
+      message: message, //Laver et objekt til at holde dataen på beskeden
+      name: rooms[room].users[socket.id] //Tilføjer navnet til objeket via socket.id
     })
   })
-  socket.on('disconnect', () => {
+  socket.on('disconnect', () => { //Aktivere når en disconnecter -> socket funktion
     getUserRooms(socket).forEach(room => {
-      socket.to(room).broadcast.emit('user-disconnected', rooms[room].users[socket.id])
-      delete rooms[room].users[socket.id]
+      socket.to(room).broadcast.emit('user-disconnected', rooms[room].users[socket.id]) //Sender ud at brugeren er disconnected
+      delete rooms[room].users[socket.id] //Sletter brugeren && bruger id 
     })
   })
 })
