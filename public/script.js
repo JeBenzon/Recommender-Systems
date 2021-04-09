@@ -1,4 +1,4 @@
-const socket = io('http://localhost:3000')
+const socket = io('http://localhost:3000') //hvor server hoster socket.js application
 const messageContainer = document.getElementById('message-container')
 const roomContainer = document.getElementById('room-container')
 const messageForm = document.getElementById('send-container')
@@ -27,7 +27,7 @@ socket.on('room-created', room => {
   roomContainer.append(roomLink)
 })
 
-socket.on('chat-message', data => {
+socket.on('chat-message', data => { //modtager fra server.js event og data der følger med event
   appendMessage(`${data.name}: ${data.message}`)
 })
 

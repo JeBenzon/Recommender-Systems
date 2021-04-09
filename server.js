@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const server = require('http').Server(app)
-const io = require('socket.io')(server)
+const io = require('socket.io')(server) //laver server på port "server"
 
 app.set('views', './views')
 app.set('view engine', 'ejs')
@@ -34,11 +34,11 @@ app.get('/:room', (req, res) => {
 
 server.listen(3000)
 
-io.on('connection', socket => {
+io.on('connection', socket => { // første gang bruger loader hjemmeside -> kalder funktion og giver dem et socket
   socket.on('new-user', (room, name) => {
     socket.join(room)
     rooms[room].users[socket.id] = name
-    socket.to(room).broadcast.emit('user-connected', name)
+    socket.to(room).broadcast.emit('user-connected', name) //sender even 'user-connected' med besked "name"
   })
   socket.on('send-chat-message', (room, message) => {
     socket.to(room).broadcast.emit('chat-message', {
