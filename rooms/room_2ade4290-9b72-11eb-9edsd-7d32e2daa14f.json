@@ -1,0 +1,15 @@
+{
+    "id": 123123421412,
+    "user_id1": 3,
+    "user_id2": 5,
+    "chat": [
+        {
+            "name": "Peter",
+            "message": "åhhhh bro"
+        },
+        {
+            "name": "Pelle",
+            "message": "åhhh makker"
+        }
+    ]
+}

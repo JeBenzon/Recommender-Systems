@@ -28,7 +28,7 @@ socket.on('room-created', room => {
 })
 
 socket.on('chat-message', data => { //modtager fra server.js event og data(objekt) der følger med event -> bruges til at sende beskeden til alle andre end senderen selv 
-  appendMessage(`${data.name}: ${data.message}`) //
+  appendMessage(`${data.name}: ${data.message}`) 
 })
 
 socket.on('user-connected', name => { //modtager fra server.js event og data der følger med event
