@@ -8,97 +8,109 @@
   {
     "id": 2,
     "username": "Oscar",
-    "email": "email@hotmail.com",
+    "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 3,
-    "username": "Pelle",
-    "email": "email@hotmail.com",
+    "username": "kasper",
+    "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 4,
-    "username": "Frederik",
-    "email": "email@hotmail.com",
+    "username": "Frede",
+    "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 5,
     "username": "Jonathan",
-    "email": "email@hotmail.com",
+    "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 6,
     "username": "Karl-Emil",
-    "email": "email@hotmail.com",
+    "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 7,
     "username": "Gitte",
-    "email": "email@hotmail.com",
+    "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 8,
     "username": "Lisa",
-    "email": "email@hotmail.com",
+    "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 9,
     "username": "Michelle",
-    "email": "email@hotmail.com",
+    "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 10,
     "username": "Charlotte",
-    "email": "email@hotmail.com",
+    "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 11,
     "username": "Bente",
-    "email": "email@hotmail.com",
+    "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 12,
     "username": "Vigga",
-    "email": "email@hotmail.com",
+    "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 13,
     "username": "Sigrid",
-    "email": "email@hotmail.com",
+    "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 14,
     "username": "Brian",
-    "email": "email@hotmail.com",
+    "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 15,
     "username": "Gilbert",
-    "email": "email@hotmail.com",
+    "email": "email@mail.dk",
+    "password": "123"
+  },
+  {
+    "id": 16,
+    "username": "BrianJensen",
+    "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 17,
-    "username": "BrianJensen",
-    "email": "email@hotmail.com",
+    "username": "Frederik",
+    "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 18,
-    "username": "Erik",
-    "email": "email@hotmail.com",
+    "username": "Pelle",
+    "email": "email@mail.dk",
+    "password": "123"
+  },
+  {
+    "id": 19,
+    "username": "BriBri",
+    "email": "email@mail.dk",
     "password": "123"
   },
   {
