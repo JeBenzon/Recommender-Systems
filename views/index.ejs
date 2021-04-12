@@ -10,14 +10,14 @@
   <script defer src="script.js"></script> <!--Script til at få info fra givet sted-->
 </head>
 <body>
-  <div id="room-container">
+  <div id="room-container"> <!--Vores room bliver sendt her til-->
     <% Object.keys(rooms).forEach(room => { %>
       <div><%= room %></div>
       <a href="/<%= room %>">Join</a>
       <% }) %>
     </div>
-        <form action="/room" method="POST">
-          <input name="room" type="text" required>
+        <form action="/room" method="POST"> <!--Metode til at lave room-->
+          <input name="room" type="text" required> <!--Data til at lave room-->
           <button type="submit">New Room</button>
         </form>
 </body>

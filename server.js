@@ -1,38 +1,37 @@
 const express = require('express')
 const app = express()
-const server = require('http').Server(app)
+const server = require('http').Server(app) //Giver us en "Server der kan kommunikere med socket.io"
 const io = require('socket.io')(server) //Laver server på port "server"
 
 app.set('views', './views')
 app.set('view engine', 'ejs')
-app.use(express.static('public'))
-app.use(express.urlencoded({ extended: true }))
+app.use(express.static('public')) //Laver public til brug af js
+app.use(express.urlencoded({ extended: true })) //giver server adgang til at bruge url encoded i body
 
-const rooms = { }
+const rooms = { } //Vores rooms
 
-app.get('/', (req, res) => {
+app.get('/', (req, res) => { //Index patch
   res.render('index', { rooms: rooms })
 })
 
 
-app.post('/room', (req, res) => {
+app.post('/room', (req, res) => { 
   if (rooms[req.body.room] != null) {
     return res.redirect('/')
   }
-  rooms[req.body.room] = { users: {} } //Holder data på users
-  res.redirect(req.body.room)
-  //Send message that new room was created
-  io.emit('room-created', req.body.room)
+  rooms[req.body.room] = { users: {} } //Henter "room" data fra index og holder data på users
+  res.redirect(req.body.room) //Redirektor dem til det nye room
+  io.emit('room-created', req.body.room) //Sender besked til andre at nyt room var lavet og vise det
 })
 
-app.get('/:room', (req, res) => {
+app.get('/:room', (req, res) => { //Gør så alt der er et room name, bliver lavet om til et room
   if (rooms[req.params.room] == null) {
     return res.redirect('/')
   }
-  res.render('room', { roomName: req.params.room })
+  res.render('room', { roomName: req.params.room }) //Siger den skal render room med "roomName" der passer til vores room
 })
 
-server.listen(3000)
+server.listen(3000) //Få server til at lytte til den rigtige port
 
 io.on('connection', socket => { //Første gang bruger loader hjemmeside -> kalder funktion og giver dem et socket
   socket.on('new-user', (room, name) => { //Funktion bliver kaldt i "scripts.js"
