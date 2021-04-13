@@ -128,35 +128,33 @@ function addUser(u_id, u_username, u_email, u_password) {
 }
 //Funktionen skriver brugeroplysninger fra brugeren til vores textfil
 function createAccInfo(id, parameters) {
-
     if (!(parameters[0].length < 50 && parameters[1] >= 0 && parameters[1] <= 125 && parameters[2].length == 1)) {
-
         return false
     }
-
     for (let i = 3; i <= 11; i++) {
         if (!(parameters[i] <= 11 && parameters[i] >= 0)) {
             return false
         }
     }
-
     try {
         let register = `\n${id} ${parameters[0]} ${parameters[1]} ${parameters[2]} ${parameters[3]} ${parameters[4]} ${parameters[5]} ${parameters[6]} ${parameters[7]} ${parameters[8]} ${parameters[9]} ${parameters[10]} ${parameters[11]}`
 
         fs.appendFile(usersInterestsPath, register, function (err) {
             if (err) throw err;
         });
-
         return true
     } catch (e) {
         console.log('Der skete en fejl ved tilføjelse af bruger til fil')
         return false
     }
 }
-//TODO Frederik og Jonathan finde github hvor denne stykke kode er fundet fra.
+
+//Vi har gået ud fra dette github eksempel: 
+//Credit: https://github.com/passport/express-4.x-local-example 
 //Funktioner fra passport, som vi har omskrevet til at benytte nogle af vores egne funktioner
 //Denne funktion finder en bruger udfra et ID
 function findById(id, cb) {
+    //Køres i næste Iteration af js Event Loop, nextTick tager funktion som parameter.
     process.nextTick(function () {
         let user = getUserAccounts(id, null)
         if (user) {
@@ -174,11 +172,11 @@ function findByUsername(username, cb) {
         if (user) {
             return cb(null, user)
         }
-
         return cb(null, null)
     })
 }
-
+//taget fra WebDevSimplified Node passport login projekt. 
+//Credit: https://github.com/WebDevSimplified/Nodejs-Passport-Login/blob/master/server.js
 //tjekker om en bruger er authenticated
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
