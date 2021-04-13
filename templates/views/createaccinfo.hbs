@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!--Partials head-->
     {{>head}}
 </head>
+
 <body>
     <header>
         <!--Partials header-->
@@ -19,36 +21,46 @@
         <form action="/createaccinfo" method="POST">
             <div class="row px-2 form-group">
                 <div class="col-md-4 px-2">
-                    <input class="form-control" name="name" type="text" id="name"  placeholder="First name" required><br><br>
+                    <input class="form-control" name="name" type="text" id="name" placeholder="First name"
+                        required><br><br>
                     <input class="form-control" type="number" id="age" name="age" placeholder="Age" required><br><br>
-                    <select name="gender" class="form-control" required >
+                    <select name="gender" class="form-control" required>
                         <option value="" disabled selected hidden>Gender</option>
-                        <option value="female">female</option>
-                        <option value="male">male</option>
-                        <option value="other">other</option>
+                        <option value="f">female</option>
+                        <option value="m">male</option>
+                        <option value="o">other</option>
                     </select><br><br>
-                    <input class="form-control" type="number" id="sport" name="sport" placeholder="Sports (1-10)" max="10" required><br><br>
+                    <input class="form-control" type="number" id="sport" name="sport" placeholder="Sports (1-10)"
+                        max="10" required><br><br>
                 </div>
 
                 <div class="col-md-4 px-2">
-                    <input class="form-control" type="number" id="food" name="food" placeholder="Food (1-10)" max="10" required><br><br>
-                    <input class="form-control"type="number" id="music" name="music" placeholder="Music (1-10)" max="10" required><br><br>
-                    <input class="form-control" type="number" id="movies" name="movies" placeholder="Movies (1-10)" max="10" required><br><br>
-                    <input class="form-control" type="number" id="drinking" name="drinking" placeholder="Drinking (1-10)" max="10" required><br><br>
+                    <input class="form-control" type="number" id="food" name="food" placeholder="Food (1-10)" max="10"
+                        required><br><br>
+                    <input class="form-control" type="number" id="music" name="music" placeholder="Music (1-10)"
+                        max="10" required><br><br>
+                    <input class="form-control" type="number" id="movies" name="movies" placeholder="Movies (1-10)"
+                        max="10" required><br><br>
+                    <input class="form-control" type="number" id="drinking" name="drinking"
+                        placeholder="Drinking (1-10)" max="10" required><br><br>
                 </div>
                 <div class="col-md-4 px-2">
-                    <input class="form-control" type="number" id="cars" name="cars" placeholder="Cars (1-10)" max="10" required><br><br>
-                    <input class="form-control" type="number" id="hiking" name="hiking" placeholder="Hiking (1-10)" max="10" required><br><br>
-                    <input class="form-control" type="number" id="magic" name="magic" placeholder="Magic (1-10)" max="10" required><br><br>
-                    <input class="form-control" type="number" id="djing" name="djing" placeholder="Djing (1-10)" max="10" required><br><br>
+                    <input class="form-control" type="number" id="cars" name="cars" placeholder="Cars (1-10)" max="10"
+                        required><br><br>
+                    <input class="form-control" type="number" id="hiking" name="hiking" placeholder="Hiking (1-10)"
+                        max="10" required><br><br>
+                    <input class="form-control" type="number" id="magic" name="magic" placeholder="Magic (1-10)"
+                        max="10" required><br><br>
+                    <input class="form-control" type="number" id="djing" name="djing" placeholder="Djing (1-10)"
+                        max="10" required><br><br>
 
                 </div>
-                
+
             </div>
             <div>
-                <button  class="btn btn-dark float-right" type="submit">Create User!</button>
+                <button class="btn btn-dark float-right" type="submit">Create User!</button>
             </div>
-            
+
         </form>
     </div>
     <footer>
@@ -57,4 +69,5 @@
     </footer>
 
 </body>
+
 </html>
