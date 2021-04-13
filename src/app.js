@@ -12,18 +12,14 @@ const app = express()
 const ensureLogin = require('connect-ensure-login')
 const bodyParser = require('body-parser')
 
-
-
 //Windows: "alfa.exe", Linux: "./a.out"
 const c_fil_sti = "alfa.exe"
-
 
 // Define paths for express config
 const publicDirectoryPath = path.join(__dirname, '../public')
 const viewsPath = path.join(__dirname, '../templates/views')
 const partialsPath = path.join(__dirname, '../templates/partials')
 const filePath = path.join(__dirname, '../public/')
-
 
 // Middleware
 app.set('view engine', 'hbs')
@@ -87,7 +83,6 @@ passport.deserializeUser(function (id, cb) {
     });
 });
 
-
 //CRUD (create, update, delete)
 //Register
 app.get('/register', functions.checkNotAuthenticated, (req, res) => {
@@ -127,7 +122,6 @@ app.get('/createaccinfo', functions.checkAuthenticated, (req, res) => {
 })
 
 app.post('/createaccinfo', (req, res) => {
-
     let parameterarray = [req.body.name, req.body.age, req.body.gender, req.body.sport, req.body.food, req.body.music, req.body.movies, req.body.drinking, req.body.cars, req.body.hiking, req.body.magic, req.body.djing]
     functions.createAccInfo(req.user.id, parameterarray)
     res.redirect('/matchfound')
@@ -151,7 +145,6 @@ app.delete('/logout', functions.checkAuthenticated, (req, res) => {
     res.redirect('/')
 })
 
-
 app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
     let user = functions.getUserCheck(req.user.id, null)
     if(user) {
@@ -170,7 +163,6 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
             matchname2: match2.username,
             matchname3: match3.username,
         })
-
     } else {
         //res.send("FEJL, kunne ikke finde bruger")
         res.redirect('/createaccinfo')
@@ -182,10 +174,8 @@ app.get('*', (req, res) => {
     res.render('404', {
         title: '404',
         errorMessage: 'Could not find page'
-
     })
 })
-
 
 app.get("/test", (req, res) => {
     try {
@@ -193,9 +183,7 @@ app.get("/test", (req, res) => {
     } catch (e) {
         console.log(e)
     }
-
 });
-
 
 //Module export
 module.exports = app;

@@ -8,7 +8,7 @@ const usersInterestsPath = 'users.txt'
 //gir command og får string output ud.
 function sendConsoleCommand(programPath, parameters) {
     try {
-        let par = parameters.split(" ");
+        let par = parameters.split(" ")
         const { stdout, stderr } = cp.spawnSync(programPath, [par[0], par[1]])
         return stdout.toString()
     } catch (e) {
@@ -18,28 +18,32 @@ function sendConsoleCommand(programPath, parameters) {
 
 //function der tager string output og laver til json
 function textToJSON(text) {
-    let data = JSON.parse(text)
-    return data
+    try {
+        let data = JSON.parse(text)
+        return data
+    } catch (e) {
+        console.log('String was not JSON formatted ' + e)
+    }
+    return false
 }
 
 // Tjekker om bruger eksistere i både users_account.json og users.text
 function getUserCheck(id) {
+    let userAcc = getUserAccounts(id, null)
+    let userInfo = accountInfoCheck(id)
 
-    let user = getUser(id, null)
-    if (user && userInterestCheck(id)) {
-        //console.log(username)
-        return user
+    if (userAcc && userInfo) {
+        return userAcc
     }
     return false
 }
 
 // Tjekker om user eksistere i users_account.json
-function getUser(id, username) {
+function getUserAccounts(id, username) {
     try {
         const data = getData(usersAccountPath)
         //users indeholder alle brugeren
         let users = textToJSON(data.toString())
-        //console.log(users) Debugger
         //finde ud af om der endten eksistere et id der matcher eller et navn der matcher.
         for (let i = 0; i < users.length; i++) {
             if (id != null) {
@@ -51,7 +55,6 @@ function getUser(id, username) {
                     return users[i]
                 }
             }
-
         }
     } catch (e) {
         console.error(e)
@@ -60,11 +63,10 @@ function getUser(id, username) {
 }
 
 //Tjekker om user eksistere i users.txt 
-function userInterestCheck(id) {
-    //tjek på users_interests.(id)
+function accountInfoCheck(id) {
     try {
         const data = getData(usersInterestsPath)
-        let lines = data.split("\n");
+        let lines = data.split("\n")
         for (let i = 0; i < lines.length; i++) {
             let useridWord = lines[i].split(" ")[0]
             if (useridWord == id) {
@@ -126,37 +128,35 @@ function addUser(u_id, u_username, u_email, u_password) {
 }
 //Funktionen skriver brugeroplysninger fra brugeren til vores textfil
 function createAccInfo(id, parameters) {
-
     if (!(parameters[0].length < 50 && parameters[1] >= 0 && parameters[1] <= 125 && parameters[2].length == 1)) {
-
         return false
     }
-
     for (let i = 3; i <= 11; i++) {
         if (!(parameters[i] <= 11 && parameters[i] >= 0)) {
             return false
         }
     }
-
     try {
         let register = `\n${id} ${parameters[0]} ${parameters[1]} ${parameters[2]} ${parameters[3]} ${parameters[4]} ${parameters[5]} ${parameters[6]} ${parameters[7]} ${parameters[8]} ${parameters[9]} ${parameters[10]} ${parameters[11]}`
 
         fs.appendFile(usersInterestsPath, register, function (err) {
             if (err) throw err;
         });
-
         return true
     } catch (e) {
         console.log('Der skete en fejl ved tilføjelse af bruger til fil')
         return false
     }
 }
-//TODO Frederik og Jonathan finde github hvor denne stykke kode er fundet fra.
+
+//Vi har gået ud fra dette github eksempel: 
+//Credit: https://github.com/passport/express-4.x-local-example 
 //Funktioner fra passport, som vi har omskrevet til at benytte nogle af vores egne funktioner
 //Denne funktion finder en bruger udfra et ID
 function findById(id, cb) {
+    //Køres i næste Iteration af js Event Loop, nextTick tager funktion som parameter.
     process.nextTick(function () {
-        let user = getUser(id, null)
+        let user = getUserAccounts(id, null)
         if (user) {
             cb(null, user)
         } else {
@@ -168,15 +168,15 @@ function findById(id, cb) {
 //Finder en bruger ud fra et username
 function findByUsername(username, cb) {
     process.nextTick(function () {
-        let user = getUser(null, username)
+        let user = getUserAccounts(null, username)
         if (user) {
             return cb(null, user)
         }
-
         return cb(null, null)
     })
 }
-
+//taget fra WebDevSimplified Node passport login projekt. 
+//Credit: https://github.com/WebDevSimplified/Nodejs-Passport-Login/blob/master/server.js
 //tjekker om en bruger er authenticated
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
@@ -194,8 +194,6 @@ function checkNotAuthenticated(req, res, next) {
 }
 
 
-//console.log(getUser(3, null))
-//console.log(getUser(null, "Pelle"))
 
 module.exports = {
     sendConsoleCommand,
@@ -203,9 +201,9 @@ module.exports = {
     createAccInfo,
     checkAuthenticated,
     checkNotAuthenticated,
-    getUser,
+    getUserAccounts,
     getUserCheck,
-    userInterestCheck,
+    accountInfoCheck,
     addUser,
     getData,
     findById,
