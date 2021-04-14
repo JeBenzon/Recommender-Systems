@@ -154,7 +154,7 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
         let match1 = functions.getUserCheck(match[0], null)
         let match2 = functions.getUserCheck(match[1], null)
         let match3 = functions.getUserCheck(match[2], null)
-
+        console.log(match2.id)
         res.render('matchfound', {
             title: 'Match found',
             loggedIn: true,
@@ -162,12 +162,39 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
             matchname1: match1.username,
             matchname2: match2.username,
             matchname3: match3.username,
+            match1id: match1.id,
+            match2id: match2.id,
+            match3id: match3.id
         })
     } else {
         //res.send("FEJL, kunne ikke finde bruger")
         res.redirect('/createaccinfo')
     }
 })
+
+
+app.get('/room/:room', (req, res) => { //Gør så alt der er et room name, bliver lavet om til et room
+
+    
+
+    res.send('Det virker')
+})
+
+//Rooms
+app.post('/room', (req, res) => {
+
+    let roomid = functions.checkChat(req.user.id, req.body.bluderpladder)
+    console.log('Logged ind bruger: ' + req.user.id + 'Chatmed bruger: ' + req.body.bluderpladder + ' har : chat id:' + roomid)
+    
+    //rooms[req.body.room] = { users: {} } //Henter "room" data fra index og holder data på users
+    
+    res.redirect('room/' + roomid) //Redirektor dem til det nye room
+    //io.emit('room-created', req.body.room) //Sender besked til andre at nyt room var lavet og vise det
+})
+
+
+
+
 
 // 404
 app.get('*', (req, res) => {
