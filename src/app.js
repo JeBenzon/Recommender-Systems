@@ -13,7 +13,7 @@ const ensureLogin = require('connect-ensure-login')
 const bodyParser = require('body-parser')
 
 //Windows: "alfa.exe", Linux: "./a.out"
-const c_fil_sti = "alfa.exe"
+const c_fil_sti = "./a.out"
 
 // Define paths for express config
 const publicDirectoryPath = path.join(__dirname, '../public')

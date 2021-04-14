@@ -112,5 +112,11 @@
     "username": "BriBri",
     "email": "email@mail.dk",
     "password": "123"
+  },
+  {
+    "id": 20,
+    "username": "michael123",
+    "email": "m@m.dk",
+    "password": "Michael123"
   }
 ]

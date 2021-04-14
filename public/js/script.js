@@ -1,4 +1,4 @@
-const socket = io('http://localhost:3000') //Hvor server hoster socket.js application
+const socket = io('http://localhost:4000') //Hvor server hoster socket.js application
 const messageContainer = document.getElementById('message-container') //Indholder de beskeder bliver sendt til den enkle bruger og sendt til "room.ejs"
 const roomContainer = document.getElementById('room-container') 
 const messageForm = document.getElementById('send-container') //Modtager data fra room.ejs "message-container" aka når der bliver trykket på "send" button

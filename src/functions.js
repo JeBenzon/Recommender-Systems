@@ -1,6 +1,7 @@
 const cp = require('child_process')
 const { stdout } = require('process')
 const fs = require('fs')
+const uuid = require('uuid');
 
 const usersAccountPath = 'users_account.json'
 const usersInterestsPath = 'users.txt'
@@ -193,6 +194,85 @@ function checkNotAuthenticated(req, res, next) {
     next()
 }
 
+//Funktion der tjekker om 2 brugere har et chatroom, og hvis de er returnere den room id
+function checkChat(user_id1, user_id2) {
+    let roomConnection = getData('rooms/roomConnections.json')
+    let roomConnectionObject = textToJSON(roomConnection)
+  
+    for (let i = 0; i < roomConnectionObject.length; i++) {
+      if (user_id1 == roomConnectionObject[i].user_id1 && user_id2 == roomConnectionObject[i].user_id2 ||
+        user_id1 == roomConnectionObject[i].user_id2 && user_id2 == roomConnectionObject[i].user_id1) {
+        return roomConnectionObject[i].id
+      }
+    }
+    return false
+  }
+  
+
+  function makeChat(u_id1, u_id2) {
+    //Check om brugere allerede har en chat.
+    let room = {
+      id: uuid.v1(),
+      user_id1: u_id1,
+      user_id2: u_id2,
+    }
+  
+    let roomConnection = getData('rooms/roomConnections.json')
+    let roomConnectionObject = textToJSON(roomConnection)
+    roomConnectionObject.push(room)
+  
+    jsonUsers = JSON.stringify(roomConnectionObject, null, 2)
+  
+    fs.writeFileSync('rooms/roomConnections.json', jsonUsers, "utf-8")
+  }
+  
+  
+
+  function getChat(id) {
+    let data = fs.readFileSync(`rooms/room${id}.json`)
+    let chats = textToJSON(data)
+  
+    return chats
+  }
+  
+
+  function saveChat(id, u_name, u_message, u_id1, u_id2) {
+    let chat
+    try {
+  
+  
+      //prøver at hente room filen
+      let data = fs.readFileSync(`rooms/room${id}.json`)
+      chatObj = textToJSON(data)
+  
+      chatToAppend = {
+        name: u_name,
+        message: u_message
+      }
+  
+      chatObj.chat.push(chatToAppend)
+  
+      jsonChat = JSON.stringify(chatObj, null, 2)
+      fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
+    } catch (e) {
+      chat = {
+        id: uuid.v1(),
+        user_id1: u_id1,
+        user_id2: u_id2,
+        chat: [
+          {
+            name: u_name,
+            message: u_message
+          }
+        ]
+      }
+      //opretter hvis filen ikke eksistere
+      jsonChat = JSON.stringify(chat, null, 2)
+      fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
+    }
+  }
+
+
 
 
 module.exports = {
@@ -208,6 +288,10 @@ module.exports = {
     getData,
     findById,
     findByUsername,
-    getLastUserId
+    getLastUserId,
+    checkChat,
+    makeChat,
+    getChat,
+    saveChat
 }
 
