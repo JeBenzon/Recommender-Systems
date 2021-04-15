@@ -7,23 +7,22 @@
 #define TOTALCRITERIA 9
 #define K 3 
 
-//TODO: Lav sortering om så den er mere effektiv end qsort
-
 //user struct
 typedef struct user {
     int id;
-    char name[25];
+    char name[50];
     int age;
     char gender;
+    char personality[5];
     double sports;       
     double food;
     double music;
     double movies;
-    double drinking;
-    double cars;
-    double hiking;
-    double magic;
-    double djing;
+    double art; 
+    double outdoors;
+    double science;
+    double travel; 
+    double climate;
     double pearson; 
 } user;
 
@@ -103,15 +102,16 @@ void load_users(FILE *userfile, int total_users, user *users) {
         fscanf(userfile, " %d", &users[i].age);
         fgetc(userfile);
         fscanf(userfile, " %1[^ ]", &users[i].gender);
+        fscanf(userfile, " %[^ ]", users[i].personality);
         fscanf(userfile, " %lf", &users[i].sports);
         fscanf(userfile, " %lf", &users[i].food);
         fscanf(userfile, " %lf", &users[i].music);
         fscanf(userfile, " %lf", &users[i].movies);
-        fscanf(userfile, " %lf", &users[i].drinking);
-        fscanf(userfile, " %lf", &users[i].cars);
-        fscanf(userfile, " %lf", &users[i].hiking);
-        fscanf(userfile, " %lf", &users[i].magic);
-        fscanf(userfile, " %lf", &users[i].djing);
+        fscanf(userfile, " %lf", &users[i].art);
+        fscanf(userfile, " %lf", &users[i].outdoors);
+        fscanf(userfile, " %lf", &users[i].science);
+        fscanf(userfile, " %lf", &users[i].travel);
+        fscanf(userfile, " %lf", &users[i].climate);
         fgetc(userfile);
     }
     return;
@@ -175,8 +175,8 @@ void new_user(FILE *userfile){
     char u_name[25];
     int u_age;
     char u_gender;
-    int u_id, u_sports, u_food, u_music, u_movies, u_drinking, 
-        u_cars, u_hiking, u_magic, u_djing;
+    int u_id, u_sports, u_food, u_music, u_movies, u_art, 
+        u_outdoors, u_science, u_travel, u_climate;
     //skal måske ændres senere
     printf("Enter your id: \n");
     scanf("%d", &u_id);
@@ -196,20 +196,20 @@ void new_user(FILE *userfile){
     scanf("%d", &u_music);
     printf("Enter movies like-rating: \n");
     scanf("%d", &u_movies);
-    printf("Enter drinking like-rating: \n");
-    scanf("%d", &u_drinking);
-    printf("Enter cars like-rating: \n");
-    scanf("%d", &u_cars);
-    printf("Enter hiking like-rating: \n");
-    scanf("%d", &u_hiking);
-    printf("Enter magic like-rating: \n");
-    scanf("%d", &u_magic);
-    printf("Enter djing like-rating: \n");
-    scanf("%d", &u_djing);
+    printf("Enter art like-rating: \n");
+    scanf("%d", &u_art);
+    printf("Enter outdoors like-rating: \n");
+    scanf("%d", &u_outdoors);
+    printf("Enter science like-rating: \n");
+    scanf("%d", &u_science);
+    printf("Enter travel like-rating: \n");
+    scanf("%d", &u_travel);
+    printf("Enter climate like-rating: \n");
+    scanf("%d", &u_climate);
     fprintf(userfile, "\n%d %s %d %c %d %d %d %d %d %d %d %d %d", u_id, u_name, u_age, u_gender, 
                                                                u_sports, u_food, u_music, 
-                                                               u_movies, u_drinking, u_cars, u_hiking, 
-                                                               u_magic, u_djing);
+                                                               u_movies, u_art, u_outdoors, u_science, 
+                                                               u_travel, u_climate);
 
     fseek(userfile, 0, SEEK_SET);
     return;
@@ -232,11 +232,11 @@ double pearson(user *users, int target, int compare){
                     ((target_user.food - t_mean) * (comp_user.food - c_mean)) + 
                     ((target_user.music - t_mean) * (comp_user.music - c_mean)) +
                     ((target_user.movies - t_mean ) * (comp_user.movies - c_mean)) +
-                    ((target_user.drinking - t_mean) * (comp_user.drinking - c_mean)) +
-                    ((target_user.cars - t_mean) * (comp_user.cars - c_mean)) +
-                    ((target_user.hiking - t_mean) * (comp_user.hiking - c_mean)) +
-                    ((target_user.magic - t_mean) * (comp_user.magic - c_mean)) +
-                    ((target_user.djing - t_mean) * (comp_user.djing - c_mean));
+                    ((target_user.art - t_mean) * (comp_user.art - c_mean)) +
+                    ((target_user.outdoors - t_mean) * (comp_user.outdoors - c_mean)) +
+                    ((target_user.science - t_mean) * (comp_user.science - c_mean)) +
+                    ((target_user.travel - t_mean) * (comp_user.travel - c_mean)) +
+                    ((target_user.climate - t_mean) * (comp_user.climate - c_mean));
 
     //calculating similarity coeficient
     double coeficient = sim / (t_sqrt * c_sqrt);
@@ -246,13 +246,13 @@ double pearson(user *users, int target, int compare){
 
 double calc_mean_of_user(user user){
     double mean = (user.sports + user.food + user.music + 
-                   user.movies + user.drinking + user.cars + 
-                   user.hiking + user.magic + user.djing) / TOTALCRITERIA;
+                   user.movies + user.art + user.outdoors + 
+                   user.science + user.travel + user.climate) / TOTALCRITERIA;
 
     //special case when users have rated same rating on all items to handle dividing by zero
     if(mean == user.sports && mean == user.food && mean == user.music && 
-       mean == user.movies && mean == user.drinking && mean == user.cars && 
-       mean == user.hiking && mean == user.magic && mean == user.djing){
+       mean == user.movies && mean == user.art && mean == user.outdoors && 
+       mean == user.science && mean == user.travel && mean == user.climate){
        mean += 0.001;
     }
 
@@ -264,11 +264,11 @@ double calc_sqrt_of_user(user user, double mean){
                        pow((user.food - mean), 2) + 
                        pow((user.music - mean), 2) +
                        pow((user.movies - mean),2) +
-                       pow((user.drinking - mean),2) +
-                       pow((user.cars - mean),2) +
-                       pow((user.hiking - mean),2) +
-                       pow((user.magic - mean),2) +
-                       pow((user.djing - mean),2));
+                       pow((user.art - mean),2) +
+                       pow((user.outdoors - mean),2) +
+                       pow((user.science - mean),2) +
+                       pow((user.travel - mean),2) +
+                       pow((user.climate - mean),2));
     return user_sqrt;
 }
 
