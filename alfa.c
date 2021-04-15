@@ -175,8 +175,8 @@ void new_user(FILE *userfile){
     char u_name[25];
     int u_age;
     char u_gender;
-    int u_id, u_dog, u_triangle, u_football, u_red, u_drinking, 
-        u_green, u_blue, u_magic, u_pizza;
+    int u_id, u_sports, u_food, u_music, u_movies, u_drinking, 
+        u_cars, u_hiking, u_magic, u_djing;
     //skal måske ændres senere
     printf("Enter your id: \n");
     scanf("%d", &u_id);
@@ -186,28 +186,30 @@ void new_user(FILE *userfile){
     scanf("%d", &u_age);
     printf("Enter your gender: \n");
     scanf(" %c", &u_gender);
-    printf("Enter chiaua rating: \n");
-    scanf("%d", &u_dog);
-    printf("Enter food rating: \n");
-    scanf("%d", &u_triangle);
-    printf("Enter music rating: \n");
-    scanf("%d", &u_football);
-    printf("Enter colour (movies) rating: \n");
-    scanf("%d", &u_red);
-    printf("Enter colour (drinking) rating: \n");
+    printf("Enter ratings from a 1-10 scale, how much you like the following topics:\n");
+    printf("(with 1 being low and 10 being high)\n");
+    printf("Enter sports like-rating: \n");
+    scanf("%d", &u_sports);
+    printf("Enter food like-rating: \n");
+    scanf("%d", &u_food);
+    printf("Enter music like-rating: \n");
+    scanf("%d", &u_music);
+    printf("Enter movies like-rating: \n");
+    scanf("%d", &u_movies);
+    printf("Enter drinking like-rating: \n");
     scanf("%d", &u_drinking);
-    printf("Enter colour (cars) rating: \n");
-    scanf("%d", &u_green);
-    printf("Enter colour (hiking) rating: \n");
-    scanf("%d", &u_blue);
-    printf("Enter magic rating: \n");
+    printf("Enter cars like-rating: \n");
+    scanf("%d", &u_cars);
+    printf("Enter hiking like-rating: \n");
+    scanf("%d", &u_hiking);
+    printf("Enter magic like-rating: \n");
     scanf("%d", &u_magic);
-    printf("Enter djing rating: \n");
-    scanf("%d", &u_pizza);
+    printf("Enter djing like-rating: \n");
+    scanf("%d", &u_djing);
     fprintf(userfile, "\n%d %s %d %c %d %d %d %d %d %d %d %d %d", u_id, u_name, u_age, u_gender, 
-                                                               u_dog, u_triangle, u_football, 
-                                                               u_red, u_drinking, u_green, u_blue, 
-                                                               u_magic, u_pizza);
+                                                               u_sports, u_food, u_music, 
+                                                               u_movies, u_drinking, u_cars, u_hiking, 
+                                                               u_magic, u_djing);
 
     fseek(userfile, 0, SEEK_SET);
     return;
