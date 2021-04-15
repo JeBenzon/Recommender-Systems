@@ -14,6 +14,7 @@ function sendConsoleCommand(programPath, parameters) {
         return stdout.toString()
     } catch (e) {
         console.log('C kommunikations fejl errorcode:' + e)
+        return false
     }
 }
 
@@ -198,81 +199,83 @@ function checkNotAuthenticated(req, res, next) {
 function checkChat(user_id1, user_id2) {
     let roomConnection = getData('rooms/roomConnections.json')
     let roomConnectionObject = textToJSON(roomConnection)
-  
+
     for (let i = 0; i < roomConnectionObject.length; i++) {
-      if (user_id1 == roomConnectionObject[i].user_id1 && user_id2 == roomConnectionObject[i].user_id2 ||
-        user_id1 == roomConnectionObject[i].user_id2 && user_id2 == roomConnectionObject[i].user_id1) {
-        return roomConnectionObject[i].id
-      }
+        if (user_id1 == roomConnectionObject[i].user_id1 && user_id2 == roomConnectionObject[i].user_id2 ||
+            user_id1 == roomConnectionObject[i].user_id2 && user_id2 == roomConnectionObject[i].user_id1) {
+            return roomConnectionObject[i].id
+        }
     }
     return false
-  }
-  
+}
 
-  function makeChat(u_id1, u_id2) {
+
+function makeChat(u_id1, u_id2) {
     //Check om brugere allerede har en chat.
     let room = {
-      id: parseInt(Date.now() + Math.random()),
-      user_id1: u_id1,
-      user_id2: u_id2,
+        id: parseInt(Date.now() + Math.random()),
+        user_id1: u_id1,
+        user_id2: u_id2,
     }
-  
+
     let roomConnection = getData('rooms/roomConnections.json')
     let roomConnectionObject = textToJSON(roomConnection)
     roomConnectionObject.push(room)
-  
+
     jsonUsers = JSON.stringify(roomConnectionObject, null, 2)
-    
 
-  
+
+
     fs.writeFileSync('rooms/roomConnections.json', jsonUsers, "utf-8")
-  }
-  
-  console.log(parseInt(Date.now() + Math.random()))
+}
 
-  function getChat(id) {
+console.log(parseInt(Date.now() + Math.random()))
+
+
+
+function getChat(id) {
     let data = fs.readFileSync(`rooms/room${id}.json`)
     let chats = textToJSON(data)
-  
-    return chats
-  }
-  
 
-  function saveChat(id, u_name, u_message, u_id1, u_id2) {
+    return chats
+}
+
+
+function saveChat(id, u_name, u_message, u_id1, u_id2) {
     let chat
     try {
-  
-  
-      //prøver at hente room filen
-      let data = fs.readFileSync(`rooms/room${id}.json`)
-      chatObj = textToJSON(data)
-  
-      chatToAppend = {
-        name: u_name,
-        message: u_message
-      }
-  
-      chatObj.chat.push(chatToAppend)
-  
-      jsonChat = JSON.stringify(chatObj, null, 2)
-      fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
-    } catch (e) {
-      chat = {
-        id: uuid.v1(),
-        user_id1: u_id1,
-        user_id2: u_id2,
-        chat: [
-          {
+
+
+        //prøver at hente room filen
+        let data = fs.readFileSync(`rooms/room${id}.json`)
+        chatObj = textToJSON(data)
+
+        chatToAppend = {
             name: u_name,
             message: u_message
-          }
-        ]
-      }
-      //opretter hvis filen ikke eksistere
-      jsonChat = JSON.stringify(chat, null, 2)
-      fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
+        }
+
+        chatObj.chat.push(chatToAppend)
+
+        jsonChat = JSON.stringify(chatObj, null, 2)
+        fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
+    } catch (e) {
+        chat = {
+            id: uuid.v1(),
+            user_id1: u_id1,
+            user_id2: u_id2,
+            chat: [
+                {
+                    name: u_name,
+                    message: u_message
+                }
+            ]
+        }
+        //opretter hvis filen ikke eksistere
+        jsonChat = JSON.stringify(chat, null, 2)
+        fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
     }
-  }
+}
 
 
 

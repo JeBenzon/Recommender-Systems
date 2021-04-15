@@ -151,28 +151,37 @@ app.delete('/logout', functions.checkAuthenticated, (req, res) => {
 
 app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
     let user = functions.getUserCheck(req.user.id, null)
-    if(user) {
-        
-        let matches = (functions.sendConsoleCommand(c_fil_sti, `getmatch ${req.user.id}`))
-        let match = matches.split(" ")
-        let match1 = functions.getUserCheck(match[0], null)
-        let match2 = functions.getUserCheck(match[1], null)
-        let match3 = functions.getUserCheck(match[2], null)
-        console.log(match2.id)
-        res.render('matchfound', {
-            title: 'Match found',
-            loggedIn: true,
-            username: req.user.username,
-            matchname1: match1.username,
-            matchname2: match2.username,
-            matchname3: match3.username,
-            match1id: match1.id,
-            match2id: match2.id,
-            match3id: match3.id
+    //Try der tager hånd om hvis c filen ikke er blevet kørt.
+    try {
+        if (user) {
+
+            let matches = (functions.sendConsoleCommand(c_fil_sti, `getmatch ${req.user.id}`))
+            let match = matches.split(" ")
+            let match1 = functions.getUserCheck(match[0], null)
+            let match2 = functions.getUserCheck(match[1], null)
+            let match3 = functions.getUserCheck(match[2], null)
+            console.log(match2.id)
+            res.render('matchfound', {
+                title: 'Match found',
+                loggedIn: true,
+                username: req.user.username,
+                matchname1: match1.username,
+                matchname2: match2.username,
+                matchname3: match3.username,
+                match1id: match1.id,
+                match2id: match2.id,
+                match3id: match3.id
+            })
+        } else {
+            //res.send("FEJL, kunne ikke finde bruger")
+            res.redirect('/createaccinfo')
+        }
+    } catch (e) {
+        console.log('!ERROR! - Har du husket at compilere alfa.c?')
+        res.render('404', {
+            title: '404',
+            errorMessage: 'Could not find page'
         })
-    } else {
-        //res.send("FEJL, kunne ikke finde bruger")
-        res.redirect('/createaccinfo')
     }
 })
 
@@ -181,9 +190,9 @@ app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt d
     if (rooms[req.params.room] == null) {
         return res.redirect('/')
     }
-    res.render('room', { 
+    res.render('room', {
         userName: req.user.username,
-        roomName: req.params.room 
+        roomName: req.params.room
     })
 })
 
@@ -192,13 +201,13 @@ app.post('/room', functions.checkAuthenticated, (req, res) => {
     if (rooms[req.body.room] != null) {
         console.log(req.body.room)
         return res.redirect('/')
-      }
+    }
     let roomId = functions.checkChat(req.user.id, req.body.room)
     console.log('Logged ind bruger: ' + req.user.id + 'Chatmed bruger: ' + req.body.room + ' har : chat id:' + roomId)
     console.log(rooms[roomId])
     rooms[roomId] = { users: {} }
     //rooms[req.body.room] = { users: {} } //Henter "room" data fra index og holder data på users
-    
+
     res.redirect(roomId) //Redirektor dem til det nye room
     io.emit('room-created', req.body.room) //Sender besked til andre at nyt room var lavet og vise det
 })
@@ -206,7 +215,7 @@ app.post('/room', functions.checkAuthenticated, (req, res) => {
 
 
 app.get('/testIndex', (req, res) => { //Index patch
-  res.render('testindex', { rooms: rooms })
+    res.render('testindex', { rooms: rooms })
 })
 /*
 app.get('/:room', (req, res) => { //Gør så alt der er et room name, bliver lavet om til et room
@@ -222,51 +231,51 @@ app.post('/room', (req, res) => {
     res.redirect(req.body.room) //Redirektor dem til det nye room
     io.emit('room-created', req.body.room) //Sender besked til andre at nyt room var lavet og vise det
   })*/
-  
+
 
 
 
 io.on('connection', socket => { //Første gang bruger loader hjemmeside -> kalder funktion og giver dem et socket
     socket.on('new-user', (room, name) => { //Funktion bliver kaldt i "scripts.js"
-      try{
-        socket.join(room)
-        rooms[room].users[socket.id] = name //Sammensætter navn på bruger med socket id
-        socket.broadcast.to(room).emit('user-connected', name) //Sender event 'user-connected' med besked "name" -> broadcast gør så brugeren ikke selv får det
-      }catch(e){
-        console.log(e)
-      }
+        try {
+            socket.join(room)
+            rooms[room].users[socket.id] = name //Sammensætter navn på bruger med socket id
+            socket.broadcast.to(room).emit('user-connected', name) //Sender event 'user-connected' med besked "name" -> broadcast gør så brugeren ikke selv får det
+        } catch (e) {
+            console.log(e)
+        }
     })
     socket.on('send-chat-message', (room, message) => { //Aktivere når eventen sker "Send-chat-message" med data "room" "message"
-      try{
-        socket.broadcast.to(room).emit('chat-message', { //Sender beskeden til alle undtagen brugeren som sender den selv "broadcast" gør så brugeren ikke selv modtager
-  
-        //TODO her skal vi gemme ned i vores array/filer
-        message: message, //Laver et objekt til at holde dataen på beskeden
-        name: rooms[room].users[socket.id] //Tilføjer navnet til objeket via socket.id
-      })
-      }catch(e){
-        console.log(e)
-      }
-      
+        try {
+            socket.broadcast.to(room).emit('chat-message', { //Sender beskeden til alle undtagen brugeren som sender den selv "broadcast" gør så brugeren ikke selv modtager
+
+                //TODO her skal vi gemme ned i vores array/filer
+                message: message, //Laver et objekt til at holde dataen på beskeden
+                name: rooms[room].users[socket.id] //Tilføjer navnet til objeket via socket.id
+            })
+        } catch (e) {
+            console.log(e)
+        }
+
     })
     socket.on('disconnect', () => { //Aktivere når en disconnecter -> socket funktion
-      getUserRooms(socket).forEach(room => {
-        try{
-          socket.broadcast.to(room).emit('user-disconnected', rooms[room].users[socket.id]) //Sender ud at brugeren er disconnected
-          delete rooms[room].users[socket.id] //Sletter brugeren && bruger id 
-        }catch(e){
-          console.log(e)
-        }
-      })
+        getUserRooms(socket).forEach(room => {
+            try {
+                socket.broadcast.to(room).emit('user-disconnected', rooms[room].users[socket.id]) //Sender ud at brugeren er disconnected
+                delete rooms[room].users[socket.id] //Sletter brugeren && bruger id 
+            } catch (e) {
+                console.log(e)
+            }
+        })
     })
-  })
-  
-  function getUserRooms(socket) {
+})
+
+function getUserRooms(socket) {
     return Object.entries(rooms).reduce((names, [name, room]) => {
-      if (room.users[socket.id] != null) names.push(name)
-      return names
+        if (room.users[socket.id] != null) names.push(name)
+        return names
     }, [])
-  }
+}
 
 
 
