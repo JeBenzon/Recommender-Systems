@@ -12,27 +12,27 @@ typedef struct user {
     char name[25];
     int age;
     char gender;
-    double dog;       
-    double triangle;
-    double football;
-    double red;
-    double yellow;
-    double green;
-    double blue;
-    double spaghetti;
-    double pizza;
+    double sports;       
+    double food;
+    double music;
+    double movies;
+    double drinking;
+    double cars;
+    double hiking;
+    double magic;
+    double djing;
     double pearson; 
 } user;
 
 double calc_mean_of_user(user user){
-    double mean = (user.dog + user.triangle + user.football + 
-                   user.red + user.yellow + user.green + 
-                   user.blue + user.spaghetti + user.pizza) / TOTALCRITERIA;
+    double mean = (user.sports + user.food + user.music + 
+                   user.movies + user.drinking + user.cars + 
+                   user.hiking + user.magic + user.djing) / TOTALCRITERIA;
 
     //special case when users have rated same rating on all items to handle dividing by zero
-    if(mean == user.dog && mean == user.triangle && mean == user.football && 
-       mean == user.red && mean == user.yellow && mean == user.green && 
-       mean == user.blue && mean == user.spaghetti && mean == user.pizza){
+    if(mean == user.sports && mean == user.food && mean == user.music && 
+       mean == user.movies && mean == user.drinking && mean == user.cars && 
+       mean == user.hiking && mean == user.magic && mean == user.djing){
        mean += 0.001;
     }
 
@@ -44,15 +44,15 @@ double calc_mean_of_user(user user){
 void TestAllSameRating(CuTest *tc){
     //set input
     user input;
-    input.dog = 5;
-    input.triangle = 5;
-    input.football = 5;
-    input.red = 5;
-    input.yellow = 5;
-    input.green = 5;
-    input.blue = 5;
-    input.spaghetti = 5;
-    input.pizza = 5;
+    input.sports = 5;
+    input.food = 5;
+    input.music = 5;
+    input.movies = 5;
+    input.drinking = 5;
+    input.cars = 5;
+    input.hiking = 5;
+    input.magic = 5;
+    input.djing = 5;
     //actual
     double actual = calc_mean_of_user(input);
     //expected
@@ -63,15 +63,15 @@ void TestAllSameRating(CuTest *tc){
 void TestLowRatings(CuTest *tc){
     //set input
     user input;
-    input.dog = 1;
-    input.triangle = 1;
-    input.football = 1;
-    input.red = 1;
-    input.yellow = 1;
-    input.green = 1;
-    input.blue = 1;
-    input.spaghetti = 1;
-    input.pizza = 10;
+    input.sports = 1;
+    input.food = 1;
+    input.music = 1;
+    input.movies = 1;
+    input.drinking = 1;
+    input.cars = 1;
+    input.hiking = 1;
+    input.magic = 1;
+    input.djing = 10;
     //actual
     double actual = calc_mean_of_user(input);
     //expected
@@ -82,15 +82,15 @@ void TestLowRatings(CuTest *tc){
 void TestHighRating(CuTest *tc){
     //set input
     user input;
-    input.dog = 10;
-    input.triangle = 9;
-    input.football = 8;
-    input.red = 8;
-    input.yellow = 9;
-    input.green = 10;
-    input.blue = 8;
-    input.spaghetti = 9;
-    input.pizza = 10;
+    input.sports = 10;
+    input.food = 9;
+    input.music = 8;
+    input.movies = 8;
+    input.drinking = 9;
+    input.cars = 10;
+    input.hiking = 8;
+    input.magic = 9;
+    input.djing = 10;
     //actual
     double actual = calc_mean_of_user(input);
     //expected
@@ -101,15 +101,15 @@ void TestHighRating(CuTest *tc){
 void TestMixedRating(CuTest *tc){
     //set input
     user input;
-    input.dog = 10;
-    input.triangle = 9;
-    input.football = 8;
-    input.red = 4;
-    input.yellow = 3;
-    input.green = 2;
-    input.blue = 1;
-    input.spaghetti = 2;
-    input.pizza = 6;
+    input.sports = 10;
+    input.food = 9;
+    input.music = 8;
+    input.movies = 4;
+    input.drinking = 3;
+    input.cars = 2;
+    input.hiking = 1;
+    input.magic = 2;
+    input.djing = 6;
     //actual
     double actual = calc_mean_of_user(input);
     //expected

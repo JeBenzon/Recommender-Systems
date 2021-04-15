@@ -14,28 +14,28 @@ typedef struct user {
     char name[25];
     int age;
     char gender;
-    double dog;       
-    double triangle;
-    double football;
-    double red;
-    double yellow;
-    double green;
-    double blue;
-    double spaghetti;
-    double pizza;
+    double sports;       
+    double food;
+    double music;
+    double movies;
+    double drinking;
+    double cars;
+    double hiking;
+    double magic;
+    double djing;
     double pearson; 
 } user;
 
 double calc_sqrt_of_user(user user, double mean){
-    double user_sqrt = sqrt (pow((user.dog - mean),2) + 
-                       pow((user.triangle - mean), 2) + 
-                       pow((user.football - mean), 2) +
-                       pow((user.red - mean),2) +
-                       pow((user.yellow - mean),2) +
-                       pow((user.green - mean),2) +
-                       pow((user.blue - mean),2) +
-                       pow((user.spaghetti - mean),2) +
-                       pow((user.pizza - mean),2));
+    double user_sqrt = sqrt (pow((user.sports - mean),2) + 
+                       pow((user.food - mean), 2) + 
+                       pow((user.music - mean), 2) +
+                       pow((user.movies - mean),2) +
+                       pow((user.drinking - mean),2) +
+                       pow((user.cars - mean),2) +
+                       pow((user.hiking - mean),2) +
+                       pow((user.magic - mean),2) +
+                       pow((user.djing - mean),2));
     return user_sqrt;
 }
 
@@ -44,15 +44,15 @@ double calc_sqrt_of_user(user user, double mean){
 void TestAllSameRating(CuTest *tc){
     //set input
     user input;
-    input.dog = 5;
-    input.triangle = 5;
-    input.football = 5;
-    input.red = 5;
-    input.yellow = 5;
-    input.green = 5;
-    input.blue = 5;
-    input.spaghetti = 5;
-    input.pizza = 5;
+    input.sports = 5;
+    input.food = 5;
+    input.music = 5;
+    input.movies = 5;
+    input.drinking = 5;
+    input.cars = 5;
+    input.hiking = 5;
+    input.magic = 5;
+    input.djing = 5;
     //actual
     double actual = calc_sqrt_of_user(input, 5.001);
     //expected
@@ -63,15 +63,15 @@ void TestAllSameRating(CuTest *tc){
 void TestMixedRating(CuTest *tc){
     //set input
     user input;
-    input.dog = 10;
-    input.triangle = 9;
-    input.football = 8;
-    input.red = 4;
-    input.yellow = 3;
-    input.green = 2;
-    input.blue = 1;
-    input.spaghetti = 2;
-    input.pizza = 6;
+    input.sports = 10;
+    input.food = 9;
+    input.music = 8;
+    input.movies = 4;
+    input.drinking = 3;
+    input.cars = 2;
+    input.hiking = 1;
+    input.magic = 2;
+    input.djing = 6;
     //actual
     double actual = calc_sqrt_of_user(input, 5.0);
     //expected 
@@ -82,15 +82,15 @@ void TestMixedRating(CuTest *tc){
 void TestLowRatings(CuTest *tc){
     //set input
     user input;
-    input.dog = 1;
-    input.triangle = 1;
-    input.football = 1;
-    input.red = 1;
-    input.yellow = 1;
-    input.green = 1;
-    input.blue = 1;
-    input.spaghetti = 1;
-    input.pizza = 10;
+    input.sports = 1;
+    input.food = 1;
+    input.music = 1;
+    input.movies = 1;
+    input.drinking = 1;
+    input.cars = 1;
+    input.hiking = 1;
+    input.magic = 1;
+    input.djing = 10;
     //actual
     double actual = calc_sqrt_of_user(input, 2.0);
     //expected
@@ -101,15 +101,15 @@ void TestLowRatings(CuTest *tc){
 void TestHighRating(CuTest *tc){
     //set input
     user input;
-    input.dog = 10;
-    input.triangle = 9;
-    input.football = 8;
-    input.red = 8;
-    input.yellow = 9;
-    input.green = 10;
-    input.blue = 8;
-    input.spaghetti = 9;
-    input.pizza = 10;
+    input.sports = 10;
+    input.food = 9;
+    input.music = 8;
+    input.movies = 8;
+    input.drinking = 9;
+    input.cars = 10;
+    input.hiking = 8;
+    input.magic = 9;
+    input.djing = 10;
     //actual
     double actual = calc_sqrt_of_user(input, 9.0);
     //expected 
