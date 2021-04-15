@@ -1,37 +1,12 @@
 [
   {
-    "id": "2ade4290-9b72-11eb-9edsd-7d32efdsaa14f",
+    "id": 7839021890381,
     "user_id1": 4,
     "user_id2": 5
   },
   {
-    "id": "2ade4290-9b72-11eb-9edsd-7d32e2daa14f",
+    "id": 297123901274,
     "user_id1": 2,
     "user_id2": 19
-  },
-  {
-    "id": "2ade7090-9b72-11eb-9eed-7d32e2daa14f",
-    "user_id1": 40,
-    "user_id2": 60
-  },
-  {
-    "id": "f2e026e0-9b74-11eb-a21c-01fc8dda15b1",
-    "user_id1": 40,
-    "user_id2": 60
-  },
-  {
-    "id": "16f86ab0-9b75-11eb-91e8-475abace5826",
-    "user_id1": 40,
-    "user_id2": 60
-  },
-  {
-    "id": "a26ddd00-9b75-11eb-bd5c-a7de611ba9ed",
-    "user_id1": 40,
-    "user_id2": 60
-  },
-  {
-    "id": "af36b890-9b75-11eb-b19a-832e82e58046",
-    "user_id1": 40,
-    "user_id2": 60
   }
 ]

@@ -16,12 +16,6 @@ app.get('/', (req, res) => { //Index patch
   res.render('index', { rooms: rooms })
 })
 
-app.get('/test', (req, res) => {
-  makeChat(40, 60)
-  console.log(uuid.v1())
-  saveChat("390812089-83920183", "Hansbørge", "Hvad så der", 32, 111)
-  //getChat()
-})
 
 app.post('/room', (req, res) => {
   if (rooms[req.body.room] != null) {

@@ -11,6 +11,10 @@ let Strategy = require('passport-local').Strategy
 const app = express()
 const ensureLogin = require('connect-ensure-login')
 const bodyParser = require('body-parser')
+const server = require('http').Server(app) //Giver us en "Server der kan kommunikere med socket.io"
+const io = require('socket.io')(server) //Laver server på port "server"
+
+const rooms = {} //Vores rooms
 
 //Windows: "alfa.exe", Linux: "./a.out"
 const c_fil_sti = "./a.out"
@@ -173,25 +177,96 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
 })
 
 
-app.get('/room/:room', (req, res) => { //Gør så alt der er et room name, bliver lavet om til et room
-
-    
-
-    res.send('Det virker')
+app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt der er et room name, bliver lavet om til et room
+    if (rooms[req.params.room] == null) {
+        return res.redirect('/')
+    }
+    res.render('room', { 
+        userName: req.user.username,
+        roomName: req.params.room 
+    })
 })
 
 //Rooms
-app.post('/room', (req, res) => {
-
-    let roomid = functions.checkChat(req.user.id, req.body.bluderpladder)
-    console.log('Logged ind bruger: ' + req.user.id + 'Chatmed bruger: ' + req.body.bluderpladder + ' har : chat id:' + roomid)
-    
+app.post('/room', functions.checkAuthenticated, (req, res) => {
+    if (rooms[req.body.room] != null) {
+        console.log(req.body.room)
+        return res.redirect('/')
+      }
+    let roomId = functions.checkChat(req.user.id, req.body.room)
+    console.log('Logged ind bruger: ' + req.user.id + 'Chatmed bruger: ' + req.body.room + ' har : chat id:' + roomId)
+    console.log(rooms[roomId])
+    rooms[roomId] = { users: {} }
     //rooms[req.body.room] = { users: {} } //Henter "room" data fra index og holder data på users
     
-    res.redirect('room/' + roomid) //Redirektor dem til det nye room
-    //io.emit('room-created', req.body.room) //Sender besked til andre at nyt room var lavet og vise det
+    res.redirect(roomId) //Redirektor dem til det nye room
+    io.emit('room-created', req.body.room) //Sender besked til andre at nyt room var lavet og vise det
 })
 
+
+
+app.get('/testIndex', (req, res) => { //Index patch
+  res.render('testindex', { rooms: rooms })
+})
+/*
+app.get('/:room', (req, res) => { //Gør så alt der er et room name, bliver lavet om til et room
+    
+    res.render('room', { 
+        roomName: req.params.room 
+    }) //Siger den skal render room med "roomName" der passer til vores room
+  })
+
+app.post('/room', (req, res) => {
+    
+    rooms[req.body.room] = { users: {} } //Henter "room" data fra index og holder data på users
+    res.redirect(req.body.room) //Redirektor dem til det nye room
+    io.emit('room-created', req.body.room) //Sender besked til andre at nyt room var lavet og vise det
+  })*/
+  
+
+
+
+io.on('connection', socket => { //Første gang bruger loader hjemmeside -> kalder funktion og giver dem et socket
+    socket.on('new-user', (room, name) => { //Funktion bliver kaldt i "scripts.js"
+      try{
+        socket.join(room)
+        rooms[room].users[socket.id] = name //Sammensætter navn på bruger med socket id
+        socket.broadcast.to(room).emit('user-connected', name) //Sender event 'user-connected' med besked "name" -> broadcast gør så brugeren ikke selv får det
+      }catch(e){
+        console.log(e)
+      }
+    })
+    socket.on('send-chat-message', (room, message) => { //Aktivere når eventen sker "Send-chat-message" med data "room" "message"
+      try{
+        socket.broadcast.to(room).emit('chat-message', { //Sender beskeden til alle undtagen brugeren som sender den selv "broadcast" gør så brugeren ikke selv modtager
+  
+        //TODO her skal vi gemme ned i vores array/filer
+        message: message, //Laver et objekt til at holde dataen på beskeden
+        name: rooms[room].users[socket.id] //Tilføjer navnet til objeket via socket.id
+      })
+      }catch(e){
+        console.log(e)
+      }
+      
+    })
+    socket.on('disconnect', () => { //Aktivere når en disconnecter -> socket funktion
+      getUserRooms(socket).forEach(room => {
+        try{
+          socket.broadcast.to(room).emit('user-disconnected', rooms[room].users[socket.id]) //Sender ud at brugeren er disconnected
+          delete rooms[room].users[socket.id] //Sletter brugeren && bruger id 
+        }catch(e){
+          console.log(e)
+        }
+      })
+    })
+  })
+  
+  function getUserRooms(socket) {
+    return Object.entries(rooms).reduce((names, [name, room]) => {
+      if (room.users[socket.id] != null) names.push(name)
+      return names
+    }, [])
+  }
 
 
 
@@ -213,4 +288,4 @@ app.get("/test", (req, res) => {
 });
 
 //Module export
-module.exports = app;
+module.exports = server;

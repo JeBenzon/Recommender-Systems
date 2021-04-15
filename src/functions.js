@@ -212,7 +212,7 @@ function checkChat(user_id1, user_id2) {
   function makeChat(u_id1, u_id2) {
     //Check om brugere allerede har en chat.
     let room = {
-      id: uuid.v1(),
+      id: parseInt(Date.now() + Math.random()),
       user_id1: u_id1,
       user_id2: u_id2,
     }
@@ -222,11 +222,13 @@ function checkChat(user_id1, user_id2) {
     roomConnectionObject.push(room)
   
     jsonUsers = JSON.stringify(roomConnectionObject, null, 2)
+    
+
   
     fs.writeFileSync('rooms/roomConnections.json', jsonUsers, "utf-8")
   }
   
-  
+  console.log(parseInt(Date.now() + Math.random()))
 
   function getChat(id) {
     let data = fs.readFileSync(`rooms/room${id}.json`)
