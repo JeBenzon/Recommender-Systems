@@ -229,7 +229,6 @@ function makeChat(u_id1, u_id2) {
     fs.writeFileSync('rooms/roomConnections.json', jsonUsers, "utf-8")
 }
 
-console.log(parseInt(Date.now() + Math.random()))
 
 
 

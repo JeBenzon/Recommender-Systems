@@ -7,11 +7,12 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Chat App</title>
   <script>
-    const roomName = {{roomName}}
-    const userName = {{userName}}
+    let roomName = {{ roomName }}
   </script>
-  <script defer src="http://localhost:3000/socket.io/socket.io.js"></script> <!--Script til at få info fra givet sted-->
-  <script defer src="js/script.js"></script> <!--Script til at få info fra givet sted-->
+  <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+  <!--Script til at få info fra givet sted-->
+  <script defer src="js/script.js"></script>
+  <!--Script til at få info fra givet sted-->
   <style>
     body {
       padding: 0;
@@ -51,6 +52,7 @@
 </head>
 
 <body>
+  <input id="username" name={{ userName }} type="hidden">
   <div id="message-container"></div>
   <form id="send-container">
     <input type="text" id="message-input">

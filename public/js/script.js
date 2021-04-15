@@ -1,12 +1,15 @@
 const socket = io('http://localhost:3000') //Hvor server hoster socket.js application
 const messageContainer = document.getElementById('message-container') //Indholder de beskeder bliver sendt til den enkle bruger og sendt til "room.ejs"
-const roomContainer = document.getElementById('room-container') 
+const roomContainer = document.getElementById('room-container')
 const messageForm = document.getElementById('send-container') //Modtager data fra room.ejs "message-container" aka når der bliver trykket på "send" button
 const messageInput = document.getElementById('message-input') //Modtager data fra room.ejs "room-container" aka beskeden der skal sendes
+const nameInput = document.getElementById('username').name
 
 if (messageForm != null) {
-  const name = userName //Første gang du loader siden sker dette
-  console.log(name)
+
+
+  const name = nameInput //Første gang du loader siden sker dette
+  console.log(nameInput)
 
   appendMessage('Du tilsluttede rummet')
   socket.emit('new-user', roomName, name) //
@@ -30,7 +33,7 @@ socket.on('room-created', room => {
 })
 
 socket.on('chat-message', data => { //modtager fra server.js event og data(objekt) der følger med event -> bruges til at sende beskeden til alle andre end senderen selv 
-  appendMessage(`${data.name}: ${data.message}`) 
+  appendMessage(`${data.name}: ${data.message}`)
 })
 
 socket.on('user-connected', name => { //modtager fra server.js event og data der følger med event
