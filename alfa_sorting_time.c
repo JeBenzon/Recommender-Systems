@@ -35,14 +35,14 @@ void getmatch_c(FILE *userfile, user* users, int total_users);
 double pearson(user *users, int target, int compare);
 double calc_mean_of_user(user user);
 double calc_sqrt_of_user(user user, double mean);
-user *find_best_matches(user *users, int total_users, int user_id);
-void print_matches(user *best_matches);
-void print_matches_id(user *best_matches);
+int cmpfunc(const void *a, const void *b);
+void print_matches(int total_users, user *users);
+void print_matches_id(int total_users, user *users);
 
 
 int main(int argc, char *argv[]) {
 
-    // set users file path
+    // set user file path
     char *fp = "./users_50000.txt";
 
     // open file
@@ -113,58 +113,95 @@ void load_users(FILE *userfile, int total_users, user *users) {
         fscanf(userfile, " %lf", &users[i].climate);
         fgetc(userfile);
     }
+    return;
 }
 
 void getmatch_js(char **argv, user* users, int total_users){
     //select target user
     int targetuser = atoi(argv[2]);
-    printf("targetuser is: %d\n", targetuser);
+    
     //calc user similarity
     for (int i = 0; i < total_users; i++) {
         users[i].pearson = pearson(users, targetuser - 1, users[i].id -1);
     }
-    //Run of all users, finding the best matches for the targetuser
-    user *best_matches = find_best_matches(users, total_users, targetuser);
+    
+    //Sort the coefficient based on highest similarity
+    qsort(users, total_users, sizeof(user), cmpfunc);
     
     //print matches back to javascript
-    print_matches_id(best_matches);       
+    print_matches_id(total_users, users);
+    return;        
 }
 
 void getmatch_c(FILE *userfile, user* users, int total_users){
     printf("One argument.\n");
 
-    // new user input
-    char answer;
-    int sentinel = 1;
-    while (sentinel) {
-        printf("Wish to enter new user? (y/n)\n");
-        scanf(" %c", &answer);
-        
-        if(answer == 'y'){
-            new_user(userfile);                
-            //Update total users, if new user is created
-            total_users++;    
-        } else{
-            sentinel = 0;
+        // new user input
+        char answer;
+        int sentinel = 1;
+        while (sentinel) {
+            printf("Wish to enter new user? (y/n)\n");
+            scanf(" %c", &answer);
+            
+            if(answer == 'y'){
+                new_user(userfile);                
+                //Update total users, if new user is created
+                total_users++;    
+            } else{
+                sentinel = 0;
+            }
         }
-    }
 
-    //select target user
-    int user_id;
-    printf("Enter your user id to get matches and start time comparison:\n");
-    scanf("%d", &user_id);
-    printf("Calculating best matches for %s ...\n", users[user_id-1].name);
+        //select target user
+        int user_id;
+        printf("Enter your user id to get matches and start time comparison:\n");
+        scanf("%d", &user_id);
+        //printf("Calculating best matches for %s ...\n", users[user_id-1].name);
 
-    //calc user similarity
-    for (int i = 0; i < total_users; i++) {
-        users[i].pearson = pearson(users, user_id-1, users[i].id -1);
-    }
+        //calc user similarity
+        for (int i = 0; i < total_users; i++) {
+            users[i].pearson = pearson(users, user_id-1, users[i].id -1);
+        }
+        
+        
+        clock_t begin1 = clock();  
 
-    //Sort the coefficient based on highest similarity
-    user *best_matches = find_best_matches(users, total_users, user_id);
-    
-    //prints matches to terminal
-    print_matches(best_matches);
+        //Sort the coefficient based on highest similarity
+        user best_matches[K];
+        for(int i = 0; i < K; i++){
+            best_matches[i].pearson = 0;
+        }
+        
+        for(int i = 0; i < total_users; i++){
+            if(users[i].id != user_id){
+                user x = users[i];
+                for(int j = 0; j < K; j++){
+                    if(x.pearson > best_matches[j].pearson){
+                        user temp = best_matches[j];
+                        best_matches[j] = x;
+                        x = temp;
+                    }
+                } 
+            }
+        }
+        
+        clock_t end1 = clock();
+        double time_spent1 = (double)(end1 - begin1) / CLOCKS_PER_SEC;
+        printf("time spent sort 1: %lf seconds\n", time_spent1);
+        
+        /* for(int i = 0; i < K; i++){
+            printf("Bestmatches after sorting: User: %s WITH pearson: %lf\n", best_matches[i].name, best_matches[i].pearson);
+        } */
+        clock_t begin2 = clock();  
+        qsort(users, total_users, sizeof(user), cmpfunc);
+        
+        clock_t end2 = clock();
+        double time_spent2 = (double)(end2 - begin2) / CLOCKS_PER_SEC;
+        printf("time spent with Qsort: %lf seconds \n", time_spent2);
+        double forskel = (time_spent2 - time_spent1);
+        printf("Difference is %lf seconds \n",forskel);
+        //prints matches to terminal
+        //print_matches(total_users, users);
 }
 
 void new_user(FILE *userfile){
@@ -208,6 +245,7 @@ void new_user(FILE *userfile){
                                                                u_travel, u_climate);
 
     fseek(userfile, 0, SEEK_SET);
+    return;
 }
 
 double pearson(user *users, int target, int compare){
@@ -250,6 +288,7 @@ double calc_mean_of_user(user user){
        mean == user.science && mean == user.travel && mean == user.climate){
        mean += 0.001;
     }
+
     return mean;
 }
 
@@ -266,39 +305,30 @@ double calc_sqrt_of_user(user user, double mean){
     return user_sqrt;
 }
 
-user *find_best_matches(user *users, int total_users, int user_id){
-    user *best_matches = malloc(K * sizeof(user));
-    if(best_matches == NULL){
-        exit(EXIT_FAILURE);
-    }
+int cmpfunc(const void *a, const void *b) {
 
-    for(int i = 0; i < K; i++){
-        best_matches[i].pearson = 0;
+    user *user1 = (user *) a;
+    user *user2 = (user *) b;
+    if(user1->pearson < user2->pearson){
+        return -1;
     }
-    
-    for(int i = 0; i < total_users; i++){
-        if(users[i].id != user_id){
-            user x = users[i];
-            for(int j = 0; j < K; j++){
-                if(x.pearson > best_matches[j].pearson){
-                    user temp = best_matches[j];
-                    best_matches[j] = x;
-                    x = temp;
-                }
-            } 
-        }
+    else if(user1->pearson > user2->pearson){
+        return 1;
     }
-    return best_matches;
+    else{
+        return 0;
+    }
 }
 
-void print_matches(user *best_matches){
-    for(int i = 0; i < K; i++){
-            printf("Userid: %d, Username: %s, Similarity: %lf\n",best_matches[i].id, best_matches[i].name, best_matches[i].pearson);
-        }
+void print_matches(int total_users, user *users){
+    for (int i = total_users-2; i > (total_users-2)- K ; i--){
+        printf("Userid: %d, Username: %s, Similarity: %lf\n", users[i].id, users[i].name, users[i].pearson);
+    }
+    return;
 }
 
-void print_matches_id(user *best_matches){
-    for(int i = 0; i < K; i++){
-            printf("%d ", best_matches[i].id);
-        }
+void print_matches_id(int total_users, user *users){
+    for(int i = total_users-2; i > (total_users-2)- K ; i--){
+        printf("%d ", users[i].id);
+    }
 }
