@@ -3,22 +3,23 @@ const messageContainer = document.getElementById('message-container') //Indholde
 const roomContainer = document.getElementById('room-container')
 const messageForm = document.getElementById('send-container') //Modtager data fra room.ejs "message-container" aka når der bliver trykket på "send" button
 const messageInput = document.getElementById('message-input') //Modtager data fra room.ejs "room-container" aka beskeden der skal sendes
-const nameInput = document.getElementById('username').name
+const user1 = document.getElementById('user1').name
+const user2 = document.getElementById('user2').name
 
 if (messageForm != null) {
-
-
-  const name = nameInput //Første gang du loader siden sker dette
-  console.log(nameInput)
-
+  /*
+    socket.emit('load-messages', roomName)*/
   appendMessage('Du tilsluttede rummet')
-  socket.emit('new-user', roomName, name) //
+  console.log(chatData)
+  appendMessage(chatData)
+  socket.emit('new-user', roomName, user1) //
 
   messageForm.addEventListener('submit', e => { //Aktivere når "messageContainer bliver ændret" -> bruges til at sende beskeden til senderen selv
+
     e.preventDefault() //Stopper server fra at poste til server og refresh client
     const message = messageInput.value //Få værdien fra beskeden
     appendMessage(`Dig: ${message}`)
-    socket.emit('send-chat-message', roomName, message) //Sender besked værdien til serveren
+    socket.emit('send-chat-message', roomName, message, user1, user2) //Sender besked værdien til serveren
     messageInput.value = '' //Sletter texten i boxen med beskeden efter beskeden er sendt til server
   })
 }
@@ -31,6 +32,11 @@ socket.on('room-created', room => {
   roomContainer.append(roomElement)
   roomContainer.append(roomLink)
 })
+/*
+socket.on('load-messages', data => {
+  console.log("prut" + data)
+  appendMessage(`${data.chats}`)
+})*/
 
 socket.on('chat-message', data => { //modtager fra server.js event og data(objekt) der følger med event -> bruges til at sende beskeden til alle andre end senderen selv 
   appendMessage(`${data.name}: ${data.message}`)
@@ -43,6 +49,8 @@ socket.on('user-connected', name => { //modtager fra server.js event og data der
 socket.on('user-disconnected', name => { //modtager fra server.js event og data der følger med event
   appendMessage(`${name} forlod rummet`)
 })
+
+
 
 function appendMessage(message) { //Bruges til at sende en angivet besked ud til brugerne
   const messageElement = document.createElement('div') //Laver en besked "div" besked element

@@ -11,6 +11,7 @@ let Strategy = require('passport-local').Strategy
 const app = express()
 const ensureLogin = require('connect-ensure-login')
 const bodyParser = require('body-parser')
+const { emit } = require('process')
 const server = require('http').Server(app) //Giver us en "Server der kan kommunikere med socket.io"
 const io = require('socket.io')(server) //Laver server på port "server"
 
@@ -160,7 +161,9 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
             let match1 = functions.getUserCheck(match[0], null)
             let match2 = functions.getUserCheck(match[1], null)
             let match3 = functions.getUserCheck(match[2], null)
-            console.log(match2.id)
+
+            let userChats = functions.getPersonalUserChats(req.user.id)
+
             res.render('matchfound', {
                 title: 'Match found',
                 loggedIn: true,
@@ -170,7 +173,8 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
                 matchname3: match3.username,
                 match1id: match1.id,
                 match2id: match2.id,
-                match3id: match3.id
+                match3id: match3.id,
+                chats: userChats
             })
         } else {
             //res.send("FEJL, kunne ikke finde bruger")
@@ -190,21 +194,42 @@ app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt d
     if (rooms[req.params.room] == null) {
         return res.redirect('/')
     }
+
+    let chatHistory = functions.getChatHistory(req.session.roomid)
+    console.log(chatHistory)
+    //console.log(req.session.username)
     res.render('room', {
         userName: req.user.username,
-        roomName: req.params.room
+        roomName: req.params.room,
+        username2: req.session.username,
+        chatData: chatHistory
     })
 })
 
 //Rooms
 app.post('/room', functions.checkAuthenticated, (req, res) => {
     if (rooms[req.body.room] != null) {
-        console.log(req.body.room)
+        //console.log(req.body.room)
         return res.redirect('/')
     }
+    let username2 = req.body.username2
+    req.session.username = username2.toString()
+
+
+
+
     let roomId = functions.checkChat(req.user.id, req.body.room)
-    console.log('Logged ind bruger: ' + req.user.id + 'Chatmed bruger: ' + req.body.room + ' har : chat id:' + roomId)
-    console.log(rooms[roomId])
+    req.session.roomid = roomId
+    if (roomId == false) {
+        let user1 = functions.getUserAccounts(null, req.user.username).id
+        let user2 = functions.getUserAccounts(null, username2).id
+
+        functions.makeFirstChat(user1, user2)
+        roomId = functions.checkChat(req.user.id, req.body.room)
+    }
+    //console.log(roomId)
+    //console.log('Logged ind bruger: ' + req.user.id + 'Chatmed bruger: ' + req.body.room + ' har : chat id:' + roomId)
+    //console.log(rooms[roomId])
     rooms[roomId] = { users: {} }
     //rooms[req.body.room] = { users: {} } //Henter "room" data fra index og holder data på users
 
@@ -245,11 +270,17 @@ io.on('connection', socket => { //Første gang bruger loader hjemmeside -> kalde
             console.log(e)
         }
     })
-    socket.on('send-chat-message', (room, message) => { //Aktivere når eventen sker "Send-chat-message" med data "room" "message"
+    socket.on('send-chat-message', (room, message, username1, username2) => { //Aktivere når eventen sker "Send-chat-message" med data "room" "message"
         try {
-            socket.broadcast.to(room).emit('chat-message', { //Sender beskeden til alle undtagen brugeren som sender den selv "broadcast" gør så brugeren ikke selv modtager
+            //TODO her skal vi gemme ned i vores array/filer
+            let userConnection = functions.getRoomConnection(room)
+            let user1 = functions.getUserAccounts(null, username1).id
+            let user2 = functions.getUserAccounts(null, username2).id
 
-                //TODO her skal vi gemme ned i vores array/filer
+
+            functions.saveChat(room, user1, user2, username1, message)
+
+            socket.broadcast.to(room).emit('chat-message', { //Sender beskeden til alle undtagen brugeren som sender den selv "broadcast" gør så brugeren ikke selv modtager
                 message: message, //Laver et objekt til at holde dataen på beskeden
                 name: rooms[room].users[socket.id] //Tilføjer navnet til objeket via socket.id
             })
@@ -268,7 +299,21 @@ io.on('connection', socket => { //Første gang bruger loader hjemmeside -> kalde
             }
         })
     })
+    /*
+    socket.on('load-messages', (room) => { //Aktivere når en disconnecter -> socket funktion
+        try {
+            console.log("shit")
+            let name = "name"
+            socket.broadcast.to(room).emit('load-messages', {
+                chats: "test"
+            }) //Sender event 'user-connected' med besked "name" -> broadcast gør så brugeren ikke selv får det
+        } catch (e) {
+            console.log(e)
+        }
+    })*/
 })
+
+
 
 function getUserRooms(socket) {
     return Object.entries(rooms).reduce((names, [name, room]) => {

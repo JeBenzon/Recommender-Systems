@@ -210,7 +210,34 @@ function checkChat(user_id1, user_id2) {
 }
 
 
-function makeChat(u_id1, u_id2) {
+
+function getRoomConnection(id) {
+    let roomConnection = getData('rooms/roomConnections.json')
+    let roomConnectionObject = textToJSON(roomConnection)
+
+    for (let i = 0; i < roomConnectionObject.length; i++) {
+        if (id == roomConnectionObject[i].id) {
+            let roomConnection = {
+                id: roomConnectionObject[i].id,
+                user_id1: roomConnectionObject[i].u_id1,
+                user_id2: roomConnectionObject[i].u_id2
+            }
+            return roomConnection
+        }
+    }
+
+    return false
+}
+
+
+function getChat(id) {
+    let data = fs.readFileSync(`rooms/room${id}.json`)
+    let chats = textToJSON(data)
+
+    return chats
+}
+//skal både oprette chat i RoomConnection og oprette et room med det rigtige room id og info
+function makeFirstChat(u_id1, u_id2) {
     //Check om brugere allerede har en chat.
     let room = {
         id: parseInt(Date.now() + Math.random()),
@@ -227,24 +254,12 @@ function makeChat(u_id1, u_id2) {
 
 
     fs.writeFileSync('rooms/roomConnections.json', jsonUsers, "utf-8")
+    saveChat(room.id, u_id1, u_id2)
 }
 
-
-
-
-function getChat(id) {
-    let data = fs.readFileSync(`rooms/room${id}.json`)
-    let chats = textToJSON(data)
-
-    return chats
-}
-
-
-function saveChat(id, u_name, u_message, u_id1, u_id2) {
+function saveChat(id, u_id1, u_id2, u_name, u_message) {
     let chat
     try {
-
-
         //prøver at hente room filen
         let data = fs.readFileSync(`rooms/room${id}.json`)
         chatObj = textToJSON(data)
@@ -259,24 +274,70 @@ function saveChat(id, u_name, u_message, u_id1, u_id2) {
         jsonChat = JSON.stringify(chatObj, null, 2)
         fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
     } catch (e) {
-        chat = {
-            id: uuid.v1(),
-            user_id1: u_id1,
-            user_id2: u_id2,
-            chat: [
-                {
-                    name: u_name,
-                    message: u_message
-                }
-            ]
+        let id = checkChat(u_id1, u_id2)
+
+
+
+        if (id) {
+            chat = {
+                id: id,
+                user_id1: u_id1,
+                user_id2: u_id2,
+                username1: getUserAccounts(u_id1, null).username,
+                username2: getUserAccounts(u_id2, null).username,
+                chat: [
+                    {
+                        name: u_name,
+                        message: u_message
+                    }
+                ]
+            }
+            //opretter hvis filen ikke eksistere
+            jsonChat = JSON.stringify(chat, null, 2)
+            console.log(jsonChat)
+            fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
+
+        } else {
+            console.log("Der skete en fejl!, Der fandtes ikke 2 brugere med et room")
         }
-        //opretter hvis filen ikke eksistere
-        jsonChat = JSON.stringify(chat, null, 2)
-        fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
+
+
     }
 }
 
+function getPersonalUserChats(userid) {
+    let roomConnection = getData('rooms/roomConnections.json')
+    let roomConnectionObject = textToJSON(roomConnection)
 
+    let personalUserChats = []
+
+
+
+    for (let i = 0; i < roomConnectionObject.length; i++) {
+        if (roomConnectionObject[i].user_id1 == userid) {
+            let userObj = {
+                name: getUserAccounts(roomConnectionObject[i].user_id2).username,
+                id: roomConnectionObject[i].user_id2
+            }
+
+            personalUserChats.push(userObj)
+        } else if (roomConnectionObject[i].user_id2 == userid) {
+            let userObj = {
+                name: getUserAccounts(roomConnectionObject[i].user_id1).username,
+                id: roomConnectionObject[i].user_id1
+            }
+
+            personalUserChats.push(userObj)
+        }
+    }
+    return personalUserChats
+}
+
+function getChatHistory(roomid) {
+
+    //TODO virker ikke helt optimalt, men vi er på vej.
+    return JSON.stringify(getChat(roomid).chat)
+}
 
 
 module.exports = {
@@ -294,8 +355,11 @@ module.exports = {
     findByUsername,
     getLastUserId,
     checkChat,
-    makeChat,
+    makeFirstChat,
     getChat,
-    saveChat
+    saveChat,
+    getRoomConnection,
+    getPersonalUserChats,
+    getChatHistory
 }
 
