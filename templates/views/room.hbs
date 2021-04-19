@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Chat App</title>
+  <script>
+    let roomName = {{ roomName }}
+    
+  </script>
+  <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+  <!--Script til at få info fra givet sted-->
+  <script defer src="js/script.js"></script>
+  <!--Script til at få info fra givet sted-->
+  {{>head}}
+  
+</head>
+
+<body>
+  
+  <header>
+    <!--Partials header-->
+    {{>header}}
+  </header>
+
+  <input id="user1" name={{ userName }} type="hidden">
+  <input id="user2" name={{ username2 }} type="hidden">
+  <div class="container">
+    <div>
+    {{#each chatData}}
+      <div>{{name}} : {{message}}</div>
+      <!--Load beskeder med hbs #each-->
+    {{/each}}
+    </div>
+    <div id="message-container" class="container"></div>
+  
+
+  
+  <form id="send-container">
+    <input type="text" id="message-input">
+    <button type="submit" id="send-button">Send</button>
+  </form>
+</div>
+  
+
+  <footer>
+    <!--Partials footer-->
+    {{>footer}}
+  </footer>
+
+</body>
+
+</html>
