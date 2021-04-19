@@ -119,7 +119,7 @@ app.post('/register', functions.checkNotAuthenticated, (req, res) => {
 //Login / Logout
 app.get('/', functions.checkNotAuthenticated, (req, res) => {
     res.render('loginpage', {
-        title: 'Login',
+        title: 'Login'
     })
 })
 //1
@@ -171,8 +171,9 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
             errorMessage: 'Could not find page'
         })
     }
+})
 
-}
+
 app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt der er et room name, bliver lavet om til et room
 
     if (rooms[req.params.room] == null) {
