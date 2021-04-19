@@ -6,7 +6,7 @@
 
 //constants to steer calcs
 #define TOTALCRITERIA 9
-#define K 6 
+#define K 3 
 
 //user struct
 typedef struct user {
@@ -43,7 +43,7 @@ void print_matches_id(user *best_matches);
 int main(int argc, char *argv[]) {
 
     // set users file path
-    char *fp = "./users_50000.txt";
+    char *fp = "./users.txt";
 
     // open file
     FILE *userfile = fopen(fp, "a+");
@@ -118,7 +118,6 @@ void load_users(FILE *userfile, int total_users, user *users) {
 void getmatch_js(char **argv, user* users, int total_users){
     //select target user
     int targetuser = atoi(argv[2]);
-    printf("targetuser is: %d\n", targetuser);
     //calc user similarity
     for (int i = 0; i < total_users; i++) {
         users[i].pearson = pearson(users, targetuser - 1, users[i].id -1);
