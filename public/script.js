@@ -7,7 +7,7 @@ const messageInput = document.getElementById('message-input') //Modtager data fr
 if (messageForm != null) {
   const name = prompt('Hvad er dit navn?') //Første gang du loader siden sker dette
   appendMessage('Du tilsluttede rummet')
-  socket.emit('new-user', roomName, name) //
+  socket.emit('new-user', roomName, name) 
 
   messageForm.addEventListener('submit', e => { //Aktivere når "messageContainer bliver ændret" -> bruges til at sende beskeden til senderen selv
     e.preventDefault() //Stopper server fra at poste til server og refresh client
