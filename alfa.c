@@ -81,6 +81,7 @@ int main(int argc, char *argv[]) {
 
 int calc_users(FILE *userfile) {
     char ch;
+    fseek(userfile, 0, SEEK_SET);
     int total_users = 1;
     while (!feof(userfile)) {
         ch = fgetc(userfile);
