@@ -27,7 +27,6 @@ typedef struct user {
 } user;
 
 // prototypes
-void new_user(FILE *userfile);
 int calc_users(FILE *userfile);
 void load_users(FILE *userfile, int total_users, user *users);
 void getmatch_js(char **argv, user* users, int total_users);
@@ -130,27 +129,9 @@ void getmatch_js(char **argv, user* users, int total_users){
 }
 
 void getmatch_c(FILE *userfile, user* users, int total_users){
-    printf("One argument.\n");
-
-    // new user input
-    char answer;
-    int sentinel = 1;
-    while (sentinel) {
-        printf("Wish to enter new user? (y/n)\n");
-        scanf(" %c", &answer);
-        
-        if(answer == 'y'){
-            new_user(userfile);                
-            //Update total users, if new user is created
-            total_users++;    
-        } else{
-            sentinel = 0;
-        }
-    }
-
     //select target user
     int user_id;
-    printf("Enter your user id to get matches and start time comparison:\n");
+    printf("Enter your user id to get matches:\n");
     scanf("%d", &user_id);
     printf("Calculating best matches for %s ...\n", users[user_id-1].name);
 
@@ -166,48 +147,6 @@ void getmatch_c(FILE *userfile, user* users, int total_users){
     print_matches(best_matches);
 }
 
-void new_user(FILE *userfile){
-    char u_name[25];
-    int u_age;
-    char u_gender;
-    int u_id, u_sports, u_food, u_music, u_movies, u_art, 
-        u_outdoors, u_science, u_travel, u_climate;
-    //skal måske ændres senere
-    printf("Enter your id: \n");
-    scanf("%d", &u_id);
-    printf("Enter your name: \n");
-    scanf("%s", u_name);
-    printf("Enter age: \n");
-    scanf("%d", &u_age);
-    printf("Enter your gender: \n");
-    scanf(" %c", &u_gender);
-    printf("Enter ratings from a 1-10 scale, how much you like the following topics:\n");
-    printf("(with 1 being low and 10 being high)\n");
-    printf("Enter sports like-rating: \n");
-    scanf("%d", &u_sports);
-    printf("Enter food like-rating: \n");
-    scanf("%d", &u_food);
-    printf("Enter music like-rating: \n");
-    scanf("%d", &u_music);
-    printf("Enter movies like-rating: \n");
-    scanf("%d", &u_movies);
-    printf("Enter art like-rating: \n");
-    scanf("%d", &u_art);
-    printf("Enter outdoors like-rating: \n");
-    scanf("%d", &u_outdoors);
-    printf("Enter science like-rating: \n");
-    scanf("%d", &u_science);
-    printf("Enter travel like-rating: \n");
-    scanf("%d", &u_travel);
-    printf("Enter climate like-rating: \n");
-    scanf("%d", &u_climate);
-    fprintf(userfile, "\n%d %s %d %c %d %d %d %d %d %d %d %d %d", u_id, u_name, u_age, u_gender, 
-                                                               u_sports, u_food, u_music, 
-                                                               u_movies, u_art, u_outdoors, u_science, 
-                                                               u_travel, u_climate);
-
-    fseek(userfile, 0, SEEK_SET);
-}
 
 double pearson(user *users, int target, int compare){
     user target_user = users[target];
