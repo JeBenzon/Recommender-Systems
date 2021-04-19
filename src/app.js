@@ -13,7 +13,7 @@ const ensureLogin = require('connect-ensure-login')
 const bodyParser = require('body-parser')
 
 //Windows: "alfa.exe", Linux: "./a.out"
-const c_fil_sti = "alfa.exe"
+const c_fil_sti = "./a.out"
 
 // Define paths for express config
 const publicDirectoryPath = path.join(__dirname, '../public')
@@ -92,39 +92,23 @@ app.get('/register', functions.checkNotAuthenticated, (req, res) => {
     })
 })
 
-app.post('/register', functions.checkNotAuthenticated, async (req, res) => {
+app.post('/register', functions.checkNotAuthenticated, (req, res) => {
     try {
         //hasher password
         //const hashedPass = await bcrypt.hash(req.body.password, 10)
         let userId = functions.getLastUserId() + 1
-        functions.addUser(userId, req.body.username, req.body.email, req.body.password)
+        let parameterarray = [req.body.name, req.body.age, req.body.gender, req.body.sport, req.body.food, req.body.music, req.body.movies, req.body.drinking, req.body.cars, req.body.hiking, req.body.magic, req.body.djing]
 
-        res.redirect('/')
+        functions.addUser(userId, req.body.username, req.body.email, req.body.password)
+        functions.createAccInfo(userId,parameterarray)
+
+        res.redirect('/matchfound')
     } catch (e) {
         console.log('Error + ' + e)
         res.redirect('/register')
     }
     //console.log(users)
 
-})
-
-//Create User
-app.get('/createaccinfo', functions.checkAuthenticated, (req, res) => {
-    //
-    if (functions.getUserCheck(req.user.id, null)) {
-        res.redirect('/matchfound')
-    } else {
-        res.render('createaccinfo', {
-            title: 'Fill in account information before you can get matches',
-            loggedIn: true
-        })
-    }
-})
-
-app.post('/createaccinfo', (req, res) => {
-    let parameterarray = [req.body.name, req.body.age, req.body.gender, req.body.sport, req.body.food, req.body.music, req.body.movies, req.body.drinking, req.body.cars, req.body.hiking, req.body.magic, req.body.djing]
-    functions.createAccInfo(req.user.id, parameterarray)
-    res.redirect('/matchfound')
 })
 
 //Login / Logout
@@ -165,7 +149,7 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
         })
     } else {
         //res.send("FEJL, kunne ikke finde bruger")
-        res.redirect('/createaccinfo')
+        res.redirect('/')
     }
 })
 

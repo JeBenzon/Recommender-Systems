@@ -21,7 +21,7 @@
     "id": 4,
     "username": "Frede",
     "email": "email@mail.dk",
-    "password": "Kage1234"
+    "password": "123"
   },
   {
     "id": 5,
@@ -112,5 +112,17 @@
     "username": "BriBri",
     "email": "email@mail.dk",
     "password": "123"
+  },
+  {
+    "id": 20,
+    "username": "karlos98",
+    "email": "karl@gmail.com",
+    "password": "HalloDigder8"
+  },
+  {
+    "id": 21,
+    "username": "Oscar",
+    "email": "os@gmail.com",
+    "password": "Oscar12345"
   }
 ]
