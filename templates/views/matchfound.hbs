@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!--Partials head-->
     {{>head}}
 </head>
+
 <body>
     <header>
         <!--Partials header-->
         {{>header}}
     </header>
-    
+
 
     <div class="container">
         <h1 class="text-center">{{title}}</h1>
@@ -22,22 +24,66 @@
 
         <table class="table">
             <tr>
-                <td class="col-md-8"><p class="font-weight-bold">{{matchname1}}</p></td>
-                <td class="col-md-3"><a class="btn btn-primary" href="#">more info</a></td>
-                <td class="col-md-3"><a class="btn btn-primary" href="#">start chat</a></td>
+                <td class="col-md-8">
+                    <p class="font-weight-bold">{{matchname1}}</p>
+                </td>
+                <td>
+                    <form action="/room" method="POST">
+                        <input name="room" value="{{match1id}}" type="hidden">
+                        <input name="username2" value={{matchname1}} type="hidden">
+                        <button class="btn btn-dark float-right" type="submit">start chat</button>
+                    </form>
+                </td>
+
             </tr>
             <tr>
-                <td class="col-md-8"><p class="font-weight-bold">{{matchname2}}</p></td>
-                <td><a class="btn btn-primary" href="#">more info</a></td>
-                <td><a class="btn btn-primary" href="#">start chat</a></td>
+                <td class="col-md-8">
+                    <p class="font-weight-bold">{{matchname2}}</p>
+                </td>
+                <td>
+                    <form action="/room" method="POST">
+                        <input name="room" value="{{match2id}}" type="hidden">
+                        <input name="username2" value={{matchname2}} type="hidden">
+                        <button class="btn btn-dark float-right" type="submit">start chat</button>
+                    </form>
+                </td>
             </tr>
-                    <tr>
-                <td class="col-md-8"><p class="font-weight-bold">{{matchname3}}</p></td>
-                <td><a class="btn btn-primary" href="#">more info</a></td>
-                <td><a class="btn btn-primary" href="#">start chat</a></td>
+            <tr>
+                <td class="col-md-8">
+                    <p class="font-weight-bold">{{matchname3}}</p>
+                </td>
+                <td>
+                    <form action="/room" method="POST">
+                        <input name="room" value="{{match3id}}" type="hidden">
+                        <input name="username2" value={{matchname3}} type="hidden">
+                        <button class="btn btn-dark float-right" type="submit">start chat</button>
+                    </form>
+                </td>
             </tr>
         </table>
+        <hr>
+        <b>Dine chats: </b>
+        <div>
+            <table class="table">
+                {{#each chats}}
+                <tr>
+                    <td class="col-md-8">
+                        <p>{{name}}</p>
+                    </td>
+                    <td>
+                        <form action="/room" method="POST">
+                            <input name="room" value="{{id}}" type="hidden">
+                            <input name="username2" value={{name}} type="hidden">
+                            <button class="btn btn-dark float-right" type="submit">start chat</button>
+                        </form>
+                    </td>
+
+                </tr>
+                {{/each}}
+            </table>
+        </div>
     </div>
+
     <!--
     <script>
         //Gets user ID from prevouis page findmatch.
@@ -54,4 +100,5 @@
     </footer>
 
 </body>
+
 </html>

@@ -1,6 +1,7 @@
 const cp = require('child_process')
 const { stdout } = require('process')
 const fs = require('fs')
+const uuid = require('uuid');
 
 const usersAccountPath = 'users_account.json'
 const usersInterestsPath = 'users.txt'
@@ -13,6 +14,7 @@ function sendConsoleCommand(programPath, parameters) {
         return stdout.toString()
     } catch (e) {
         console.log('C kommunikations fejl errorcode:' + e)
+        return false
     }
 }
 
@@ -193,6 +195,145 @@ function checkNotAuthenticated(req, res, next) {
     next()
 }
 
+//Funktion der tjekker om 2 brugere har et chatroom, og hvis de er returnere den room id
+function checkChat(user_id1, user_id2) {
+    let roomConnection = getData('rooms/roomConnections.json')
+    let roomConnectionObject = textToJSON(roomConnection)
+
+    for (let i = 0; i < roomConnectionObject.length; i++) {
+        if (user_id1 == roomConnectionObject[i].user_id1 && user_id2 == roomConnectionObject[i].user_id2 ||
+            user_id1 == roomConnectionObject[i].user_id2 && user_id2 == roomConnectionObject[i].user_id1) {
+            return roomConnectionObject[i].id
+        }
+    }
+    return false
+}
+
+
+
+function getRoomConnection(id) {
+    let roomConnection = getData('rooms/roomConnections.json')
+    let roomConnectionObject = textToJSON(roomConnection)
+
+    for (let i = 0; i < roomConnectionObject.length; i++) {
+        if (id == roomConnectionObject[i].id) {
+            let roomConnection = {
+                id: roomConnectionObject[i].id,
+                user_id1: roomConnectionObject[i].u_id1,
+                user_id2: roomConnectionObject[i].u_id2
+            }
+            return roomConnection
+        }
+    }
+
+    return false
+}
+
+
+function getChat(id) {
+    let data = fs.readFileSync(`rooms/room${id}.json`)
+    let chats = textToJSON(data)
+
+    return chats
+}
+//skal både oprette chat i RoomConnection og oprette et room med det rigtige room id og info
+function makeFirstChat(u_id1, u_id2) {
+    //Check om brugere allerede har en chat.
+    let room = {
+        id: parseInt(Date.now() + Math.random()),
+        user_id1: u_id1,
+        user_id2: u_id2,
+    }
+
+    let roomConnection = getData('rooms/roomConnections.json')
+    let roomConnectionObject = textToJSON(roomConnection)
+    roomConnectionObject.push(room)
+
+    jsonUsers = JSON.stringify(roomConnectionObject, null, 2)
+
+
+
+    fs.writeFileSync('rooms/roomConnections.json', jsonUsers, "utf-8")
+    saveChat(room.id, u_id1, u_id2)
+}
+
+function saveChat(id, u_id1, u_id2, u_name, u_message) {
+    let chat
+    try {
+        //prøver at hente room filen
+        let data = fs.readFileSync(`rooms/room${id}.json`)
+        chatObj = textToJSON(data)
+
+        chatToAppend = {
+            name: u_name,
+            message: u_message
+        }
+
+        chatObj.chat.push(chatToAppend)
+
+        jsonChat = JSON.stringify(chatObj, null, 2)
+        fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
+    } catch (e) {
+        let id = checkChat(u_id1, u_id2)
+
+
+
+        if (id) {
+            chat = {
+                id: id,
+                user_id1: u_id1,
+                user_id2: u_id2,
+                username1: getUserAccounts(u_id1, null).username,
+                username2: getUserAccounts(u_id2, null).username,
+                chat: [
+                ]
+            }
+            //opretter hvis filen ikke eksistere
+            jsonChat = JSON.stringify(chat, null, 2)
+            console.log(jsonChat)
+            fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
+
+        } else {
+            console.log("Der skete en fejl!, Der fandtes ikke 2 brugere med et room")
+        }
+
+
+    }
+}
+
+function getPersonalUserChats(userid) {
+    let roomConnection = getData('rooms/roomConnections.json')
+    let roomConnectionObject = textToJSON(roomConnection)
+
+    let personalUserChats = []
+
+
+
+    for (let i = 0; i < roomConnectionObject.length; i++) {
+        if (roomConnectionObject[i].user_id1 == userid) {
+            let userObj = {
+                name: getUserAccounts(roomConnectionObject[i].user_id2).username,
+                id: roomConnectionObject[i].user_id2
+            }
+
+            personalUserChats.push(userObj)
+        } else if (roomConnectionObject[i].user_id2 == userid) {
+            let userObj = {
+                name: getUserAccounts(roomConnectionObject[i].user_id1).username,
+                id: roomConnectionObject[i].user_id1
+            }
+
+            personalUserChats.push(userObj)
+        }
+    }
+    return personalUserChats
+}
+
+function getChatHistory(roomid) {
+
+    //TODO virker ikke helt optimalt, men vi er på vej.
+    return (getChat(roomid).chat)
+}
 
 
 module.exports = {
@@ -208,6 +349,13 @@ module.exports = {
     getData,
     findById,
     findByUsername,
-    getLastUserId
+    getLastUserId,
+    checkChat,
+    makeFirstChat,
+    getChat,
+    saveChat,
+    getRoomConnection,
+    getPersonalUserChats,
+    getChatHistory
 }
 
