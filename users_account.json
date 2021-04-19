@@ -124,5 +124,11 @@
     "username": "Oscar",
     "email": "os@gmail.com",
     "password": "Oscar12345"
+  },
+  {
+    "id": 22,
+    "username": "Gitte-Lis",
+    "email": "gl@mail.dk",
+    "password": "Kage1234"
   }
 ]
