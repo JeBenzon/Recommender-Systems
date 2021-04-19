@@ -10,8 +10,7 @@ if (messageForm != null) {
   /*
     socket.emit('load-messages', roomName)*/
   appendMessage('Du tilsluttede rummet')
-  console.log(chatData)
-  appendMessage(chatData)
+  
   socket.emit('new-user', roomName, user1) //
 
   messageForm.addEventListener('submit', e => { //Aktivere når "messageContainer bliver ændret" -> bruges til at sende beskeden til senderen selv

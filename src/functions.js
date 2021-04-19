@@ -286,10 +286,6 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
                 username1: getUserAccounts(u_id1, null).username,
                 username2: getUserAccounts(u_id2, null).username,
                 chat: [
-                    {
-                        name: u_name,
-                        message: u_message
-                    }
                 ]
             }
             //opretter hvis filen ikke eksistere
@@ -336,7 +332,7 @@ function getPersonalUserChats(userid) {
 function getChatHistory(roomid) {
 
     //TODO virker ikke helt optimalt, men vi er på vej.
-    return JSON.stringify(getChat(roomid).chat)
+    return (getChat(roomid).chat)
 }
 
 

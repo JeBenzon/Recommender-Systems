@@ -18,7 +18,7 @@ const io = require('socket.io')(server) //Laver server på port "server"
 const rooms = {} //Vores rooms
 
 //Windows: "alfa.exe", Linux: "./a.out"
-const c_fil_sti = "alfa.exe"
+const c_fil_sti = "./a.out"
 
 // Define paths for express config
 const publicDirectoryPath = path.join(__dirname, '../public')
@@ -191,19 +191,32 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
 
 
 app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt der er et room name, bliver lavet om til et room
+
     if (rooms[req.params.room] == null) {
         return res.redirect('/')
     }
-
+    try{
     let chatHistory = functions.getChatHistory(req.session.roomid)
-    console.log(chatHistory)
-    //console.log(req.session.username)
     res.render('room', {
         userName: req.user.username,
         roomName: req.params.room,
         username2: req.session.username,
         chatData: chatHistory
     })
+    }catch(e){
+        console.log("No chat history")
+        res.render('room', {
+            userName: req.user.username,
+            roomName: req.params.room,
+            username2: req.session.username,
+        })
+        
+    }
+    
+    //console.log(req.session.username)
+    
+
+
 })
 
 //Rooms
@@ -232,9 +245,8 @@ app.post('/room', functions.checkAuthenticated, (req, res) => {
     //console.log(rooms[roomId])
     rooms[roomId] = { users: {} }
     //rooms[req.body.room] = { users: {} } //Henter "room" data fra index og holder data på users
-
     res.redirect(roomId) //Redirektor dem til det nye room
-    io.emit('room-created', req.body.room) //Sender besked til andre at nyt room var lavet og vise det
+    
 })
 
 
