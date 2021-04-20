@@ -130,5 +130,11 @@
     "username": "Gitte-Lis",
     "email": "gl@mail.dk",
     "password": "Kage1234"
+  },
+  {
+    "id": 23,
+    "username": "anders",
+    "email": "aasdfasdfsdf@test.test",
+    "password": "ABCdef123"
   }
 ]

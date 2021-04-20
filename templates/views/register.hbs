@@ -18,66 +18,72 @@
 
         <!-- Userform with input from user. Method GET is used for local running. Use other method to send data to server.-->
         <form action="/register" method="POST">
-            <div class="row px-2 form-group">
-                <div class="col-md-4"></div>
-                <div class="col-md-4 px-2">
-                    <p>Enter your username</p>
-                    <input class="form-control" type="text" id="username" name="username" placeholder="username"
-                        required><br>
-                    <p>Enter your email adress</p>
-                    <input class="form-control" type="email" id="email" name="email" placeholder="email" required><br>
-                    <p>Enter your password</p>
-                    <div id="message">
-                        <div><b>Requirements:</b></div>
-                        <p id="letter" class="invalid inlineblock"><b>lowercase</b>,</p>
-                        <p id="capital" class="invalid inlineblock"><b>capital</b>,</p>
-                        <p id="number" class="invalid inlineblock"><b>number</b> and </p>
-                        <p id="length" class="invalid inlineblock"><b>8 characters</b></p>
+            <div class="container">
+
+                <div class="row px-2 form-group">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4">
+                        <input class="form-control" type="text" id="username" name="username" placeholder="username"
+                            required><br>
+                        <input class="form-control" type="email" id="email" name="email" placeholder="email" required><br>
+
+                        <div id="message">
+                            <div><b>Requirements:</b></div>
+                            <p id="letter" class="invalid inlineblock"><b>lowercase</b>,</p>
+                            <p id="capital" class="invalid inlineblock"><b>capital</b>,</p>
+                            <p id="number" class="invalid inlineblock"><b>number</b> and </p>
+                            <p id="length" class="invalid inlineblock"><b>8 characters</b></p>
+                        </div>
+                        <input class="form-control" type="password" id="password" name="password" placeholder="password"
+                            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                            title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                            required><br>
+                        <input class="form-control" name="name" type="text" id="name" placeholder="First name"
+                               required><br>
+                        <input class="form-control" type="number" id="age" name="age" placeholder="Age" required><br>
+                        <select name="gender" class="form-control" required>
+                            <option value="" disabled selected hidden>Gender</option>
+                            <option value="f">female</option>
+                            <option value="m">male</option>
+                            <option value="o">other</option>
+                        </select><br><br>
                     </div>
-                    <input class="form-control" type="password" id="password" name="password" placeholder="password"
-                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                        title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
-                        required><br>
                 </div>
-    </div>
-    <div class="container">
-    <div class="row px-2 form-group">
-        <div class="col-md-4 px-2">
-            <input class="form-control" name="name" type="text" id="name" placeholder="First name"
-                   required><br><br>
-            <input class="form-control" type="number" id="age" name="age" placeholder="Age" required><br><br>
-            <select name="gender" class="form-control" required>
-                <option value="" disabled selected hidden>Gender</option>
-                <option value="f">female</option>
-                <option value="m">male</option>
-                <option value="o">other</option>
-            </select><br><br>
-            <input class="form-control" type="number" id="sport" name="sport" placeholder="Sports (1-10)"
-                   max="10" required><br><br>
-        </div>
+            </div>
 
-        <div class="col-md-4 px-2">
-            <input class="form-control" type="number" id="food" name="food" placeholder="Food (1-10)" max="10"
-                   required><br><br>
-            <input class="form-control" type="number" id="music" name="music" placeholder="Music (1-10)"
-                   max="10" required><br><br>
-            <input class="form-control" type="number" id="movies" name="movies" placeholder="Movies (1-10)"
-                   max="10" required><br><br>
-            <input class="form-control" type="number" id="drinking" name="drinking"
-                   placeholder="Drinking (1-10)" max="10" required><br><br>
-        </div>
-        <div class="col-md-4 px-2">
-            <input class="form-control" type="number" id="cars" name="cars" placeholder="Cars (1-10)" max="10"
-                   required><br><br>
-            <input class="form-control" type="number" id="hiking" name="hiking" placeholder="Hiking (1-10)"
-                   max="10" required><br><br>
-            <input class="form-control" type="number" id="magic" name="magic" placeholder="Magic (1-10)"
-                   max="10" required><br><br>
-            <input class="form-control" type="number" id="djing" name="djing" placeholder="Djing (1-10)"
-                   max="10" required><br><br>
+            <div class="container">
+                <p class="text-center">Rate your interest from 1 to 10, where 1 is worst and 10 is best</p>
+                <div class="row px-2 form-group">
 
-        </div>
-        <button class="btn btn-dark float-right" type="submit">Register Account!</button>
+                    <div class="col-md-4 px-2">
+                        <input class="form-control" type="number" id="food" name="food" placeholder="Food (1-10)" max="10"
+                               required><br><br>
+                        <input class="form-control" type="number" id="music" name="music" placeholder="Music (1-10)"
+                               max="10" required><br><br>
+                        <input class="form-control" type="number" id="movies" name="movies" placeholder="Movies (1-10)"
+                               max="10" required><br><br>
+                    </div>
+                    <div class="col-md-4 px-2">
+                        <input class="form-control" type="number" id="outdoors" name="outdoors" placeholder="Outdoor (1-10)" max="10"
+                               required><br><br>
+                        <input class="form-control" type="number" id="science" name="science" placeholder="Science (1-10)"
+                               max="10" required><br><br>
+                        <input class="form-control" type="number" id="travel" name="travel" placeholder="Travel (1-10)"
+                               max="10" required><br><br>
+                    </div>
+                    <div class="col-md-4 px-2">
+                        <input class="form-control" type="number" id="climate" name="climate" placeholder="Climate (1-10)" max="10"
+                               required><br><br>
+                        <input class="form-control" type="number" id="art" name="art" placeholder="Art (1-10)"
+                               max="10" required><br><br>
+                        <input class="form-control" type="number" id="sports" name="sports" placeholder="Sports (1-10)"
+                               max="10" required><br><br>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-dark float-right" type="submit">Register Account!</button>
         </form>
     </div>
 
