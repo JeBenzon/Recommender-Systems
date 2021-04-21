@@ -154,7 +154,7 @@ function printMatches(programPath, target_user, knn, index){
     let display_matches = []
     let l = 0
 
-    if (index < knn){
+    if (knn <= getLastUserId()-3 && knn >= 3){
         for (let i = index; i < index +3; i++){
             display_matches[l] = getUserCheck(matches[i], null)
             l++            

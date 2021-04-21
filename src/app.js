@@ -14,7 +14,7 @@ const bodyParser = require('body-parser')
 
 //Får vist at 
 let knn = 3
-let index = 0
+let index = knn - 3
 
 
 //Windows: "alfa.exe", Linux: "./a.out"
@@ -148,32 +148,54 @@ app.delete('/logout', functions.checkAuthenticated, (req, res) => {
     //Logger ud (en function fra passport der rydder op i session)
     req.logOut()
     res.redirect('/')
+    //knn = 3
 })
 
 app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
     let user = functions.getUserCheck(req.user.id, null)
+    console.log("knn is " + knn)
     if(user) {
         
         display_matches = functions.printMatches(c_fil_sti, req.user.id, knn, index)
-        
-        res.render('matchfound', {
+        if(knn > functions.getLastUserId()-3 || knn < 3){
+            res.render('matchfound', {
+                title: 'Match found',
+                loggedIn: true,
+                username: req.user.username,
+                matchname1: "No more matches to be shown",
+                matchname2: "No more matches to be shown",
+                matchname3: "No more matches to be shown"
+            })
+            } else {
+            res.render('matchfound', {
             title: 'Match found',
             loggedIn: true,
             username: req.user.username,
             matchname1: display_matches[0].username,
             matchname2: display_matches[1].username,
             matchname3: display_matches[2].username,
-        })
+            })
+        }
     } else {
         //res.send("FEJL, kunne ikke finde bruger")
         res.redirect('/createaccinfo')
     }
 })
 
-app.post('/matchfound', (req, res) => {
-    knn += 3
-    index += 3
-    res.redirect('/matchfound')
+app.post('/showPreviousMatches', (req, res) => {
+    if(knn > 3){
+        knn -= 3
+        index -= 3
+        res.redirect('/matchfound')
+    }
+})
+
+app.post('/showMoreMatches', (req, res) => {
+    if(knn < functions.getLastUserId()-3){
+        knn += 3
+        index += 3
+        res.redirect('/matchfound')
+    }
 })
 
 // 404

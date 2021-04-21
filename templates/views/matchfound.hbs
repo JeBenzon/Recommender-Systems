@@ -31,15 +31,25 @@
                 <td><a class="btn btn-primary" href="#">more info</a></td>
                 <td><a class="btn btn-primary" href="#">start chat</a></td>
             </tr>
-                    <tr>
+            <tr>
                 <td class="col-md-8"><p class="font-weight-bold">{{matchname3}}</p></td>
                 <td><a class="btn btn-primary" href="#">more info</a></td>
                 <td><a class="btn btn-primary" href="#">start chat</a></td>
             </tr>
         </table>
-        <form action="/matchfound" method="POST">
-            <button type="submit" class="btn btn-primary">Show me more matches!</button>
-        </form>
+        <hr>
+        <div class="container">
+            <div class="col-md-12 text-center">
+            <form action="/showPreviousMatches" method="POST">
+                <button type="submit" class="btn btn-primary">Show previous matches</button>
+            </form>
+            <form action="/showMoreMatches" method="POST">
+                <button type="submit" class="btn btn-primary">Show me more matches</button>
+            </form>
+        </div>
+        </div>
+        
+        
     </div>
     <!--
     <script>
