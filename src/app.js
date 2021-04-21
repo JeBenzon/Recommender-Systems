@@ -141,8 +141,6 @@ app.delete('/logout', functions.checkAuthenticated, (req, res) => {
 
 app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
     let user = functions.getUserCheck(req.user.id, null)
-    console.log(user)
-    console.log(req.user.username)
     //try{
         if(user) {
             display_matches = functions.printMatches(c_fil_sti, req.user.id, knn, index)
