@@ -12,6 +12,11 @@ const app = express()
 const ensureLogin = require('connect-ensure-login')
 const bodyParser = require('body-parser')
 
+//Får vist at 
+let knn = 3
+let index = 0
+
+
 //Windows: "alfa.exe", Linux: "./a.out"
 const c_fil_sti = "alfa.exe"
 
@@ -149,24 +154,26 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
     let user = functions.getUserCheck(req.user.id, null)
     if(user) {
         
-        let matches = (functions.sendConsoleCommand(c_fil_sti, `getmatch ${req.user.id}`))
-        let match = matches.split(" ")
-        let match1 = functions.getUserCheck(match[0], null)
-        let match2 = functions.getUserCheck(match[1], null)
-        let match3 = functions.getUserCheck(match[2], null)
-
+        display_matches = functions.printMatches(c_fil_sti, req.user.id, knn, index)
+        
         res.render('matchfound', {
             title: 'Match found',
             loggedIn: true,
             username: req.user.username,
-            matchname1: match1.username,
-            matchname2: match2.username,
-            matchname3: match3.username,
+            matchname1: display_matches[0].username,
+            matchname2: display_matches[1].username,
+            matchname3: display_matches[2].username,
         })
     } else {
         //res.send("FEJL, kunne ikke finde bruger")
         res.redirect('/createaccinfo')
     }
+})
+
+app.post('/matchfound', (req, res) => {
+    knn += 3
+    index += 3
+    res.redirect('/matchfound')
 })
 
 // 404

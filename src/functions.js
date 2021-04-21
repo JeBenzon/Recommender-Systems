@@ -9,7 +9,7 @@ const usersInterestsPath = 'users.txt'
 function sendConsoleCommand(programPath, parameters) {
     try {
         let par = parameters.split(" ")
-        const { stdout, stderr } = cp.spawnSync(programPath, [par[0], par[1]])
+        const { stdout, stderr } = cp.spawnSync(programPath, [par[0], par[1], par[2]])
         return stdout.toString()
     } catch (e) {
         console.log('C kommunikations fejl errorcode:' + e)
@@ -149,6 +149,21 @@ function createAccInfo(id, parameters) {
     }
 }
 
+function printMatches(programPath, target_user, knn, index){
+    let matches = sendConsoleCommand(programPath, `getmatch ${target_user} ${knn}`).split(" ")
+    let display_matches = []
+    let l = 0
+
+    if (index < knn){
+        for (let i = index; i < index +3; i++){
+            display_matches[l] = getUserCheck(matches[i], null)
+            l++            
+        }
+    }
+
+    return display_matches
+}
+
 //Vi har gået ud fra dette github eksempel: 
 //Credit: https://github.com/passport/express-4.x-local-example 
 //Funktioner fra passport, som vi har omskrevet til at benytte nogle af vores egne funktioner
@@ -208,6 +223,7 @@ module.exports = {
     getData,
     findById,
     findByUsername,
-    getLastUserId
+    getLastUserId,
+    printMatches
 }
 

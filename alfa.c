@@ -35,8 +35,9 @@ double pearson(user *users, int target, int compare);
 double calc_mean_of_user(user user);
 double calc_sqrt_of_user(user user, double mean);
 user *find_best_matches(user *users, int total_users, int user_id);
+user *find_best_matches_js(user *users, int total_users, int user_id, int knn);
 void print_matches(user *best_matches);
-void print_matches_id(user *best_matches);
+void print_matches_id(user *best_matches, int knn);
 
 
 int main(int argc, char *argv[]) {
@@ -63,7 +64,6 @@ int main(int argc, char *argv[]) {
     
     // load userinfo into array
     load_users(userfile, total_users, users);
-
     if(argc > 2) {
         if(strcmp(argv[1], "getmatch") == 0){
             getmatch_js(argv, users, total_users);
@@ -117,15 +117,15 @@ void load_users(FILE *userfile, int total_users, user *users) {
 void getmatch_js(char **argv, user* users, int total_users){
     //select target user
     int targetuser = atoi(argv[2]);
+    int knn = atoi(argv[3]);
     //calc user similarity
     for (int i = 0; i < total_users; i++) {
         users[i].pearson = pearson(users, targetuser - 1, users[i].id -1);
     }
     //Run of all users, finding the best matches for the targetuser
-    user *best_matches = find_best_matches(users, total_users, targetuser);
-    
+    user *best_matches = find_best_matches_js(users, total_users, targetuser, knn);
     //print matches back to javascript
-    print_matches_id(best_matches);       
+    print_matches_id(best_matches, knn);       
 }
 
 void getmatch_c(FILE *userfile, user* users, int total_users){
@@ -229,14 +229,39 @@ user *find_best_matches(user *users, int total_users, int user_id){
     return best_matches;
 }
 
+user *find_best_matches_js(user *users, int total_users, int user_id, int knn){
+    user *best_matches = malloc(knn * sizeof(user));
+    if(best_matches == NULL){
+        exit(EXIT_FAILURE);
+    }
+
+    for(int i = 0; i < knn; i++){
+        best_matches[i].pearson = -10;
+    }
+    
+    for(int i = 0; i < total_users; i++){
+        if(users[i].id != user_id){
+            user x = users[i];
+            for(int j = 0; j < knn; j++){
+                if(x.pearson > best_matches[j].pearson){
+                    user temp = best_matches[j];
+                    best_matches[j] = x;
+                    x = temp;
+                }
+            } 
+        }
+    }
+    return best_matches;
+}
+
 void print_matches(user *best_matches){
     for(int i = 0; i < K; i++){
             printf("Userid: %d, Username: %s, Similarity: %lf\n",best_matches[i].id, best_matches[i].name, best_matches[i].pearson);
         }
 }
 
-void print_matches_id(user *best_matches){
-    for(int i = 0; i < K; i++){
+void print_matches_id(user *best_matches, int knn){
+    for(int i = 0; i < knn; i++){
             printf("%d ", best_matches[i].id);
         }
 }
