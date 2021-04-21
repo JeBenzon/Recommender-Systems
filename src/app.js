@@ -17,8 +17,12 @@ const io = require('socket.io')(server) //Laver server på port "server"
 
 const rooms = {} //Vores rooms
 
+//Får vist at 
+let knn = 3
+let index = knn - 3
+
 //Windows: "alfa.exe", Linux: "./a.out"
-const c_fil_sti = "./a.out"
+const c_fil_sti = "alfa.exe"
 
 // Define paths for express config
 const publicDirectoryPath = path.join(__dirname, '../public')
@@ -132,47 +136,74 @@ app.delete('/logout', functions.checkAuthenticated, (req, res) => {
     //Logger ud (en function fra passport der rydder op i session)
     req.logOut()
     res.redirect('/')
+    //knn = 3
 })
 
 app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
     let user = functions.getUserCheck(req.user.id, null)
-    //Try der tager hånd om hvis c filen ikke er blevet kørt.
-    try {
-        if (user) {
-
-            let matches = (functions.sendConsoleCommand(c_fil_sti, `getmatch ${req.user.id}`))
-            let match = matches.split(" ")
-            let match1 = functions.getUserCheck(match[0], null)
-            let match2 = functions.getUserCheck(match[1], null)
-            let match3 = functions.getUserCheck(match[2], null)
-
+    console.log(user)
+    console.log(req.user.username)
+    //try{
+        if(user) {
+            display_matches = functions.printMatches(c_fil_sti, req.user.id, knn, index)
             let userChats = functions.getPersonalUserChats(req.user.id)
 
-            res.render('matchfound', {
-                title: 'Match found',
-                loggedIn: true,
-                username: req.user.username,
-                matchname1: match1.username,
-                matchname2: match2.username,
-                matchname3: match3.username,
-                match1id: match1.id,
-                match2id: match2.id,
-                match3id: match3.id,
-                chats: userChats
-            })
+            if(knn > functions.getLastUserId()-3 || knn < 3){
+                res.render('matchfound', {
+                    title: 'Match found',
+                    loggedIn: true,
+                    username: req.user.username,
+                    matchname1: "No more matches to be shown",
+                    matchname2: "No more matches to be shown",
+                    matchname3: "No more matches to be shown",
+                    // match1id: match1.id,
+                    // match2id: match2.id,
+                    // match3id: match3.id,
+                    chats: userChats
+                })
+            } else {
+                res.render('matchfound', {
+                    title: 'Match found',
+                    loggedIn: true,
+                    username: req.user.username,
+                    matchname1: display_matches[0].username,
+                    matchname2: display_matches[1].username,
+                    matchname3: display_matches[2].username,
+                    match1id: display_matches[0].id,
+                    match2id: display_matches[1].id,
+                    match3id: display_matches[2].id,
+                    chats: userChats
+                })
+            }
+            
         } else {
             //res.send("FEJL, kunne ikke finde bruger")
             res.redirect('/createaccinfo')
         }
-    } catch (e) {
-        console.log('!ERROR! - Har du husket at compilere alfa.c?')
-        res.render('404', {
-            title: '404',
-            errorMessage: 'Could not find page'
-        })
+    // } catch (e) {
+    //     console.log('!ERROR! - Har du husket at compilere alfa.c?')
+    //     res.render('404', {
+    //         title: '404',
+    //         errorMessage: 'Could not find page'
+    //     })
+    // }
+})
+
+app.post('/showPreviousMatches', (req, res) => {
+    if(knn > 3){
+    knn -= 3
+    index -= 3
+    res.redirect('/matchfound')
     }
 })
 
+app.post('/showMoreMatches', (req, res) => {
+    if(knn < functions.getLastUserId()-3){
+    knn += 3
+    index += 3
+    res.redirect('/matchfound')
+    }
+})
 
 app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt der er et room name, bliver lavet om til et room
 

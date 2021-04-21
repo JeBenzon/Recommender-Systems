@@ -10,7 +10,7 @@ const usersInterestsPath = 'users.txt'
 function sendConsoleCommand(programPath, parameters) {
     try {
         let par = parameters.split(" ")
-        const { stdout, stderr } = cp.spawnSync(programPath, [par[0], par[1]])
+        const { stdout, stderr } = cp.spawnSync(programPath, [par[0], par[1], par[2]])
         return stdout.toString()
     } catch (e) {
         console.log('C kommunikations fejl errorcode:' + e)
@@ -149,6 +149,21 @@ function createAccInfo(id, parameters) {
         console.log('Der skete en fejl ved tilføjelse af bruger til fil')
         return false
     }
+}
+
+function printMatches(programPath, target_user, knn, index){
+    let matches = sendConsoleCommand(programPath, `getmatch ${target_user} ${knn}`).split(" ")
+    let display_matches = []
+    let l = 0
+
+    if (knn <= getLastUserId()-3 && knn >= 3){
+        for (let i = index; i < index +3; i++){
+            display_matches[l] = getUserCheck(matches[i], null)
+            l++            
+        }
+    }
+
+    return display_matches
 }
 
 //Vi har gået ud fra dette github eksempel: 
@@ -356,6 +371,7 @@ module.exports = {
     saveChat,
     getRoomConnection,
     getPersonalUserChats,
-    getChatHistory
+    getChatHistory,
+    printMatches
 }
 
