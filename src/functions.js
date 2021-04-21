@@ -67,8 +67,10 @@ function getUserAccounts(id, username) {
 //Tjekker om user eksistere i users.txt 
 function accountInfoCheck(id) {
     try {
-        const data = getData(usersInterestsPath)
-        let lines = data.split("\n")
+        const datajson = getData(usersAccountPath)
+        let jsonstring = textToJSON(datajson.toString())
+        const datatxt = getData(usersInterestsPath)
+        let lines = datatxt.split("\n")
         for (let i = 0; i < lines.length; i++) {
             let useridWord = lines[i].split(" ")[0]
             if (useridWord == id) {
@@ -356,6 +358,7 @@ module.exports = {
     saveChat,
     getRoomConnection,
     getPersonalUserChats,
-    getChatHistory
+    getChatHistory,
+    SaveAccInfo
 }
 

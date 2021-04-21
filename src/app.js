@@ -11,6 +11,9 @@ let Strategy = require('passport-local').Strategy
 const app = express()
 const ensureLogin = require('connect-ensure-login')
 const bodyParser = require('body-parser')
+const {SaveAccInfo} = require("./functions");
+const {getUserAccounts} = require("./functions");
+const {accountInfoCheck} = require("./functions");
 const { emit } = require('process')
 const server = require('http').Server(app) //Giver us en "Server der kan kommunikere med socket.io"
 const io = require('socket.io')(server) //Laver server på port "server"
@@ -107,10 +110,10 @@ app.post('/register', functions.checkNotAuthenticated, (req, res) => {
         functions.addUser(userId, req.body.username, req.body.email, req.body.password)
         functions.createAccInfo(userId,parameterarray)
 
-        res.redirect('/matchfound')
+        res.redirect('/editUser')
     } catch (e) {
         console.log('Error + ' + e)
-        res.redirect('/register')
+        res.redirect('/editUser')
     }
     //console.log(users)
 
