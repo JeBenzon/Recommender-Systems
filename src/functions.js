@@ -166,6 +166,13 @@ function printMatches(programPath, target_user, knn, index){
     return display_matches
 }
 
+function knnButtonChecker(knn){
+    if (knn <= 3) {
+        return false
+    }
+    return true
+}
+
 //Vi har gået ud fra dette github eksempel: 
 //Credit: https://github.com/passport/express-4.x-local-example 
 //Funktioner fra passport, som vi har omskrevet til at benytte nogle af vores egne funktioner
@@ -372,6 +379,7 @@ module.exports = {
     getRoomConnection,
     getPersonalUserChats,
     getChatHistory,
-    printMatches
+    printMatches,
+    knnButtonChecker
 }
 

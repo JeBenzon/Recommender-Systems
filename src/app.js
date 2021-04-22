@@ -145,11 +145,13 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
         if(user) {
             display_matches = functions.printMatches(c_fil_sti, req.user.id, knn, index)
             let userChats = functions.getPersonalUserChats(req.user.id)
-
+            boolean = functions.knnButtonChecker(knn)
             if(knn > functions.getLastUserId()-3 || knn < 3){
                 res.render('matchfound', {
                     title: 'Match found',
                     loggedIn: true,
+                    userShown: false, //fjerner 'start chat'-knappen, fordi der ikke vises en bruger
+                    buttonCheck: boolean,
                     username: req.user.username,
                     matchname1: "No more matches to be shown",
                     matchname2: "No more matches to be shown",
@@ -163,6 +165,8 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
                 res.render('matchfound', {
                     title: 'Match found',
                     loggedIn: true,
+                    userShown: true, //viser 'start chat'-knappen når der er en bruger at vise
+                    buttonCheck: boolean,
                     username: req.user.username,
                     matchname1: display_matches[0].username,
                     matchname2: display_matches[1].username,

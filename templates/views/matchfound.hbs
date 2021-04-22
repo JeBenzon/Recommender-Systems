@@ -31,7 +31,9 @@
                     <form action="/room" method="POST">
                         <input name="room" value="{{match1id}}" type="hidden">
                         <input name="username2" value={{matchname1}} type="hidden">
+                        {{#if userShown}}
                         <button class="btn btn-dark float-right" type="submit">start chat</button>
+                        {{/if}}
                     </form>
                 </td>
             </tr>
@@ -43,7 +45,9 @@
                     <form action="/room" method="POST">
                         <input name="room" value="{{match2id}}" type="hidden">
                         <input name="username2" value={{matchname2}} type="hidden">
+                        {{#if userShown}}
                         <button class="btn btn-dark float-right" type="submit">start chat</button>
+                        {{/if}}
                     </form>
                 </td>
             </tr>
@@ -55,7 +59,9 @@
                     <form action="/room" method="POST">
                         <input name="room" value="{{match3id}}" type="hidden">
                         <input name="username2" value={{matchname3}} type="hidden">
+                        {{#if userShown}}
                         <button class="btn btn-dark float-right" type="submit">start chat</button>
+                        {{/if}}
                     </form>
                 </td>
             </tr>
@@ -64,10 +70,14 @@
         <div class="container">
             <div class="col-md-12 text-center">
             <form action="/showPreviousMatches" method="POST">
+                {{#if buttonCheck}}
                 <button type="submit" class="btn btn-primary">Show previous matches</button>
+                {{/if}}
             </form>
             <form action="/showMoreMatches" method="POST">
+                {{#if userShown}}
                 <button type="submit" class="btn btn-primary">Show me more matches</button>
+                {{/if}}
             </form>
             </div>
         </div>
