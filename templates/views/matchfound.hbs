@@ -18,70 +18,76 @@
         <hr>
         <h2>Hi {{username}}</h2>
         <!--Prints out user ID via div ID (look script) -->
-        <div class="inLineBlock" id="matchfound">
+        
+        <div class="fixedHeight24px inLineBlock" id="matchfound">
+            {{#if userShown}}
             <b>Top three matches for user: {{username}}</b>
+            {{/if}}
         </div>
-        {{#if userShown}}
-        <table class="table">
-            <tr>
-                <td class="col-md-8">
-                    <p class="font-weight-bold">{{matchname1}}</p>
-                </td>
-                <td>
-                    <form action="/room" method="POST">
-                        <input name="room" value="{{match1id}}" type="hidden">
-                        <input name="username2" value={{matchname1}} type="hidden">
-                        {{#if userShown}}
-                        <button class="btn btn-dark float-right" type="submit">start chat</button>
-                        {{/if}}
-                    </form>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-8">
-                    <p class="font-weight-bold">{{matchname2}}</p>
-                </td>
-                <td>
-                    <form action="/room" method="POST">
-                        <input name="room" value="{{match2id}}" type="hidden">
-                        <input name="username2" value={{matchname2}} type="hidden">
-                        {{#if userShown}}
-                        <button class="btn btn-dark float-right" type="submit">start chat</button>
-                        {{/if}}
-                    </form>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-8">
-                    <p class="font-weight-bold">{{matchname3}}</p>
-                </td>
-                <td>
-                    <form action="/room" method="POST">
-                        <input name="room" value="{{match3id}}" type="hidden">
-                        <input name="username2" value={{matchname3}} type="hidden">
-                        {{#if userShown}}
-                        <button class="btn btn-dark float-right" type="submit">start chat</button>
-                        {{/if}}
-                    </form>
-                </td>
-            </tr>
-        </table>
-        {{else}}
-        <div>
-            <h1>No more matches</h1>
+        
+        <div class="fixedHeight">
+            {{#if userShown}}
+            <table class="table">
+                <tr>
+                    <td class="col-md-8">
+                        <p class="font-weight-bold">{{matchname1}}</p>
+                    </td>
+                    <td>
+                        <form action="/room" method="POST">
+                            <input name="room" value="{{match1id}}" type="hidden">
+                            <input name="username2" value={{matchname1}} type="hidden">
+                            {{#if userShown}}
+                            <button class="btn btn-dark float-right" type="submit">start chat</button>
+                            {{/if}}
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-8">
+                        <p class="font-weight-bold">{{matchname2}}</p>
+                    </td>
+                    <td>
+                        <form action="/room" method="POST">
+                            <input name="room" value="{{match2id}}" type="hidden">
+                            <input name="username2" value={{matchname2}} type="hidden">
+                            {{#if userShown}}
+                            <button class="btn btn-dark float-right" type="submit">start chat</button>
+                            {{/if}}
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-8">
+                        <p class="font-weight-bold">{{matchname3}}</p>
+                    </td>
+                    <td>
+                        <form action="/room" method="POST">
+                            <input name="room" value="{{match3id}}" type="hidden">
+                            <input name="username2" value={{matchname3}} type="hidden">
+                            {{#if userShown}}
+                            <button class="btn btn-dark float-right" type="submit">start chat</button>
+                            {{/if}}
+                        </form>
+                    </td>
+                </tr>
+            </table>
+            {{else}}
+            <div class="text-center divwithpadding">
+                <h1>No more matches</h1>
+            </div>
+            {{/if}}
         </div>
-        {{/if}}
         <hr>
         <div class="container">
-            <div class="col-md-12 text-center">
+            <div class="flex">
             <form action="/showPreviousMatches" method="POST">
                 {{#if buttonCheck}}
-                <button type="submit" class="btn btn-primary">Show previous matches</button>
+                <button type="submit" class="btn btn-primary flexbutton">Show previous matches</button>
                 {{/if}}
             </form>
             <form action="/showMoreMatches" method="POST">
                 {{#if userShown}}
-                <button type="submit" class="btn btn-primary">Show me more matches</button>
+                <button type="submit" class="btn btn-primary flexbutton">Show me more matches</button>
                 {{/if}}
             </form>
             </div>

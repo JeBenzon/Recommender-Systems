@@ -155,3 +155,29 @@ option [value=""][disabled]{
 .inlineblock {
   display: inline-block;
 }
+
+.fixedHeight {
+    height: 250px;
+}
+
+.fixedHeight24px {
+    height: 24px;
+}
+
+.centerbuttons {
+    display: inline;
+    text-align: center;
+}
+
+.flex {
+    display: flex;
+    justify-content: center;
+}
+
+.flexbutton {
+    margin-right: 10px;
+}
+
+.divwithpadding {
+    padding: 100px;
+}
