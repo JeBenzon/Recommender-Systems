@@ -125,7 +125,22 @@ function SaveAccInfo(id, parameters){
         fs.writeFileSync(usersInterestsPath, linestring, function (err) {
            if (err) throw err;
         });
+        let userobj = {
+            id: id,
+            username: parameters[13],
+            email: parameters[14],
+            password: parameters[12],
+        }
+        let jsonUsers = fs.readFileSync(usersAccountPath, "utf-8")
+        let users = JSON.parse(jsonUsers)
+
+        users.push(userobj)
+        jsonUsers = JSON.stringify(users, null, 2)
+
+        fs.writeFileSync(usersAccountPath, jsonUsers, "utf-8")
+
         return true
+
     } catch (e) {
         console.log('Der skete en fejl ved tilføjelse af bruger til fil' + e)
         return false

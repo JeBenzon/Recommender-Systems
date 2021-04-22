@@ -130,7 +130,7 @@ app.get('/editUser', functions.checkAuthenticated, (req, res) => {
 })
 app.post('/matchfound',functions.checkAuthenticated,(req, res) => {
 
-    let parameterarray = [req.body.name, req.body.age, req.body.gender, req.body.sports, req.body.food, req.body.music, req.body.movies, req.body.art, req.body.outdoors, req.body.science, req.body.travel, req.body.climate]
+    let parameterarray = [req.body.name, req.body.age, req.body.gender, req.body.sports, req.body.food, req.body.music, req.body.movies, req.body.art, req.body.outdoors, req.body.science, req.body.travel, req.body.climate, req.body.password,req.body.username,req.body.email]
     functions.SaveAccInfo(req.user.id,parameterarray)
 
     res.redirect('/matchfound')
