@@ -21,7 +21,7 @@
         <div class="inLineBlock" id="matchfound">
             <b>Top three matches for user: {{username}}</b>
         </div>
-
+        {{#if userShown}}
         <table class="table">
             <tr>
                 <td class="col-md-8">
@@ -66,6 +66,11 @@
                 </td>
             </tr>
         </table>
+        {{else}}
+        <div>
+            <h1>No more matches</h1>
+        </div>
+        {{/if}}
         <hr>
         <div class="container">
             <div class="col-md-12 text-center">
