@@ -449,11 +449,8 @@ module.exports = {
     getRoomConnection,
     getPersonalUserChats,
     getChatHistory,
-<<<<<<<<< Temporary merge branch 1
-    SaveAccInfo
-=========
+    SaveAccInfo,
     printMatches,
     knnButtonChecker
->>>>>>>>> Temporary merge branch 2
 }
 
