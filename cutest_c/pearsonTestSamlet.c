@@ -122,7 +122,7 @@ void pearsonTestExceptional1(CuTest *tc){
     //c sqrt:       9.42809 -> (20*sqrt(2))/3
     //sim:          -20
     double expected = -0.125;
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void pearsonTestExceptional2(CuTest *tc){
@@ -157,7 +157,7 @@ void pearsonTestExceptional2(CuTest *tc){
     //c sqrt:       120.91319 -> 2*sqrt(3655)
     //sim:          5433
     double expected = 0.37161; //-> 5433/14620
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void pearsonTestExtreme1(CuTest *tc){
@@ -192,7 +192,7 @@ void pearsonTestExtreme1(CuTest *tc){
     //c sqrt:       0.003
     //sim:          0.000009
     double expected = 1;
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void pearsonTestExtreme2(CuTest *tc){
@@ -227,7 +227,7 @@ void pearsonTestExtreme2(CuTest *tc){
     //c sqrt:       0.003
     //sim:          0.000009
     double expected = 1;
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void pearsonTestNormal1(CuTest *tc){
@@ -262,7 +262,7 @@ void pearsonTestNormal1(CuTest *tc){
     //c sqrt:       2.44948 -> sqrt(6)
     //sim:          -1
     double expected = -0.20412; //-> -(sqrt(6)/12)
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void pearsonTestNormal2(CuTest *tc){
@@ -297,7 +297,7 @@ void pearsonTestNormal2(CuTest *tc){
     //c sqrt:       2.44948 -> sqrt(6)
     //sim:          -1
     double expected = -0.20412; //-> -(sqrt(6)/12)
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void pearsonTestNormal3(CuTest *tc){
@@ -327,12 +327,12 @@ void pearsonTestNormal3(CuTest *tc){
     double actual = pearson(input, 0, 1);
     //expected values:
     //t_mean value:   3
-    //c_mean value:   4.88888 -> (44/9)
+    //c_mean value:   5
     //t sqrt:       2
-    //c sqrt:       7.49073 -> sqrt(505)/3
+    //c sqrt:       7.4833147 -> 2*sqrt(14)
     //sim:          2
-    double expected = 0.13349; //-> 3/sqrt(505)
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    double expected = 0.13363; //-> 3/sqrt(505)
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void pearsonTestNormal4(CuTest *tc){
@@ -367,7 +367,7 @@ void pearsonTestNormal4(CuTest *tc){
     //c sqrt:       7.74596 -> 2*sqrt(15)
     //sim:          -60
     double expected = -1;
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void calcSqrtofUserTestExceptional1(CuTest *tc){
@@ -387,7 +387,7 @@ void calcSqrtofUserTestExceptional1(CuTest *tc){
     //expected
     //mean value:   0
     double expected = 16.97056;
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void calcSqrtofUserTestExceptional2(CuTest *tc){
@@ -407,7 +407,7 @@ void calcSqrtofUserTestExceptional2(CuTest *tc){
     //expected
     //mean value:   28.33333 -> 85/3
     double expected = 120.91319 ; //-> 2*sqrt(3655)
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void calcSqrtofUserTestExtreme1(CuTest *tc){
@@ -427,7 +427,7 @@ void calcSqrtofUserTestExtreme1(CuTest *tc){
     //expected
     //mean value:   5.001
     double expected = 0.003;
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void calcSqrtofUserTestExtreme2(CuTest *tc){
@@ -447,7 +447,7 @@ void calcSqrtofUserTestExtreme2(CuTest *tc){
     //expected
     //mean value:   1.001
     double expected = 0.003;
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void calcSqrtofUserTestNormal1(CuTest *tc){
@@ -467,7 +467,7 @@ void calcSqrtofUserTestNormal1(CuTest *tc){
     //expected
     //mean value:   2
     double expected = 2;
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void calcSqrtofUserTestNormal2(CuTest *tc){
@@ -487,7 +487,7 @@ void calcSqrtofUserTestNormal2(CuTest *tc){
     //expected
     //mean value:   9
     double expected = 2;
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void calcSqrtofUserTestNormal3(CuTest *tc){
@@ -507,7 +507,7 @@ void calcSqrtofUserTestNormal3(CuTest *tc){
     //expected
     //mean value:   3
     double expected = 2;
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void calcSqrtofUserTestNormal4(CuTest *tc){
@@ -527,7 +527,7 @@ void calcSqrtofUserTestNormal4(CuTest *tc){
     //expected
     //mean value:   5
     double expected = 7.74596; //-> 2*sqrt(15)
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void calcMeanofUserTestExceptional1(CuTest *tc){
@@ -546,7 +546,7 @@ void calcMeanofUserTestExceptional1(CuTest *tc){
     double actual = calc_mean_of_user(input);
     //expected
     double expected = 0;
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void calcMeanofUserTestExceptional2(CuTest *tc){
@@ -565,7 +565,7 @@ void calcMeanofUserTestExceptional2(CuTest *tc){
     double actual = calc_mean_of_user(input);
     //expected
     double expected = 28.33333; //-> 85/3
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void calcMeanofUserTestExtreme1(CuTest *tc){
@@ -584,7 +584,7 @@ void calcMeanofUserTestExtreme1(CuTest *tc){
     double actual = calc_mean_of_user(input);
     //expected
     double expected = 5.001;
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void calcMeanofUserTestExtreme2(CuTest *tc){
@@ -603,7 +603,7 @@ void calcMeanofUserTestExtreme2(CuTest *tc){
     double actual = calc_mean_of_user(input);
     //expected
     double expected = 1.001;
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void calcMeanofUserTestNormal1(CuTest *tc){
@@ -622,7 +622,7 @@ void calcMeanofUserTestNormal1(CuTest *tc){
     double actual = calc_mean_of_user(input);
     //expected
     double expected = 2;
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void calcMeanofUserTestNormal2(CuTest *tc){
@@ -641,7 +641,7 @@ void calcMeanofUserTestNormal2(CuTest *tc){
     double actual = calc_mean_of_user(input);
     //expected
     double expected = 9;
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void calcMeanofUserTestNormal3(CuTest *tc){
@@ -660,7 +660,7 @@ void calcMeanofUserTestNormal3(CuTest *tc){
     double actual = calc_mean_of_user(input);
     //expected
     double expected = 3;
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void calcMeanofUserTestNormal4(CuTest *tc){
@@ -679,7 +679,7 @@ void calcMeanofUserTestNormal4(CuTest *tc){
     double actual = calc_mean_of_user(input);
     //expected
     double expected = 5;
-    CuAssertDblEquals(tc, expected, actual, 0.000001);
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 CuSuite* StrUtilGetSuite() {
