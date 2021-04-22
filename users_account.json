@@ -21,19 +21,19 @@
     "id": 4,
     "username": "Frede",
     "email": "email@mail.dk",
-    "password": "123"
+    "password": "Hejsa1234"
   },
   {
     "id": 5,
-    "username": "Jonathan",
+    "username": "Jens",
     "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 6,
-    "username": "Karl-Emil",
+    "username": "Bendicte",
     "email": "email@mail.dk",
-    "password": "123"
+    "password": "1234"
   },
   {
     "id": 7,
@@ -136,17 +136,5 @@
     "username": "anders",
     "email": "aasdfasdfsdf@test.test",
     "password": "ABCdef123"
-  },
-  {
-    "id": 4,
-    "username": "KNDSkane12",
-    "email": "Frede",
-    "password": "email@mail.dk"
-  },
-  {
-    "id": 4,
-    "username": "Frede",
-    "email": "email@mail.dk",
-    "password": "KASNDLAd123"
   }
 ]

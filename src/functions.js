@@ -133,10 +133,10 @@ function SaveAccInfo(id, parameters){
         }
         let jsonUsers = fs.readFileSync(usersAccountPath, "utf-8")
         let users = JSON.parse(jsonUsers)
-
-        users.push(userobj)
+        
+        users[id-1] = userobj
+        
         jsonUsers = JSON.stringify(users, null, 2)
-
         fs.writeFileSync(usersAccountPath, jsonUsers, "utf-8")
 
         return true
