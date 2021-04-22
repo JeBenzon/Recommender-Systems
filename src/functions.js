@@ -40,6 +40,7 @@ function getUserCheck(id) {
     return false
 }
 
+
 // Tjekker om user eksistere i users_account.json
 function getUserAccounts(id, username) {
     try {
@@ -72,15 +73,67 @@ function accountInfoCheck(id) {
         const datatxt = getData(usersInterestsPath)
         let lines = datatxt.split("\n")
         for (let i = 0; i < lines.length; i++) {
-            let useridWord = lines[i].split(" ")[0]
-            if (useridWord == id) {
-                return true
+            let useridWord = lines[i].split(" ")
+            if (useridWord[0] == id) {
+                let usertxtObj = {
+                    id: useridWord[0],
+                    name: useridWord[1],
+                    age: useridWord[2],
+                    gender: useridWord[3],
+                    sports: useridWord[4],
+                    food: useridWord[5],
+                    music: useridWord[6],
+                    movies: useridWord[7],
+                    art: useridWord[8],
+                    outdoors: useridWord[9],
+                    science: useridWord[10],
+                    travel: useridWord[11],
+                    climate: useridWord[12],
+                    email: jsonstring[i].email,
+                    username: jsonstring[i].username,
+                    password: jsonstring[i].password
+                }
+                return usertxtObj
             }
         }
     } catch (e) {
         console.error(e)
     }
     return false
+}
+
+function SaveAccInfo(id, parameters){
+    let txtFile = getData(usersInterestsPath)
+    if (!(parameters[0].length < 50 && parameters[1] >= 0 && parameters[1] <= 125 && parameters[2].length == 1)) {
+        return false
+    }
+    for (let i = 3; i <= 11; i++) {
+        if (!(parameters[i] <= 11 && parameters[i] >= 0)) {
+            return false
+        }
+    }
+    try {
+        let register = `${id} ${parameters[0]} ${parameters[1]} ${parameters[2]} ${parameters[3]} ${parameters[4]} ${parameters[5]} ${parameters[6]} ${parameters[7]} ${parameters[8]} ${parameters[9]} ${parameters[10]} ${parameters[11]}`
+        // break the textblock into an array of lines
+        let lines = txtFile.split('\n');
+        // remove one line, starting at the first position
+        lines.splice(id-1,1,register);
+        for(let i = 0; i < lines.length-1; i++){
+            lines[i] += "\n"
+        }
+        let linestring = lines.join("")
+        fs.writeFileSync(usersInterestsPath, linestring, function (err) {
+           if (err) throw err;
+        });
+        return true
+    } catch (e) {
+        console.log('Der skete en fejl ved tilføjelse af bruger til fil' + e)
+        return false
+    }
+
+
+
+
 }
 
 //læser fil og giver string output

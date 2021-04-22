@@ -105,10 +105,44 @@ app.post('/register', functions.checkNotAuthenticated, (req, res) => {
         //hasher password
         //const hashedPass = await bcrypt.hash(req.body.password, 10)
         let userId = functions.getLastUserId() + 1
-        let parameterarray = [req.body.name, req.body.age, req.body.gender, req.body.sport, req.body.food, req.body.music, req.body.movies, req.body.drinking, req.body.cars, req.body.hiking, req.body.magic, req.body.djing]
+        let parameterarray = [req.body.name, req.body.age, req.body.gender, req.body.sports, req.body.food, req.body.music, req.body.movies, req.body.art, req.body.outdoors, req.body.science, req.body.travel, req.body.climate]
 
         functions.addUser(userId, req.body.username, req.body.email, req.body.password)
         functions.createAccInfo(userId,parameterarray)
+
+        res.redirect('/matchfound')
+    } catch (e) {
+        console.log('Error + ' + e)
+        res.redirect('/register')
+    }
+    //console.log(users)
+
+})
+//TODO Vi nåede her til:
+app.get('/editUser', functions.checkAuthenticated, (req, res) => {
+    let usrTxt = accountInfoCheck(req.user.id)
+    //let usrAcc = getUserAccounts(req.user.id, null)
+
+    res.render('editUser', {
+        title: 'Edit User',
+        userobj: usrTxt
+    })
+})
+app.post('/matchfound',functions.checkAuthenticated,(req, res) => {
+
+    let parameterarray = [req.body.name, req.body.age, req.body.gender, req.body.sports, req.body.food, req.body.music, req.body.movies, req.body.art, req.body.outdoors, req.body.science, req.body.travel, req.body.climate]
+    functions.SaveAccInfo(req.user.id,parameterarray)
+
+    res.redirect('/matchfound')
+})
+
+app.post('/editUser', functions.checkAuthenticated, (req, res) => {
+    try {
+        //hasher password
+        //const hashedPass = await bcrypt.hash(req.body.password, 10)
+        //TODO updateuser and accInfo
+        //functions.addUser(userId, req.body.username, req.body.email, req.body.password)
+        //functions.createAccInfo(userId,parameterarray)
 
         res.redirect('/editUser')
     } catch (e) {
@@ -183,7 +217,7 @@ app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt d
         return res.redirect('/')
     }
     try{
-    let chatHistory = functions.getChatHistory(req.session.roomid)
+    let chatHistory = functions.getChatHistory(req.body)
     res.render('room', {
         userName: req.user.username,
         roomName: req.params.room,
