@@ -21,7 +21,7 @@
     "id": 4,
     "username": "Frede",
     "email": "email@mail.dk",
-    "password": "Hejsa1234"
+    "password": "123"
   },
   {
     "id": 5,
@@ -121,7 +121,7 @@
   },
   {
     "id": 21,
-    "username": "Oscar",
+    "username": "Oskar",
     "email": "os@gmail.com",
     "password": "Oscar12345"
   },
@@ -130,11 +130,5 @@
     "username": "Gitte-Lis",
     "email": "gl@mail.dk",
     "password": "Kage1234"
-  },
-  {
-    "id": 23,
-    "username": "anders",
-    "email": "aasdfasdfsdf@test.test",
-    "password": "ABCdef123"
   }
 ]
