@@ -17,10 +17,6 @@ const io = require('socket.io')(server) //Laver server på port "server"
 
 const rooms = {} //Vores rooms
 
-//Får vist at 
-let knn = 3
-let index = knn - 3
-
 //Windows: "alfa.exe", Linux: "./a.out"
 const c_fil_sti = "alfa.exe"
 
@@ -141,9 +137,13 @@ app.delete('/logout', functions.checkAuthenticated, (req, res) => {
 
 app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
     let user = functions.getUserCheck(req.user.id, null)
+    let knn = 3
+    if (req.session.knn > 3){
+        knn = req.session.knn
+    }
     //try{
         if(user) {
-            display_matches = functions.printMatches(c_fil_sti, req.user.id, knn, index)
+            display_matches = functions.printMatches(c_fil_sti, req.user.id, knn, knn -3)
             let userChats = functions.getPersonalUserChats(req.user.id)
             boolean = functions.knnButtonChecker(knn)
             if(knn > functions.getLastUserId()-3 || knn < 3){
@@ -192,19 +192,21 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
 })
 
 app.post('/showPreviousMatches', (req, res) => {
-    if(knn > 3){
-    knn -= 3
-    index -= 3
-    res.redirect('/matchfound')
+    if(req.session.knn > 3){
+        req.session.knn -= 3
     }
+    res.redirect('/matchfound')
 })
 
 app.post('/showMoreMatches', (req, res) => {
-    if(knn < functions.getLastUserId()-3){
-    knn += 3
-    index += 3
-    res.redirect('/matchfound')
+    if (req.session.knn === undefined){
+        req.session.knn = 3
     }
+    if(req.session.knn < functions.getLastUserId()-3){
+        req.session.knn += 3
+    }
+    res.redirect('/matchfound')
+    
 })
 
 app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt der er et room name, bliver lavet om til et room
