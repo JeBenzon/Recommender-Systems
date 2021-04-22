@@ -130,5 +130,23 @@
     "username": "Gitte-Lis",
     "email": "gl@mail.dk",
     "password": "Kage1234"
+  },
+  {
+    "id": 23,
+    "username": "anders",
+    "email": "aasdfasdfsdf@test.test",
+    "password": "ABCdef123"
+  },
+  {
+    "id": 4,
+    "username": "KNDSkane12",
+    "email": "Frede",
+    "password": "email@mail.dk"
+  },
+  {
+    "id": 4,
+    "username": "Frede",
+    "email": "email@mail.dk",
+    "password": "KASNDLAd123"
   }
 ]
