@@ -11,6 +11,9 @@ let Strategy = require('passport-local').Strategy
 const app = express()
 const ensureLogin = require('connect-ensure-login')
 const bodyParser = require('body-parser')
+const {SaveAccInfo} = require("./functions");
+const {getUserAccounts} = require("./functions");
+const {accountInfoCheck} = require("./functions");
 const { emit } = require('process')
 const server = require('http').Server(app) //Giver us en "Server der kan kommunikere med socket.io"
 const io = require('socket.io')(server) //Laver server på port "server"
@@ -18,7 +21,7 @@ const io = require('socket.io')(server) //Laver server på port "server"
 const rooms = {} //Vores rooms
 
 //Windows: "alfa.exe", Linux: "./a.out"
-const c_fil_sti = "./a.out"
+const c_fil_sti = "alfa.exe"
 
 // Define paths for express config
 const publicDirectoryPath = path.join(__dirname, '../public')
@@ -102,7 +105,7 @@ app.post('/register', functions.checkNotAuthenticated, (req, res) => {
         //hasher password
         //const hashedPass = await bcrypt.hash(req.body.password, 10)
         let userId = functions.getLastUserId() + 1
-        let parameterarray = [req.body.name, req.body.age, req.body.gender, req.body.sport, req.body.food, req.body.music, req.body.movies, req.body.drinking, req.body.cars, req.body.hiking, req.body.magic, req.body.djing]
+        let parameterarray = [req.body.name, req.body.age, req.body.gender, req.body.sports, req.body.food, req.body.music, req.body.movies, req.body.art, req.body.outdoors, req.body.science, req.body.travel, req.body.climate]
 
         functions.addUser(userId, req.body.username, req.body.email, req.body.password)
         functions.createAccInfo(userId,parameterarray)
@@ -111,6 +114,40 @@ app.post('/register', functions.checkNotAuthenticated, (req, res) => {
     } catch (e) {
         console.log('Error + ' + e)
         res.redirect('/register')
+    }
+    //console.log(users)
+
+})
+//TODO Vi nåede her til:
+app.get('/editUser', functions.checkAuthenticated, (req, res) => {
+    let usrTxt = accountInfoCheck(req.user.id)
+    //let usrAcc = getUserAccounts(req.user.id, null)
+
+    res.render('editUser', {
+        title: 'Edit User',
+        userobj: usrTxt
+    })
+})
+app.post('/matchfound',functions.checkAuthenticated,(req, res) => {
+
+    let parameterarray = [req.body.name, req.body.age, req.body.gender, req.body.sports, req.body.food, req.body.music, req.body.movies, req.body.art, req.body.outdoors, req.body.science, req.body.travel, req.body.climate, req.body.password,req.body.username,req.body.email]
+    functions.SaveAccInfo(req.user.id,parameterarray)
+
+    res.redirect('/matchfound')
+})
+
+app.post('/editUser', functions.checkAuthenticated, (req, res) => {
+    try {
+        //hasher password
+        //const hashedPass = await bcrypt.hash(req.body.password, 10)
+        //TODO updateuser and accInfo
+        //functions.addUser(userId, req.body.username, req.body.email, req.body.password)
+        //functions.createAccInfo(userId,parameterarray)
+
+        res.redirect('/editUser')
+    } catch (e) {
+        console.log('Error + ' + e)
+        res.redirect('/editUser')
     }
     //console.log(users)
 
@@ -132,47 +169,82 @@ app.delete('/logout', functions.checkAuthenticated, (req, res) => {
     //Logger ud (en function fra passport der rydder op i session)
     req.logOut()
     res.redirect('/')
+    //knn = 3
 })
 
 app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
     let user = functions.getUserCheck(req.user.id, null)
-    //Try der tager hånd om hvis c filen ikke er blevet kørt.
-    try {
-        if (user) {
-
-            let matches = (functions.sendConsoleCommand(c_fil_sti, `getmatch ${req.user.id}`))
-            let match = matches.split(" ")
-            let match1 = functions.getUserCheck(match[0], null)
-            let match2 = functions.getUserCheck(match[1], null)
-            let match3 = functions.getUserCheck(match[2], null)
-
+    let knn = 3
+    if (req.session.knn > 3){
+        knn = req.session.knn
+    }
+    //try{
+        if(user) {
+            display_matches = functions.printMatches(c_fil_sti, req.user.id, knn, knn -3)
             let userChats = functions.getPersonalUserChats(req.user.id)
-
-            res.render('matchfound', {
-                title: 'Match found',
-                loggedIn: true,
-                username: req.user.username,
-                matchname1: match1.username,
-                matchname2: match2.username,
-                matchname3: match3.username,
-                match1id: match1.id,
-                match2id: match2.id,
-                match3id: match3.id,
-                chats: userChats
-            })
+            boolean = functions.knnButtonChecker(knn)
+            if(knn > functions.getLastUserId()-3 || knn < 3){
+                res.render('matchfound', {
+                    title: 'Match found',
+                    loggedIn: true,
+                    userShown: false, //fjerner 'start chat'-knappen, fordi der ikke vises en bruger
+                    buttonCheck: boolean,
+                    username: req.user.username,
+                    matchname1: "No more matches to be shown",
+                    matchname2: "No more matches to be shown",
+                    matchname3: "No more matches to be shown",
+                    // match1id: match1.id,
+                    // match2id: match2.id,
+                    // match3id: match3.id,
+                    chats: userChats
+                })
+            } else {
+                res.render('matchfound', {
+                    title: 'Match found',
+                    loggedIn: true,
+                    userShown: true, //viser 'start chat'-knappen når der er en bruger at vise
+                    buttonCheck: boolean,
+                    username: req.user.username,
+                    matchname1: display_matches[0].username,
+                    matchname2: display_matches[1].username,
+                    matchname3: display_matches[2].username,
+                    match1id: display_matches[0].id,
+                    match2id: display_matches[1].id,
+                    match3id: display_matches[2].id,
+                    chats: userChats
+                })
+            }
+            
         } else {
             //res.send("FEJL, kunne ikke finde bruger")
             res.redirect('/createaccinfo')
         }
-    } catch (e) {
-        console.log('!ERROR! - Har du husket at compilere alfa.c?')
-        res.render('404', {
-            title: '404',
-            errorMessage: 'Could not find page'
-        })
-    }
+    // } catch (e) {
+    //     console.log('!ERROR! - Har du husket at compilere alfa.c?')
+    //     res.render('404', {
+    //         title: '404',
+    //         errorMessage: 'Could not find page'
+    //     })
+    // }
 })
 
+app.post('/showPreviousMatches', (req, res) => {
+    if(req.session.knn > 3){
+        req.session.knn -= 3
+    }
+    res.redirect('/matchfound')
+})
+
+app.post('/showMoreMatches', (req, res) => {
+    if (req.session.knn === undefined){
+        req.session.knn = 3
+    }
+    if(req.session.knn < functions.getLastUserId()-3){
+        req.session.knn += 3
+    }
+    res.redirect('/matchfound')
+    
+})
 
 app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt der er et room name, bliver lavet om til et room
 
@@ -180,7 +252,7 @@ app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt d
         return res.redirect('/')
     }
     try{
-    let chatHistory = functions.getChatHistory(req.session.roomid)
+    let chatHistory = functions.getChatHistory(req.body)
     res.render('room', {
         userName: req.user.username,
         roomName: req.params.room,

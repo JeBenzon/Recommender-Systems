@@ -25,15 +25,15 @@
   },
   {
     "id": 5,
-    "username": "Jonathan",
+    "username": "Jens",
     "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 6,
-    "username": "Karl-Emil",
+    "username": "Bendicte",
     "email": "email@mail.dk",
-    "password": "123"
+    "password": "1234"
   },
   {
     "id": 7,
@@ -121,7 +121,7 @@
   },
   {
     "id": 21,
-    "username": "Oscar",
+    "username": "Oskar",
     "email": "os@gmail.com",
     "password": "Oscar12345"
   },

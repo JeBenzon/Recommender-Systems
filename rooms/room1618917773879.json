@@ -1,0 +1,21 @@
+{
+  "id": 1618917773879,
+  "user_id1": 23,
+  "user_id2": 22,
+  "username1": "anders",
+  "username2": "Gitte-Lis",
+  "chat": [
+    {
+      "name": "anders",
+      "message": "Hej"
+    },
+    {
+      "name": "Gitte-Lis",
+      "message": "Hej anders "
+    },
+    {
+      "name": "Gitte-Lis",
+      "message": "Test emd enter"
+    }
+  ]
+}
