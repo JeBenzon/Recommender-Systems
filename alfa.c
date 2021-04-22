@@ -30,7 +30,7 @@ typedef struct user {
 int calc_users(FILE *userfile);
 void load_users(FILE *userfile, int total_users, user *users);
 void getmatch_js(char **argv, user* users, int total_users);
-void getmatch_c(FILE *userfile, user* users, int total_users);
+void getmatch_c(user* users, int total_users);
 double pearson(user *users, int target, int compare);
 double calc_mean_of_user(user user);
 double calc_sqrt_of_user(user user, double mean);
@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
         }
     }
     else {
-        getmatch_c(userfile, users, total_users);
+        getmatch_c(users, total_users);
     }
 
     fclose(userfile);
@@ -129,7 +129,7 @@ void getmatch_js(char **argv, user* users, int total_users){
     print_matches_id(best_matches, knn);       
 }
 
-void getmatch_c(FILE *userfile, user* users, int total_users){
+void getmatch_c(user* users, int total_users){
     //select target user
     int user_id;
     printf("Enter your user id to get matches:\n");
