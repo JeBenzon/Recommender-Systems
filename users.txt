@@ -20,3 +20,36 @@
 20 Karlos 22 m 8 7 8 8 7 8 7 8 7
 21 Oscar 22 m 1 2 1 2 1 2 1 2 1
 22 Gitte-Lis 45 m 5 5 6 5 2 2 2 2 2
+67 Test3 22 m 1 1 1 1 1 1 1 1 1 1
+125 Test4 22 m 1 1 1 1 1 1 1 1 1 1
+167 Username 22 f 1 1 1 1 1 1 1 1 1
+443 Username 22 f 1 1 1 1 1 1 1 1 1
+290393929999 Username 22 f 1 1 1 1 1 1 1 1 1
+382883884929 Username 22 f 1 1 1 1 1 1 1 1 1
+
+222 username 22 f 1 1 1 1 1 1 1 1 1
+222 username 22 f 1 1 1 1 1 1 1 1 1
+281 Katrine 22 f 9 2 4 5 1 2 1 6 9
+183 Magnus 18 m 5 2 10 2 2 3 6 2 8
+183 Magnus 18 m 5 2 10 2 2 3 6 2 8
+281 Katrine 22 f 9 2 4 5 1 2 1 6 9
+183 Magnus 18 m 5 2 10 2 2 3 6 2 8
+281 Katrine 22 f 9 2 4 5 1 2 1 6 9
+281 Katrine 22 f 9 2 4 5 1 2 1 6 9
+183 Magnus 18 m 5 2 10 2 2 3 6 2 8
+289482 Test 22 m 1 1 1 1 1 1 1 1 1 1
+283477 Test2 22 m 1 1 1 1 1 1 1 1 1 1
+281 Katrine 22 f 9 2 4 5 1 2 1 6 9
+183 Magnus 18 m 5 2 10 2 2 3 6 2 8
+183 Magnus 18 m 5 2 10 2 2 3 6 2 8
+281 Katrine 22 f 9 2 4 5 1 2 1 6 9
+183 Magnus 18 m 5 2 10 2 2 3 6 2 8
+281 Katrine 22 f 9 2 4 5 1 2 1 6 9
+281 Katrine 22 f 9 2 4 5 1 2 1 6 9
+183 Magnus 18 m 5 2 10 2 2 3 6 2 8
+183 Magnus 18 m 5 2 10 2 2 3 6 2 8
+281 Katrine 22 f 9 2 4 5 1 2 1 6 9
+183 Magnus 18 m 5 2 10 2 2 3 6 2 8
+281 Katrine 22 f 9 2 4 5 1 2 1 6 9
+183 Magnus 18 m 5 2 10 2 2 3 6 2 8
+281 Katrine 22 f 9 2 4 5 1 2 1 6 9
