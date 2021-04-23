@@ -21,7 +21,7 @@ const io = require('socket.io')(server) //Laver server på port "server"
 const rooms = {} //Vores rooms
 
 //Windows: "alfa.exe", Linux: "./a.out"
-const c_fil_sti = "alfa.exe"
+const c_fil_sti = "./a.out"
 
 // Define paths for express config
 const publicDirectoryPath = path.join(__dirname, '../public')
@@ -252,7 +252,8 @@ app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt d
         return res.redirect('/')
     }
     try{
-    let chatHistory = functions.getChatHistory(req.body)
+    let chatHistory = functions.getChatHistory(req.session.roomid)
+    
     res.render('room', {
         userName: req.user.username,
         roomName: req.params.room,
