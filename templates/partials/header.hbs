@@ -12,9 +12,13 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
             {{#if loggedIn}}
-            <li>
+            <li class="flexright">
+                <form action="/editUser" method="POST">
+                    <button class="btn btn-dark flexbutton" type="submit">Manage Account</button>
+                </form>
+            
                 <form action="/logout?_method=DELETE" method="POST">
-                    <button class="btn btn-dark" type="submit">Logout</button>
+                    <button class="btn btn-dark flexbutton" type="submit">Sign Out</button>
                 </form>
             </li>
             {{/if}}
