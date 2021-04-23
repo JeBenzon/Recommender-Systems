@@ -4,6 +4,7 @@
 <head>
     <!--Partials head-->
     {{>head}}
+    <script defer src="/js/moreinfo.js"></script>
 </head>
 
 <body>
@@ -33,12 +34,13 @@
                         <p class="font-weight-bold">{{matchname1}}</p>
                     </td>
                     <td>
+                            <button onclick="showMoreInfo('{{userobj1.name}} {{userobj1.age}} {{userobj1.gender}}')" class="btn btn-dark" type="submit">User Details</button>
+                    </td>
+                    <td>
                         <form action="/room" method="POST">
                             <input name="room" value="{{match1id}}" type="hidden">
                             <input name="username2" value={{matchname1}} type="hidden">
-                            {{#if userShown}}
-                            <button class="btn btn-dark float-right" type="submit">start chat</button>
-                            {{/if}}
+                            <button class="btn btn-dark float-right" type="submit">Start Chat</button>
                         </form>
                     </td>
                 </tr>
@@ -47,12 +49,13 @@
                         <p class="font-weight-bold">{{matchname2}}</p>
                     </td>
                     <td>
+                            <button onclick="showMoreInfo('{{userobj2.name}} {{userobj2.age}} {{userobj2.gender}}')" class="btn btn-dark" type="submit">User Details</button>
+                    </td>
+                    <td>
                         <form action="/room" method="POST">
                             <input name="room" value="{{match2id}}" type="hidden">
                             <input name="username2" value={{matchname2}} type="hidden">
-                            {{#if userShown}}
-                            <button class="btn btn-dark float-right" type="submit">start chat</button>
-                            {{/if}}
+                            <button class="btn btn-dark float-right" type="submit">Start Chat</button>
                         </form>
                     </td>
                 </tr>
@@ -61,12 +64,13 @@
                         <p class="font-weight-bold">{{matchname3}}</p>
                     </td>
                     <td>
+                            <button onclick="showMoreInfo('{{userobj3.name}} {{userobj3.age}} {{userobj3.gender}}')" class="btn btn-dark" type="submit">User Details</button>
+                    </td>
+                    <td>
                         <form action="/room" method="POST">
                             <input name="room" value="{{match3id}}" type="hidden">
                             <input name="username2" value={{matchname3}} type="hidden">
-                            {{#if userShown}}
-                            <button class="btn btn-dark float-right" type="submit">start chat</button>
-                            {{/if}}
+                            <button class="btn btn-dark float-right" type="submit">Start Chat</button>
                         </form>
                     </td>
                 </tr>
@@ -114,7 +118,6 @@
             </table>
         </div>
     </div>
-
     <!--
     <script>
         //Gets user ID from prevouis page findmatch.

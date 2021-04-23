@@ -1,13 +1,13 @@
 [
   {
     "id": 1,
-    "username": "Tommy",
+    "username": "tommy",
     "email": "katbak@mail.dk",
     "password": "123"
   },
   {
     "id": 2,
-    "username": "Oscar",
+    "username": "oscar",
     "email": "email@mail.dk",
     "password": "123"
   },
@@ -19,73 +19,73 @@
   },
   {
     "id": 4,
-    "username": "Frede",
+    "username": "frede",
     "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 5,
-    "username": "Jens",
+    "username": "jonathan",
     "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 6,
-    "username": "Bendicte",
+    "username": "bendicte",
     "email": "email@mail.dk",
     "password": "1234"
   },
   {
     "id": 7,
-    "username": "Gitte",
+    "username": "gitte-pigen",
     "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 8,
-    "username": "Lisa",
+    "username": "lilleLisa",
     "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 9,
-    "username": "Michelle",
+    "username": "MCmichelle",
     "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 10,
-    "username": "Charlotte",
+    "username": "CharLottte",
     "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 11,
-    "username": "Bente",
+    "username": "bente",
     "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 12,
-    "username": "Vigga",
+    "username": "vigga",
     "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 13,
-    "username": "Sigrid",
+    "username": "sigridmig",
     "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 14,
-    "username": "Brian",
+    "username": "bbrian",
     "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 15,
-    "username": "Gilbert",
+    "username": "gilllbert",
     "email": "email@mail.dk",
     "password": "123"
   },
@@ -97,19 +97,19 @@
   },
   {
     "id": 17,
-    "username": "Frederik",
+    "username": "frederik4000",
     "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 18,
-    "username": "Pelle",
+    "username": "pellemand",
     "email": "email@mail.dk",
     "password": "123"
   },
   {
     "id": 19,
-    "username": "Bolette",
+    "username": "Bolette_xx",
     "email": "email@mail.dk",
     "password": "123"
   },
@@ -117,18 +117,18 @@
     "id": 20,
     "username": "karlos98",
     "email": "karl@gmail.com",
-    "password": "HalloDigder8"
+    "password": "123"
   },
   {
     "id": 21,
-    "username": "Oskar",
+    "username": "oskar_king",
     "email": "os@gmail.com",
-    "password": "Oscar12345"
+    "password": "123"
   },
   {
     "id": 22,
-    "username": "Gitte-Lis",
+    "username": "Gitte-Giz",
     "email": "gl@mail.dk",
-    "password": "Kage1234"
+    "password": "123"
   }
 ]
