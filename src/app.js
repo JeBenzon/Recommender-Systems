@@ -251,6 +251,7 @@ app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt d
     if (rooms[req.params.room] == null) {
         return res.redirect('/')
     }
+    functions.calc_user_parameters(req.params.room)
     try{
     let chatHistory = functions.getChatHistory(req.session.roomid)
     
@@ -267,13 +268,8 @@ app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt d
             roomName: req.params.room,
             username2: req.session.username,
         })
-        
     }
-    
     //console.log(req.session.username)
-    
-
-
 })
 
 //Rooms
