@@ -258,3 +258,208 @@ test('Exceptional 2: createAccInfo registrerer user info 6', () => {
     let parametre = ['Katjakaj og3io299238 389Bentebent --j28', 9179379, '12', 920, 2222, 12, 0, 29, 8282, 1, 22, 21]
     expect(functions.createAccInfo(38289, parametre)).toBeFalsy()
 })
+
+
+//checkChat
+//Normal 1
+test('Normal 1: checkChat tjekker om 2 brugere har et chatroom, og returnerer roomid hvis de har 1', () =>{
+    let user_id1 = ['2']
+    let user_id2 = ['3']
+    expect(functions.checkChat(user_id1, user_id2)).toBeTruthy()
+})
+//Normal 2
+test('Normal 2: checkChat tjekker om 2 brugere har et chatroom, og returnerer roomid hvis de har 2', () =>{
+    let user_id1 = ['2']
+    let user_id2 = ['4']
+    expect(functions.checkChat(user_id1, user_id2)).toBeTruthy()
+})
+//Extreme 1
+test('Extreme 1: checkChat tjekker om 2 brugere har et chatroom, og returnerer roomid hvis de har 3', () =>{
+    let user_id1 = ['2']
+    let user_id2 = ['19']
+    expect(functions.checkChat(user_id1, user_id2)).toBeTruthy()
+})
+//Extreme 2
+test('Extreme 2: checkChat tjekker om 2 brugere har et chatroom, og returnerer roomid hvis de har 4', () =>{
+    let user_id1 = ['19']
+    let user_id2 = ['32']
+    expect(functions.checkChat(user_id1, user_id2)).toBeTruthy()
+})
+//Exceptional 1
+test('Exceptional 1: checkChat tjekker om 2 brugere har et chatroom, og returnerer roomid hvis de har 5', () =>{
+    let user_id1 = ['48']
+    let user_id2 = ['122']
+    expect(functions.checkChat(user_id1, user_id2)).toBeFalsy()
+})
+//Exceptional 2
+test('Exceptional 2: checkChat tjekker om 2 brugere har et chatroom, og returnerer roomid hvis de har 6', () =>{
+    let user_id1 = ['2893']
+    let user_id2 = ['38998']
+    expect(functions.checkChat(user_id1, user_id2)).toBeFalsy()
+})
+
+
+//getRoomConnection
+//Normal 1
+test('Normal 1: getRoomConnection opretter et objekt og sender det retur baseret på et id 1', () => {
+    let id = 1618990222358
+    expect(functions.getRoomConnection(id)).toBeTruthy()
+})
+//Normal 2:
+test('Normal 2: getRoomConnection opretter et objekt og sender det retur baseret på et id 2', () => {
+    let id = 1619163628777
+    expect(functions.getRoomConnection(id)).toBeTruthy()
+})
+//Extreme 1
+test('Extreme 1: getRoomConnection opretter et objekt og sender det retur baseret på et id 3', () => {
+    let id = 1619163635523
+    expect(functions.getRoomConnection(id)).toBeTruthy()
+})
+//Extreme 2:
+test('Extreme 2: getRoomConnection opretter et objekt og sender det retur baseret på et id 4', () => {
+    let id = 1619163650124
+    expect(functions.getRoomConnection(id)).toBeTruthy()
+})
+//Exceptional 1
+test('Exceptional 1: getRoomConnection opretter et objekt og sender det retur baseret på et id 5', () => {
+    let id = 2839128391280
+    expect(functions.getRoomConnection(id)).toBeFalsy()
+})
+//Exceptional 2:
+test('Exceptional 2: getRoomConnection opretter et objekt og sender det retur baseret på et id 6', () => {
+    let id = 192389101002202
+    expect(functions.getRoomConnection(id)).toBeFalsy()
+})
+
+
+//getChat
+//Normal 1
+test('Normal 1: getChat tager et roomid som input og returnerer chatbeskederne fra rummet, som den finder i room-filerne 1', () => {
+    let id = 1619163628777
+    expect(functions.getChat(id)).toBeTruthy()
+})
+//Normal 2
+test('Normal 2: getChat tager et roomid som input og returnerer chatbeskederne fra rummet, som den finder i room-filerne 2', () => {
+    let id = 1618990222358
+    expect(functions.getChat(id)).toBeTruthy()
+})
+//Extreme 1
+test('Extreme 1: getChat tager et roomid som input og returnerer chatbeskederne fra rummet, som den finder i room-filerne 3', () => {
+    let id = 1618990209920
+    expect(functions.getChat(id)).toBeTruthy()
+})
+//Extreme 2
+test('Extreme 2: getChat tager et roomid som input og returnerer chatbeskederne fra rummet, som den finder i room-filerne 4', () => {
+    let id = 1619163650124
+    expect(functions.getChat(id)).toBeTruthy()
+})
+//Exceptional 1
+test('Exceptional 1: getChat tager et roomid som input og returnerer chatbeskederne fra rummet, som den finder i room-filerne 5', () => {
+    let id = 16726763767267
+    expect(functions.getChat(id)).toBeFalsy()
+})
+//Exceptional 2
+test('Exceptional 2: getChat tager et roomid som input og returnerer chatbeskederne fra rummet, som den finder i room-filerne 6', () => {
+    let id = 18287387872878
+    expect(functions.getChat(id)).toBeFalsy()
+})
+
+
+//makeFirstChat
+//Normal 1
+test('Normal 1: makeFirstChat opretter room i roomconnections filen og laver en fil for sig selv 1', () => {
+    let user_id1 = 1
+    let user_id2 = 5
+    expect(functions.makeFirstChat(user_id1, user_id2)).toBeTruthy()
+})
+//Normal 2
+test('Normal 2: makeFirstChat opretter room i roomconnections filen og laver en fil for sig selv 2', () => {
+    let user_id1 = 2
+    let user_id2 = 6
+    expect(functions.makeFirstChat(user_id1, user_id2)).toBeTruthy()
+})
+//Extreme 1
+test('Extreme 1: makeFirstChat opretter room i roomconnections filen og laver en fil for sig selv 3', () => {
+    let user_id1 = 12
+    let user_id2 = 17
+    expect(functions.makeFirstChat(user_id1, user_id2)).toBeTruthy()
+})
+//Extreme 2
+test('Extreme 2: makeFirstChat opretter room i roomconnections filen og laver en fil for sig selv 4', () => {
+    let user_id1 = 19
+    let user_id2 = 12
+    expect(functions.makeFirstChat(user_id1, user_id2)).toBeTruthy()
+})
+//Exceptional 1
+test('Exceptional 1: makeFirstChat opretter room i roomconnections filen og laver en fil for sig selv 5', () => {
+    let user_id1 = 228
+    let user_id2 = 1782
+    expect(functions.makeFirstChat(user_id1, user_id2)).toBeTruthy()
+})
+//Exceptional 2
+test('Exceptional 2: makeFirstChat opretter room i roomconnections filen og laver en fil for sig selv 6', () => {
+    let user_id1 = 1902
+    let user_id2 = 215
+    expect(functions.makeFirstChat(user_id1, user_id2)).toBeTruthy()
+})
+
+
+
+//saveChat
+//Normal 1
+test('Normal 1: saveChat gemmer chatbeskederne og opretter rum, hvis det ikke findes 1', () => {
+    let id = 1619163628777
+    let u_id1 = 2
+    let u_id2 = 4
+    let u_name = "Oscar"
+    let u_message = "hej bro"
+    expect(functions.saveChat(id, u_id1, u_id2, u_name, u_message)).toBeTruthy()
+})
+//Normal 2
+test('Normal 2: saveChat gemmer chatbeskederne og opretter rum, hvis det ikke findes 2', () => {
+    let id = 1619163650124
+    let u_id1 = 19
+    let u_id2 = 32
+    let u_name = "Oscar"
+    let u_message = "hej bro"
+    expect(functions.saveChat(id, u_id1, u_id2, u_name, u_message)).toBeTruthy()
+})
+//Extreme 1
+test('Extreme 1: saveChat gemmer chatbeskederne og opretter rum, hvis det ikke findes 3', () => {
+    let id = 1619168122676
+    let u_id1 = 12226
+    let u_id2 = 22389
+    let u_name = "Oscar"
+    let u_message = "hej bro"
+    expect(functions.saveChat(id, u_id1, u_id2, u_name, u_message)).toBeTruthy()
+})
+//Extreme 2
+test('Extreme 2: saveChat gemmer chatbeskederne og opretter rum, hvis det ikke findes 4', () => {
+    let id = 1619168373547
+    let u_id1 = 262982
+    let u_id2 = 3428992
+    let u_name = "Oscar"
+    let u_message = "hej bro"
+    expect(functions.saveChat(id, u_id1, u_id2, u_name, u_message)).toBeTruthy()
+})
+
+//Exceptional 1
+test('Exceptional 1: saveChat gemmer chatbeskederne og opretter rum, hvis det ikke findes 5', () => {
+    let id = 1619168373624
+    let u_id1 = 352892829
+    let u_id2 = 36029022828922
+    let u_name = "Oscar"
+    let u_message = "hej bro"
+    expect(functions.saveChat(id, u_id1, u_id2, u_name, u_message)).toBeFalsy()
+})
+//Exceptional 2
+test('Exceptional 2: saveChat gemmer chatbeskederne og opretter rum, hvis det ikke findes 6', () => {
+    let id = 1619168526193
+    let u_id1 = 1892
+    let u_id2 = -222
+    let u_name = "Oscar"
+    let u_message = "hej bro"
+    expect(functions.saveChat(id, u_id1, u_id2, u_name, u_message)).toBeFalsy()
+})
+
+

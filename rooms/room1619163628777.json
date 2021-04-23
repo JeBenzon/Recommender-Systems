@@ -1,0 +1,33 @@
+{
+  "id": 1619163628777,
+  "user_id1": 2,
+  "user_id2": 4,
+  "username1": "Oscar",
+  "username2": "Mads",
+  "chat": [
+    {
+      "name": "Oscar",
+      "message": "hej bro"
+    },
+    {
+      "name": "Oscar",
+      "message": "hej bro"
+    },
+    {
+      "name": "Oscar",
+      "message": "hej bro"
+    },
+    {
+      "name": "Oscar",
+      "message": "hej bro"
+    },
+    {
+      "name": "Oscar",
+      "message": "hej bro"
+    },
+    {
+      "name": "Oscar",
+      "message": "hej bro"
+    }
+  ]
+}

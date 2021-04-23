@@ -232,9 +232,12 @@ function getRoomConnection(id) {
 
 function getChat(id) {
     let data = fs.readFileSync(`rooms/room${id}.json`)
+    if(data == null){
+        return false
+    }
     let chats = textToJSON(data)
-
-    return chats
+    
+        return chats
 }
 //skal både oprette chat i RoomConnection og oprette et room med det rigtige room id og info
 function makeFirstChat(u_id1, u_id2) {
@@ -255,6 +258,7 @@ function makeFirstChat(u_id1, u_id2) {
 
     fs.writeFileSync('rooms/roomConnections.json', jsonUsers, "utf-8")
     saveChat(room.id, u_id1, u_id2)
+    return room
 }
 
 function saveChat(id, u_id1, u_id2, u_name, u_message) {
@@ -273,6 +277,7 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
 
         jsonChat = JSON.stringify(chatObj, null, 2)
         fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
+        return true
     } catch (e) {
         let id = checkChat(u_id1, u_id2)
 
@@ -292,11 +297,12 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
             jsonChat = JSON.stringify(chat, null, 2)
             console.log(jsonChat)
             fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
+            return true
 
         } else {
             console.log("Der skete en fejl!, Der fandtes ikke 2 brugere med et room")
+            return false
         }
-
 
     }
 }
