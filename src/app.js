@@ -180,9 +180,9 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
     }
     //try{
         if(user) {
-            display_matches = functions.printMatches(c_fil_sti, req.user.id, knn, knn -3)
+            let display_matches = functions.printMatches(c_fil_sti, req.user.id, knn, knn -3)
             let userChats = functions.getPersonalUserChats(req.user.id)
-            boolean = functions.knnButtonChecker(knn)
+            let boolean = functions.knnButtonChecker(knn)
             if(knn > functions.getLastUserId()-3 || knn < 3){
                 res.render('matchfound', {
                     title: 'Match found',
@@ -190,21 +190,21 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
                     userShown: false, //fjerner 'start chat'-knappen, fordi der ikke vises en bruger
                     buttonCheck: boolean,
                     username: req.user.username,
-                    matchname1: "No more matches to be shown",
-                    matchname2: "No more matches to be shown",
-                    matchname3: "No more matches to be shown",
-                    // match1id: match1.id,
-                    // match2id: match2.id,
-                    // match3id: match3.id,
                     chats: userChats
                 })
             } else {
+                let usrTxt1 = accountInfoCheck(display_matches[0].id)
+                let usrTxt2 = accountInfoCheck(display_matches[1].id)
+                let usrTxt3 = accountInfoCheck(display_matches[2].id)
                 res.render('matchfound', {
                     title: 'Match found',
                     loggedIn: true,
                     userShown: true, //viser 'start chat'-knappen når der er en bruger at vise
                     buttonCheck: boolean,
                     username: req.user.username,
+                    userobj1: usrTxt1,
+                    userobj2: usrTxt2,
+                    userobj3: usrTxt3,
                     matchname1: display_matches[0].username,
                     matchname2: display_matches[1].username,
                     matchname3: display_matches[2].username,
