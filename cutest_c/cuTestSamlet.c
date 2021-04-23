@@ -92,28 +92,6 @@ double pearson(user *users, int target, int compare) {
     return coeficient;
 }
 
-void load_users(FILE *userfile, int total_users, user *users) {
-    // scan in users from filepath
-    for (int i = 0; i < (int)total_users; i++) {
-
-        fscanf(userfile, " %d", &users[i].id);
-        fscanf(userfile, " %[^ ]", users[i].name);
-        fscanf(userfile, " %d", &users[i].age);
-        fgetc(userfile);
-        fscanf(userfile, " %1[^ ]", &users[i].gender);
-        fscanf(userfile, " %lf", &users[i].sports);
-        fscanf(userfile, " %lf", &users[i].food);
-        fscanf(userfile, " %lf", &users[i].music);
-        fscanf(userfile, " %lf", &users[i].movies);
-        fscanf(userfile, " %lf", &users[i].art);
-        fscanf(userfile, " %lf", &users[i].outdoors);
-        fscanf(userfile, " %lf", &users[i].science);
-        fscanf(userfile, " %lf", &users[i].travel);
-        fscanf(userfile, " %lf", &users[i].climate);
-        fgetc(userfile);
-    }
-}
-
 int calc_users(FILE *userfile) {
     char ch;
     fseek(userfile, 0, SEEK_SET);
@@ -722,6 +700,38 @@ void calcMeanofUserTestNormal4(CuTest *tc) {
     CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
+void calc_usersTestFail(CuTest *tc) {
+    // set users file path
+    char *fp = "./users_fail.txt";
+
+    // open file
+    FILE *userfile = fopen(fp, "a+");
+    if (userfile == NULL) {
+        printf("filepath error.");
+        exit(EXIT_FAILURE);
+    }
+
+    double actual = calc_users(userfile);
+    double expected = 100;
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
+}
+
+void calc_usersTest0(CuTest *tc) {
+    // set users file path
+    char *fp = "./users_0.txt";
+
+    // open file
+    FILE *userfile = fopen(fp, "a+");
+    if (userfile == NULL) {
+        printf("filepath error.");
+        exit(EXIT_FAILURE);
+    }
+
+    double actual = calc_users(userfile);
+    double expected = 0;
+    CuAssertDblEquals(tc, expected, actual, 0.00001);
+}
+
 void calc_usersTest1000(CuTest *tc) {
     // set users file path
     char *fp = "./users_1000.txt";
@@ -812,6 +822,8 @@ CuSuite *StrUtilGetSuite() {
     SUITE_ADD_TEST(suite, calcMeanofUserTestNormal2);
     SUITE_ADD_TEST(suite, calcMeanofUserTestNormal3);
     SUITE_ADD_TEST(suite, calcMeanofUserTestNormal4);
+    SUITE_ADD_TEST(suite, calc_usersTestFail);
+    SUITE_ADD_TEST(suite, calc_usersTest0);
     SUITE_ADD_TEST(suite, calc_usersTest1000);
     SUITE_ADD_TEST(suite, calc_usersTest5000);
     SUITE_ADD_TEST(suite, calc_usersTest10000);
