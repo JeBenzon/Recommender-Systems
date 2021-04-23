@@ -308,11 +308,12 @@ function getRoomConnection(id) {
     let roomConnectionObject = textToJSON(roomConnection)
 
     for (let i = 0; i < roomConnectionObject.length; i++) {
+        //console.log(roomConnectionObject)
         if (id == roomConnectionObject[i].id) {
             let roomConnection = {
                 id: roomConnectionObject[i].id,
-                user_id1: roomConnectionObject[i].u_id1,
-                user_id2: roomConnectionObject[i].u_id2
+                user_id1: roomConnectionObject[i].user_id1,
+                user_id2: roomConnectionObject[i].user_id2
             }
             return roomConnection
         }
@@ -321,6 +322,84 @@ function getRoomConnection(id) {
     return false
 }
 
+function calc_user_parameters(id){
+
+    let roomConnect = getRoomConnection(id)
+
+    let user1para = accountInfoCheck(roomConnect.user_id1)
+    let user2para = accountInfoCheck(roomConnect.user_id2)
+
+    let user1sum = (+user1para.art + +user1para.climate + +user1para.food + +user1para.movies + +user1para.outdoors + +user1para.sports + +user1para.music + +user1para.science + +user1para.travel)
+    let user2sum = (+user2para.art + +user2para.climate + +user2para.food + +user2para.movies + +user2para.outdoors + +user2para.sports + +user2para.music + +user2para.science + +user2para.travel)
+
+    let artComp = (user1para.art / user1sum) * (user2para.art / user2sum)
+    let climateComp = (user1para.climate / user1sum) * (user2para.climate / user2sum)
+    let foodComp = (user1para.food / user1sum) * (user2para.food / user2sum)
+    let moviesComp = (user1para.movies / user1sum) * (user2para.movies / user2sum)
+    let outdoorsComp = (user1para.outdoors / user1sum) * (user2para.outdoors / user2sum)
+    let sportComp = (user1para.sports / user1sum) * (user2para.sports / user2sum)
+    let musicComp = (user1para.music / user1sum) * (user2para.music / user2sum)
+    let scienceComp = (user1para.science / user1sum) * (user2para.science / user2sum)
+    let travelComp = (user1para.travel / user1sum) * (user2para.travel / user2sum)
+
+    let arrayComp = [sportComp,foodComp,musicComp,moviesComp,artComp,outdoorsComp,scienceComp,travelComp,climateComp]
+
+    let sum = arrayComp.reduce(function(a,b){
+        return a + b
+    }, 0)
+
+    let max = arrayComp[0]
+    let maxIndex = 0
+
+    for(let i = 0; i < arrayComp.length;i++){
+        if(arrayComp[i] > max){
+            maxIndex = i
+            max = arrayComp
+        }
+    }
+    console.log(maxIndex)
+    let intrestMessage = chatMessage(maxIndex);
+    console.log(intrestMessage)
+
+    return intrestMessage;
+
+
+}
+
+
+function chatMessage(index){
+    let paraMessage = ""
+    switch (index){
+        case 0:
+            paraMessage = "Hvad er dit yndlings fodboldhold?";
+            break;
+        case 1:
+            paraMessage = "Hvad din yndlings ret?";
+            break;
+        case 2:
+            paraMessage = "Hvem er din yndlings kunster?";
+            break;
+        case 3:
+            paraMessage = "Hvad er din yndlings film?";
+            break;
+        case 4:
+            paraMessage = "Hvem er din yndlings kunster?";
+            break;
+        case 5:
+            paraMessage = "Hvad er din yndlings udendørs aktivitet?";
+            break;
+        case 6:
+            paraMessage = "Hvad er din yndlings grundstof?";
+            break;
+        case 7:
+            paraMessage = "Hvad er dit drømme rejsemål";
+            break;
+        case 8:
+            paraMessage = "Hvorfor er klimaet vigtigt for dig?";
+            break;
+    }
+    return paraMessage
+}
 
 function getChat(id) {
     let data = fs.readFileSync(`rooms/room${id}.json`)
@@ -371,13 +450,17 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
 
 
         if (id) {
+            console.log(calc_user_parameters(id))
+            let firstmessage = {
+                message: calc_user_parameters(id)
+            }
             chat = {
                 id: id,
                 user_id1: u_id1,
                 user_id2: u_id2,
                 username1: getUserAccounts(u_id1, null).username,
                 username2: getUserAccounts(u_id2, null).username,
-                chat: [
+                chat: [ firstmessage
                 ]
             }
             //opretter hvis filen ikke eksistere
@@ -451,6 +534,7 @@ module.exports = {
     getChatHistory,
     SaveAccInfo,
     printMatches,
-    knnButtonChecker
+    knnButtonChecker,
+    calc_user_parameters
 }
 
