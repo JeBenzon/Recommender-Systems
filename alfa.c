@@ -212,7 +212,7 @@ user *find_best_matches(user *users, int total_users, int user_id){
     }
 
     for(int i = 0; i < K; i++){
-        best_matches[i].pearson = 0;
+        best_matches[i].pearson = -10;
     }
     
     for(int i = 0; i < total_users; i++){
