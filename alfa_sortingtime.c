@@ -44,7 +44,7 @@ void print_matches_id(user *best_matches, int knn);
 int main(int argc, char *argv[]) {
 
     // set users file path
-    char *fp = "./users_50000.txt";
+    char *fp = "./users_100000.txt";
 
     // open file
     FILE *userfile = fopen(fp, "a+");
