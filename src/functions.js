@@ -357,9 +357,9 @@ function calc_user_parameters(id){
             max = arrayComp
         }
     }
-    console.log(maxIndex)
+    //console.log(maxIndex)
     let intrestMessage = chatMessage(maxIndex);
-    console.log(intrestMessage)
+    //console.log(intrestMessage)
 
     return intrestMessage;
 
@@ -450,7 +450,7 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
 
 
         if (id) {
-            console.log(calc_user_parameters(id))
+            //console.log(calc_user_parameters(id))
             let firstmessage = {
                 message: calc_user_parameters(id)
             }
@@ -465,7 +465,7 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
             }
             //opretter hvis filen ikke eksistere
             jsonChat = JSON.stringify(chat, null, 2)
-            console.log(jsonChat)
+            //console.log(jsonChat)
             fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
 
         } else {

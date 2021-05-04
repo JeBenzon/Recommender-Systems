@@ -262,7 +262,7 @@ app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt d
         chatData: chatHistory
     })
     }catch(e){
-        console.log("No chat history")
+        //console.log("No chat history")
         res.render('room', {
             userName: req.user.username,
             roomName: req.params.room,
