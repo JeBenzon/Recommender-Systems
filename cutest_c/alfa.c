@@ -44,7 +44,7 @@ void print_matches_id(user *best_matches, int knn);
 
 
 int program(char *argv[]) {
-
+printf("hej");
     // set users file path
     char *fp = "./users.txt";
 

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "CuTest.h"
-#include "alfa.h"
+#include "alfa.c"
 
 CuSuite* StrUtilGetSuite();
 
