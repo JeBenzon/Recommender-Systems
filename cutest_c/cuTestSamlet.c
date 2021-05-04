@@ -728,7 +728,7 @@ void calc_usersTest0(CuTest *tc) {
     }
 
     double actual = calc_users(userfile);
-    double expected = 0;
+    double expected = 1;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
