@@ -17,9 +17,12 @@ void RunAllTests(void) {
 }
 
 int main(int argc, char *argv[]) {
-    if (strcmp(argv[1], "start_test") == 0) {
-        RunAllTests();
-    } else {
-        program(argv);
+	if(argc > 1) {
+		if (strcmp(argv[1], "start_test") == 0) {
+			RunAllTests();
+		} else {
+			program(argv);
+		}
     }
+	return 0;
 }
