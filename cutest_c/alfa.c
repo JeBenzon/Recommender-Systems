@@ -38,9 +38,10 @@ user *find_best_matches(user *users, int total_users, int user_id);
 user *find_best_matches_js(user *users, int total_users, int user_id, int knn);
 void print_matches(user *best_matches);
 void print_matches_id(user *best_matches, int knn);
+int Startprogram(argv[]);
 
 
-int main(int argc, char *argv[]) {
+int Startprogram(argv[]) {
 
     // set users file path
     char *fp = "./users.txt";
