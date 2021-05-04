@@ -168,6 +168,7 @@ app.post('/loginpage', functions.checkNotAuthenticated, passport.authenticate('l
 app.delete('/logout', functions.checkAuthenticated, (req, res) => {
     //Logger ud (en function fra passport der rydder op i session)
     req.logOut()
+    req.session.knn = 3
     res.redirect('/')
     //knn = 3
 })
