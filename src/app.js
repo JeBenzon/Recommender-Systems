@@ -183,7 +183,7 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
             let display_matches = functions.printMatches(c_fil_sti, req.user.id, knn, knn -3)
             let userChats = functions.getPersonalUserChats(req.user.id)
             let boolean = functions.knnButtonChecker(knn)
-            if(knn > functions.getLastUserId()-3 || knn < 3){
+            if(knn >= functions.getLastUserId()-3 || knn < 3){
                 res.render('matchfound', {
                     title: 'Match found',
                     loggedIn: true,
