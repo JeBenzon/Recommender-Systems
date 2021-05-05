@@ -343,7 +343,6 @@ function calc_user_parameters(id){
     let travelComp = (user1para.travel / user1sum) * (user2para.travel / user2sum)
 
     let arrayComp = [sportComp,foodComp,musicComp,moviesComp,artComp,outdoorsComp,scienceComp,travelComp,climateComp]
-
     let sum = arrayComp.reduce(function(a,b){
         return a + b
     }, 0)
@@ -354,9 +353,10 @@ function calc_user_parameters(id){
     for(let i = 0; i < arrayComp.length;i++){
         if(arrayComp[i] > max){
             maxIndex = i
-            max = arrayComp
+            max = arrayComp[i]
         }
     }
+    
     //console.log(maxIndex)
     let intrestMessage = chatMessage(maxIndex);
     //console.log(intrestMessage)
@@ -371,31 +371,31 @@ function chatMessage(index){
     let paraMessage = ""
     switch (index){
         case 0:
-            paraMessage = "Hvad er dit yndlings fodboldhold?";
+            paraMessage = "I har begge vist interesse for sport - Hvad er jeres yndlings sport?";
             break;
         case 1:
-            paraMessage = "Hvad din yndlings ret?";
+            paraMessage = "I har begge vist interesse for mad - Hvad er jeres yndlings ret?";
             break;
         case 2:
-            paraMessage = "Hvem er din yndlings kunster?";
+            paraMessage = "I har begge vist interesse for kunst - Hvad er jeres yndlings kunstner";
             break;
         case 3:
-            paraMessage = "Hvad er din yndlings film?";
+            paraMessage = "I har begge vist interesse for film - Hvad er jeres yndlings film?";
             break;
         case 4:
-            paraMessage = "Hvem er din yndlings kunster?";
+            paraMessage = "I har begge vist interesse for musik - Hvad er jeres yndlings genre?";
             break;
         case 5:
-            paraMessage = "Hvad er din yndlings udendørs aktivitet?";
+            paraMessage = "I har begge vist interesse for udendør afktiviteter - Hvad er jeres yndlings udendørs aktivitet?";
             break;
         case 6:
-            paraMessage = "Hvad er din yndlings grundstof?";
+            paraMessage = "I har begge vist interesse for videnskab - Hvad er jeres yndlings grundstof?";
             break;
         case 7:
-            paraMessage = "Hvad er dit drømme rejsemål";
+            paraMessage = "I har begge vist interesse for rejse - Hvad er jeres drømme rejsemål?";
             break;
         case 8:
-            paraMessage = "Hvorfor er klimaet vigtigt for dig?";
+            paraMessage = "I har begge vist interesse for klimaet - Hvorfor er klimaet vigtigt for dig?";
             break;
     }
     return paraMessage
@@ -423,13 +423,16 @@ function makeFirstChat(u_id1, u_id2) {
     jsonUsers = JSON.stringify(roomConnectionObject, null, 2)
 
 
-
+    //Laver et rum til brugerne i roomconnections.json
     fs.writeFileSync('rooms/roomConnections.json', jsonUsers, "utf-8")
     saveChat(room.id, u_id1, u_id2)
 }
 
 function saveChat(id, u_id1, u_id2, u_name, u_message) {
     let chat
+    //Så her forsøger vi at finde rummet med brugernes chats.
+    //Brugerne har måske et rum, hvis det er oprettet en "connection" imellem dem.
+    //Hvis de findes, så går vi i try, ellers i catch.
     try {
         //prøver at hente room filen
         let data = fs.readFileSync(`rooms/room${id}.json`)
@@ -450,17 +453,13 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
 
 
         if (id) {
-            //console.log(calc_user_parameters(id))
-            let firstmessage = {
-                message: calc_user_parameters(id)
-            }
             chat = {
                 id: id,
                 user_id1: u_id1,
                 user_id2: u_id2,
                 username1: getUserAccounts(u_id1, null).username,
                 username2: getUserAccounts(u_id2, null).username,
-                chat: [ firstmessage
+                chat: [ 
                 ]
             }
             //opretter hvis filen ikke eksistere

@@ -2,26 +2,22 @@ const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
 const functions = require('./functions')
-const bcrypt = require('bcrypt')
 const passport = require('passport')
 const flash = require('express-flash')
 const session = require('express-session')
 const methodOverride = require('method-override')
 let Strategy = require('passport-local').Strategy
 const app = express()
-const ensureLogin = require('connect-ensure-login')
 const bodyParser = require('body-parser')
-const {SaveAccInfo} = require("./functions");
-const {getUserAccounts} = require("./functions");
 const {accountInfoCheck} = require("./functions");
-const { emit } = require('process')
 const server = require('http').Server(app) //Giver us en "Server der kan kommunikere med socket.io"
 const io = require('socket.io')(server) //Laver server på port "server"
 
 const rooms = {} //Vores rooms
-
-//Windows: "alfa.exe", Linux: "./a.out"
-const c_fil_sti = "alfa.exe"
+let c_fil_sti = "./a.out"
+if(process.platform == 'win32'){
+    c_fil_sti = "alfa.exe"
+}
 
 // Define paths for express config
 const publicDirectoryPath = path.join(__dirname, '../public')
@@ -252,7 +248,7 @@ app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt d
     if (rooms[req.params.room] == null) {
         return res.redirect('/')
     }
-    functions.calc_user_parameters(req.params.room)
+    let intrestChat = functions.calc_user_parameters(req.params.room)
     try{
     let chatHistory = functions.getChatHistory(req.session.roomid)
     
@@ -261,14 +257,19 @@ app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt d
         roomName: req.params.room,
         username2: req.session.username,
         chatData: chatHistory,
+        intrestChat : intrestChat,
         onChatsite: true
     })
     }catch(e){
         //console.log("No chat history")
+        let chatHistory = functions.getChatHistory(req.params.room)
         res.render('room', {
             userName: req.user.username,
             roomName: req.params.room,
             username2: req.session.username,
+            chatData: chatHistory,
+            intrestChat : intrestChat,
+            onChatsite: true
         })
     }
     //console.log(req.session.username)
