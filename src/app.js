@@ -261,7 +261,8 @@ app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt d
         userName: req.user.username,
         roomName: req.params.room,
         username2: req.session.username,
-        chatData: chatHistory
+        chatData: chatHistory,
+        onChatsite: true
     })
     }catch(e){
         //console.log("No chat history")
@@ -272,6 +273,10 @@ app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt d
         })
     }
     //console.log(req.session.username)
+})
+
+app.post('/goToMatchfound', (req, res) => {
+    res.redirect('/matchfound')//Post der redirecter brugeren fra chat til matchfound via knap
 })
 
 //Rooms
