@@ -44,7 +44,7 @@ function getChat(id) {
 
     return chats
 }
-//TODO getRoomConnection Mangler
+//returnere en room connection 
 function getRoomConnection(id) {
     let roomConnection = getData('rooms/roomConnections.json')
     let roomConnectionObject = textToJSON(roomConnection)
@@ -63,19 +63,21 @@ function getRoomConnection(id) {
     return false
 }
 
-//TODO getPersonalUserChats
+//finder alle de chats en bruger har med andre brugere, og returnere dem i et array.
 function getPersonalUserChats(userid) {
     let roomConnection = getData('rooms/roomConnections.json')
     let roomConnectionObject = textToJSON(roomConnection)
 
     let personalUserChats = []
     for (let i = 0; i < roomConnectionObject.length; i++) {
+        //user_id1
         if (roomConnectionObject[i].user_id1 == userid) {
             let userObj = {
                 name: getUserAccounts(roomConnectionObject[i].user_id2).username,
                 id: roomConnectionObject[i].user_id2
             }
             personalUserChats.push(userObj)
+        //user_id2
         } else if (roomConnectionObject[i].user_id2 == userid) {
             let userObj = {
                 name: getUserAccounts(roomConnectionObject[i].user_id1).username,
@@ -86,9 +88,8 @@ function getPersonalUserChats(userid) {
     }
     return personalUserChats
 }
-//TODO getChatHistory
+//Henter chat historien
 function getChatHistory(roomid) {
-
     return (getChat(roomid).chat)
 }
 
@@ -127,11 +128,11 @@ function makeFirstChat(u_id1, u_id2) {
     saveChat(room.id, u_id1, u_id2)
 }
 
-//TODO saveChat
+//Gemmer en chat til et bestemt room imellem 2 brugere
 function saveChat(id, u_id1, u_id2, u_name, u_message) {
     let chat
+    //Prøver at hente chatten og tilføje besked til den.
     try {
-        //prøver at hente room filen
         let data = fs.readFileSync(`rooms/room${id}.json`)
         chatObj = textToJSON(data)
 
@@ -142,10 +143,10 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
         chatObj.chat.push(chatToAppend)
         jsonChat = JSON.stringify(chatObj, null, 2)
         fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
+    //Hvis der ikke er oprettet et room, bliver den catchet.
     } catch (e) {
         let id = checkChat(u_id1, u_id2)
         if (id) {
-            //console.log(calc_user_parameters(id))
             let firstmessage = {
                 message: calc_user_parameters(id)
             }
@@ -155,20 +156,15 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
                 user_id2: u_id2,
                 username1: getUserAccounts(u_id1, null).username,
                 username2: getUserAccounts(u_id2, null).username,
-                chat: [ firstmessage
-                ]
+                chat: [firstmessage]
             }
-            //opretter hvis filen ikke eksistere
             jsonChat = JSON.stringify(chat, null, 2)
-            //console.log(jsonChat)
             fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
-
         } else {
             console.log("Der skete en fejl!, Der fandtes ikke 2 brugere med et room")
         }
     }
 }
-
 
 //Udregner hvilken interesser 2 brugere har tilfælles
 function calc_user_parameters(id){
@@ -264,7 +260,6 @@ function checkNotAuthenticated(req, res, next) {
 
 //=====USER FUNCTIONS=====//
 
-
 // Tjekker om user eksistere i users_account.json
 function getUserAccounts(id, username) {
     try {
@@ -331,7 +326,7 @@ function createAccInfo(id, parameters) {
     }
 }
 
-
+//Gemmer en bruger i både usersInterestsPath og usersAccountPath når efter man har oprettet sig.
 function SaveAccInfo(id, parameters){
     let txtFile = getData(usersInterestsPath)
     if (!(parameters[0].length < 50 && parameters[1] >= 0 && parameters[1] <= 125 && parameters[2].length == 1)) {
@@ -415,10 +410,9 @@ function accountInfoCheck(id) {
     return false
 }
 
-//add Users to files 
+//Tilføjer bruger til usersAccountPath
 //Dette er ikke en asynkron funktion, hvilket gør det svære at tilføje to brugere med samme ID
 function addUser(u_id, u_username, u_email, u_password) {
-
     try {
         let userobj = {
             id: u_id,
@@ -442,10 +436,10 @@ function addUser(u_id, u_username, u_email, u_password) {
     }
 }
 
+//Denne funktion finder en bruger udfra et ID
 //Vi har gået ud fra dette github eksempel: 
 //Credit: https://github.com/passport/express-4.x-local-example 
 //Funktioner fra passport, som vi har omskrevet til at benytte nogle af vores egne funktioner
-//Denne funktion finder en bruger udfra et ID
 function findById(id, cb) {
     //Køres i næste Iteration af js Event Loop, nextTick tager funktion som parameter.
     process.nextTick(function () {
@@ -471,7 +465,7 @@ function findByUsername(username, cb) {
 
 //=====MATCH FUNCTIONS=====//
 
-//TODO knnButtonChecker
+//Bruges til at spørge om knn er mindre end 3
 function knnButtonChecker(knn){
     if (knn <= 3) {
         return false
@@ -479,7 +473,7 @@ function knnButtonChecker(knn){
     return true
 }
 
-//TODO printMatches
+//Returnere de rigtige matches ud fra hvilken 'side' man skal stå på i matchfound
 function printMatches(programPath, target_user, knn, index){
     let matches = sendConsoleCommand(programPath, `getmatch ${target_user} ${knn}`).split(" ")
     let display_matches = []

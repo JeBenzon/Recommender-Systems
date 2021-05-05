@@ -81,7 +81,6 @@ passport.serializeUser(function (user, cb) {
 });
 //sørger for at fjerne users i session (ud fra id)
 passport.deserializeUser(function (id, cb) {
-    console.log('id er: ' + id)
     functions.findById(id, function (err, user) {
         if (err) { return cb(err); }
         cb(null, user);
