@@ -136,8 +136,11 @@ function makeFirstChat(u_id1, u_id2) {
 //Gemmer en chat til et bestemt room imellem 2 brugere
 function saveChat(id, u_id1, u_id2, u_name, u_message) {
     let chat
-    //Prøver at hente chatten og tilføje besked til den.
+    //Så her forsøger vi at finde rummet med brugernes chats.
+    //Brugerne har måske et rum, hvis det er oprettet en "connection" imellem dem.
+    //Hvis de findes, så går vi i try, ellers i catch.
     try {
+        //prøver at hente room filen
         let data = fs.readFileSync(`rooms/room${id}.json`)
         chatObj = textToJSON(data)
 
@@ -145,25 +148,26 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
             name: u_name,
             message: u_message
         }
+
         chatObj.chat.push(chatToAppend)
+
         jsonChat = JSON.stringify(chatObj, null, 2)
         fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
-    //Hvis der ikke er oprettet et room, bliver den catchet.
     } catch (e) {
         let id = checkChat(u_id1, u_id2)
         if (id) {
-            let firstmessage = {
-                message: calc_user_parameters(id)
-            }
             chat = {
                 id: id,
                 user_id1: u_id1,
                 user_id2: u_id2,
                 username1: getUserAccounts(u_id1, null).username,
                 username2: getUserAccounts(u_id2, null).username,
-                chat: [firstmessage]
+                chat: [ 
+                ]
             }
+            //opretter hvis filen ikke eksistere
             jsonChat = JSON.stringify(chat, null, 2)
+            //console.log(jsonChat)
             fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
         } else {
             console.log("Der skete en fejl!, Der fandtes ikke 2 brugere med et room")
@@ -199,7 +203,7 @@ function calc_user_parameters(id){
     for(let i = 0; i < arrayComp.length;i++){
         if(arrayComp[i] > max){
             maxIndex = i
-            max = arrayComp
+            max = arrayComp[i]
         }
     }
     //console.log(maxIndex)
