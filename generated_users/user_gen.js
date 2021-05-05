@@ -70,4 +70,4 @@ function user_gen(users){
 
 
 }
-user_gen(100000)
+user_gen(100)

@@ -36,6 +36,11 @@ function getData(path) {
     return data;
 }
 
+
+
+
+
+
 //=====CHAT FUNCTIONS=====//
 
 function getChat(id) {
@@ -239,6 +244,11 @@ function chatMessage(index){
     return paraMessage
 }
 
+
+
+
+
+
 //=====LOGIN FUCNTIONS=====//
 
 //taget fra WebDevSimplified Node passport login projekt. 
@@ -257,6 +267,11 @@ function checkNotAuthenticated(req, res, next) {
     }
     next()
 }
+
+
+
+
+
 
 //=====USER FUNCTIONS=====//
 
@@ -372,7 +387,6 @@ function SaveAccInfo(id, parameters){
     }
 }
 
-
 //Tjekker om user eksistere i users.txt 
 function accountInfoCheck(id) {
     try {
@@ -463,6 +477,11 @@ function findByUsername(username, cb) {
     })
 }
 
+
+
+
+
+
 //=====MATCH FUNCTIONS=====//
 
 //Bruges til at spørge om knn er mindre end 3
@@ -487,6 +506,11 @@ function printMatches(programPath, target_user, knn, index){
     }
     return display_matches
 }
+
+
+
+
+
 
 //=====MODULE EXPORTS=====//
 
