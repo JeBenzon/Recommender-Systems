@@ -31,17 +31,17 @@ typedef struct user {
 } user;
 
 // prototypes
-int calc_users(FILE *userfile);
-void load_users(FILE *userfile, int total_users, user *users);
-void getmatch_js(char **argv, user* users, int total_users);
-void getmatch_c(user* users, int total_users);
+int calcUsers(FILE *userfile);
+void loadUsers(FILE *userfile, int total_users, user *users);
+void getMatchJS(char **argv, user* users, int total_users);
+void getMatchC(user* users, int total_users);
 double pearson(user *users, int target, int compare);
-double calc_mean_of_user(user user);
-double calc_sqrt_of_user(user user, double mean);
-user *find_best_matches(user *users, int total_users, int user_id);
-user *find_best_matches_js(user *users, int total_users, int user_id, int knn);
-void print_matches(user *best_matches);
-void print_matches_id(user *best_matches, int knn);
+double calcMeanofUser(user user);
+double calcSqrtofUser(user user, double mean);
+user *findBestMatches(user *users, int total_users, int user_id);
+user *findBestMatchesJS(user *users, int total_users, int user_id, int knn);
+void printMatches(user *best_matches);
+void printMatchesID(user *best_matches, int knn);
 int program(char *argv[]);
 
 int main(int argc, char* argv[]) {
@@ -66,7 +66,7 @@ int program(char *argv[]) {
     }
 
     // calculate number of users in database
-    int total_users = calc_users(userfile);
+    int total_users = calcUsers(userfile);
     
     // allocate memory for struct array with users
     user *users = (user *)malloc(total_users * sizeof(user));
@@ -76,13 +76,13 @@ int program(char *argv[]) {
     }
     
     // load userinfo into array
-    load_users(userfile, total_users, users);
+    loadUsers(userfile, total_users, users);
     
     if(strcmp(argv[1], "getmatch") == 0){
-        getmatch_js(argv, users, total_users);
+        getMatchJS(argv, users, total_users);
     }
     else {
-        getmatch_c(users, total_users);
+        getMatchC(users, total_users);
     }
 
     fclose(userfile);
@@ -91,7 +91,7 @@ int program(char *argv[]) {
     return 0;
 }
 
-int calc_users(FILE *userfile) {
+int calcUsers(FILE *userfile) {
     char ch;
     fseek(userfile, 0, SEEK_SET);
     int total_users = 1;
@@ -105,7 +105,7 @@ int calc_users(FILE *userfile) {
     return total_users;
 }
 
-void load_users(FILE *userfile, int total_users, user *users) {
+void loadUsers(FILE *userfile, int total_users, user *users) {
     // scan in users from filepath
     for (int i = 0; i < (int)total_users; i++) {
 
@@ -127,7 +127,7 @@ void load_users(FILE *userfile, int total_users, user *users) {
     }
 }
 
-void getmatch_js(char **argv, user* users, int total_users){
+void getMatchJS(char **argv, user* users, int total_users){
     //select target user
     int targetuser = atoi(argv[2]);
 
@@ -140,14 +140,14 @@ void getmatch_js(char **argv, user* users, int total_users){
     }
     
     //Run of all users, finding the best matches for the targetuser
-    user *best_matches = find_best_matches_js(users, total_users, targetuser, knn);
+    user *best_matches = findBestMatchesJS(users, total_users, targetuser, knn);
     //print matches back to javascript
-    print_matches_id(best_matches, knn);
+    printMatchesID(best_matches, knn);
 
     free(best_matches);       
 }
 
-void getmatch_c(user* users, int total_users){
+void getMatchC(user* users, int total_users){
     //select target user
     int user_id;
     printf("Enter your user id to get matches:\n");
@@ -160,10 +160,10 @@ void getmatch_c(user* users, int total_users){
     }
 
     //Sort the coefficient based on highest similarity
-    user *best_matches = find_best_matches(users, total_users, user_id);
+    user *best_matches = findBestMatches(users, total_users, user_id);
     
     //prints matches to terminal
-    print_matches(best_matches);
+    printMatches(best_matches);
 
     free(best_matches);
 }
@@ -174,12 +174,12 @@ double pearson(user *users, int target, int compare){
     user comp_user = users[compare];
 
     //finding user means
-    double t_mean = calc_mean_of_user(target_user);
-    double c_mean = calc_mean_of_user(comp_user);
+    double t_mean = calcMeanofUser(target_user);
+    double c_mean = calcMeanofUser(comp_user);
     
     //calc sqrt for each user
-    double t_sqrt = calc_sqrt_of_user(target_user, t_mean);
-    double c_sqrt = calc_sqrt_of_user(comp_user, c_mean);
+    double t_sqrt = calcSqrtofUser(target_user, t_mean);
+    double c_sqrt = calcSqrtofUser(comp_user, c_mean);
 
     //calc similarity
     double sim =    ((target_user.sports - t_mean) * (comp_user.sports - c_mean)) + 
@@ -198,7 +198,7 @@ double pearson(user *users, int target, int compare){
     return coeficient; 
 }
 
-double calc_mean_of_user(user user){
+double calcMeanofUser(user user){
     double mean = (user.sports + user.food + user.music + 
                    user.movies + user.art + user.outdoors + 
                    user.science + user.travel + user.climate) / TOTALCRITERIA;
@@ -212,7 +212,7 @@ double calc_mean_of_user(user user){
     return mean;
 }
 
-double calc_sqrt_of_user(user user, double mean){
+double calcSqrtofUser(user user, double mean){
     double user_sqrt = sqrt (pow((user.sports - mean),2) + 
                        pow((user.food - mean), 2) + 
                        pow((user.music - mean), 2) +
@@ -225,7 +225,7 @@ double calc_sqrt_of_user(user user, double mean){
     return user_sqrt;
 }
 
-user *find_best_matches(user *users, int total_users, int user_id){
+user *findBestMatches(user *users, int total_users, int user_id){
     user *best_matches = malloc(KNN * sizeof(user));
     if(best_matches == NULL){
         exit(EXIT_FAILURE);
@@ -250,7 +250,7 @@ user *find_best_matches(user *users, int total_users, int user_id){
     return best_matches;
 }
 
-user *find_best_matches_js(user *users, int total_users, int user_id, int knn){
+user *findBestMatchesJS(user *users, int total_users, int user_id, int knn){
     user *best_matches = malloc(knn * sizeof(user));
     if(best_matches == NULL){
         exit(EXIT_FAILURE);
@@ -275,13 +275,13 @@ user *find_best_matches_js(user *users, int total_users, int user_id, int knn){
     return best_matches;
 }
 
-void print_matches(user *best_matches){
+void printMatches(user *best_matches){
     for(int i = 0; i < KNN; i++){
             printf("Userid: %d, Username: %s, Similarity: %lf\n",best_matches[i].id, best_matches[i].name, best_matches[i].pearson);
         }
 }
 
-void print_matches_id(user *best_matches, int knn){
+void printMatchesID(user *best_matches, int knn){
     for(int i = 0; i < knn; i++){
             printf("%d ", best_matches[i].id);
         }
@@ -582,7 +582,7 @@ void calcSqrtofUserTestExceptional1(CuTest *tc) {
     input.travel = -2;
     input.climate = 16;
     // actual
-    double actual = calc_sqrt_of_user(input, 0);
+    double actual = calcSqrtofUser(input, 0);
     // expected
     // mean value:   0
     double expected = 16.97056;
@@ -602,7 +602,7 @@ void calcSqrtofUserTestExceptional2(CuTest *tc) {
     input.travel = 128;
     input.climate = 0;
     // actual
-    double actual = calc_sqrt_of_user(input, 28.33333);
+    double actual = calcSqrtofUser(input, 28.33333);
     // expected
     // mean value:   28.33333 -> 85/3
     double expected = 120.91319;  //-> 2*sqrt(3655)
@@ -622,7 +622,7 @@ void calcSqrtofUserTestExtreme1(CuTest *tc) {
     input.travel = 5;
     input.climate = 5;
     // actual
-    double actual = calc_sqrt_of_user(input, 5.001);
+    double actual = calcSqrtofUser(input, 5.001);
     // expected
     // mean value:   5.001
     double expected = 0.003;
@@ -642,7 +642,7 @@ void calcSqrtofUserTestExtreme2(CuTest *tc) {
     input.travel = 1;
     input.climate = 1;
     // actual
-    double actual = calc_sqrt_of_user(input, 1.001);
+    double actual = calcSqrtofUser(input, 1.001);
     // expected
     // mean value:   1.001
     double expected = 0.003;
@@ -662,7 +662,7 @@ void calcSqrtofUserTestNormal1(CuTest *tc) {
     input.travel = 2;
     input.climate = 2;
     // actual
-    double actual = calc_sqrt_of_user(input, 2);
+    double actual = calcSqrtofUser(input, 2);
     // expected
     // mean value:   2
     double expected = 2;
@@ -682,7 +682,7 @@ void calcSqrtofUserTestNormal2(CuTest *tc) {
     input.travel = 9;
     input.climate = 9;
     // actual
-    double actual = calc_sqrt_of_user(input, 9);
+    double actual = calcSqrtofUser(input, 9);
     // expected
     // mean value:   9
     double expected = 2;
@@ -702,7 +702,7 @@ void calcSqrtofUserTestNormal3(CuTest *tc) {
     input.travel = 2;
     input.climate = 4;
     // actual
-    double actual = calc_sqrt_of_user(input, 3);
+    double actual = calcSqrtofUser(input, 3);
     // expected
     // mean value:   3
     double expected = 2;
@@ -722,7 +722,7 @@ void calcSqrtofUserTestNormal4(CuTest *tc) {
     input.travel = 8;
     input.climate = 9;
     // actual
-    double actual = calc_sqrt_of_user(input, 5);
+    double actual = calcSqrtofUser(input, 5);
     // expected
     // mean value:   5
     double expected = 7.74596;  //-> 2*sqrt(15)
@@ -742,7 +742,7 @@ void calcMeanofUserTestExceptional1(CuTest *tc) {
     input.travel = -2;
     input.climate = 16;
     // actual
-    double actual = calc_mean_of_user(input);
+    double actual = calcMeanofUser(input);
     // expected
     double expected = 0;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
@@ -761,7 +761,7 @@ void calcMeanofUserTestExceptional2(CuTest *tc) {
     input.travel = 128;
     input.climate = 0;
     // actual
-    double actual = calc_mean_of_user(input);
+    double actual = calcMeanofUser(input);
     // expected
     double expected = 28.33333;  //-> 85/3
     CuAssertDblEquals(tc, expected, actual, 0.00001);
@@ -780,7 +780,7 @@ void calcMeanofUserTestExtreme1(CuTest *tc) {
     input.travel = 5;
     input.climate = 5;
     // actual
-    double actual = calc_mean_of_user(input);
+    double actual = calcMeanofUser(input);
     // expected
     double expected = 5.001;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
@@ -799,7 +799,7 @@ void calcMeanofUserTestExtreme2(CuTest *tc) {
     input.travel = 1;
     input.climate = 1;
     // actual
-    double actual = calc_mean_of_user(input);
+    double actual = calcMeanofUser(input);
     // expected
     double expected = 1.001;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
@@ -818,7 +818,7 @@ void calcMeanofUserTestNormal1(CuTest *tc) {
     input.travel = 2;
     input.climate = 2;
     // actual
-    double actual = calc_mean_of_user(input);
+    double actual = calcMeanofUser(input);
     // expected
     double expected = 2;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
@@ -837,7 +837,7 @@ void calcMeanofUserTestNormal2(CuTest *tc) {
     input.travel = 9;
     input.climate = 9;
     // actual
-    double actual = calc_mean_of_user(input);
+    double actual = calcMeanofUser(input);
     // expected
     double expected = 9;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
@@ -856,7 +856,7 @@ void calcMeanofUserTestNormal3(CuTest *tc) {
     input.travel = 2;
     input.climate = 4;
     // actual
-    double actual = calc_mean_of_user(input);
+    double actual = calcMeanofUser(input);
     // expected
     double expected = 3;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
@@ -875,13 +875,13 @@ void calcMeanofUserTestNormal4(CuTest *tc) {
     input.travel = 8;
     input.climate = 9;
     // actual
-    double actual = calc_mean_of_user(input);
+    double actual = calcMeanofUser(input);
     // expected
     double expected = 5;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
-void calc_usersTestFail(CuTest *tc) {
+void calcUsersTestFail(CuTest *tc) {
     // set users file path
     char *fp = "./cutest_c/users_fail.txt";
 
@@ -892,12 +892,12 @@ void calc_usersTestFail(CuTest *tc) {
         exit(EXIT_FAILURE);
     }
 
-    double actual = calc_users(userfile);
+    double actual = calcUsers(userfile);
     double expected = 100;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
-void calc_usersTest0(CuTest *tc) {
+void calcUsersTest0(CuTest *tc) {
     // set users file path
     char *fp = "./cutest_c/users_0.txt";
 
@@ -908,12 +908,12 @@ void calc_usersTest0(CuTest *tc) {
         exit(EXIT_FAILURE);
     }
 
-    double actual = calc_users(userfile);
+    double actual = calcUsers(userfile);
     double expected = 1;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
-void calc_usersTest1000(CuTest *tc) {
+void calcUsersTest1000(CuTest *tc) {
     // set users file path
     char *fp = "./cutest_c/users_1000.txt";
 
@@ -924,12 +924,12 @@ void calc_usersTest1000(CuTest *tc) {
         exit(EXIT_FAILURE);
     }
 
-    double actual = calc_users(userfile);
+    double actual = calcUsers(userfile);
     double expected = 1000;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
-void calc_usersTest5000(CuTest *tc) {
+void calcUsersTest5000(CuTest *tc) {
     // set users file path
     char *fp = "./cutest_c/users_5000.txt";
 
@@ -940,12 +940,12 @@ void calc_usersTest5000(CuTest *tc) {
         exit(EXIT_FAILURE);
     }
 
-    double actual = calc_users(userfile);
+    double actual = calcUsers(userfile);
     double expected = 5000;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
-void calc_usersTest10000(CuTest *tc) {
+void calcUsersTest10000(CuTest *tc) {
     // set users file path
     char *fp = "./cutest_c/users_10000.txt";
 
@@ -956,12 +956,12 @@ void calc_usersTest10000(CuTest *tc) {
         exit(EXIT_FAILURE);
     }
 
-    double actual = calc_users(userfile);
+    double actual = calcUsers(userfile);
     double expected = 10000;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
-void calc_usersTest25000(CuTest *tc) {
+void calcUsersTest25000(CuTest *tc) {
     // set users file path
     char *fp = "./cutest_c/users_25000.txt";
 
@@ -972,7 +972,7 @@ void calc_usersTest25000(CuTest *tc) {
         exit(EXIT_FAILURE);
     }
 
-    double actual = calc_users(userfile);
+    double actual = calcUsers(userfile);
     double expected = 25000;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
@@ -1003,11 +1003,11 @@ CuSuite *StrUtilGetSuite() {
     SUITE_ADD_TEST(suite, calcMeanofUserTestNormal2);
     SUITE_ADD_TEST(suite, calcMeanofUserTestNormal3);
     SUITE_ADD_TEST(suite, calcMeanofUserTestNormal4);
-    SUITE_ADD_TEST(suite, calc_usersTestFail);
-    SUITE_ADD_TEST(suite, calc_usersTest0);
-    SUITE_ADD_TEST(suite, calc_usersTest1000);
-    SUITE_ADD_TEST(suite, calc_usersTest5000);
-    SUITE_ADD_TEST(suite, calc_usersTest10000);
-    SUITE_ADD_TEST(suite, calc_usersTest25000);
+    SUITE_ADD_TEST(suite, calcUsersTestFail);
+    SUITE_ADD_TEST(suite, calcUsersTest0);
+    SUITE_ADD_TEST(suite, calcUsersTest1000);
+    SUITE_ADD_TEST(suite, calcUsersTest5000);
+    SUITE_ADD_TEST(suite, calcUsersTest10000);
+    SUITE_ADD_TEST(suite, calcUsersTest25000);
     return suite;
 }
