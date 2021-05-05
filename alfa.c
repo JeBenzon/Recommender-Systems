@@ -44,7 +44,7 @@ void print_matches_id(user *best_matches, int knn);
 
 
 int program(char *argv[]) {
-    
+
     // set users file path
     char *fp = "./users.txt";
 
@@ -872,7 +872,7 @@ void calcMeanofUserTestNormal4(CuTest *tc) {
 
 void calc_usersTestFail(CuTest *tc) {
     // set users file path
-    char *fp = "./users_fail.txt";
+    char *fp = "./cutest_c/users_fail.txt";
 
     // open file
     FILE *userfile = fopen(fp, "a+");
@@ -888,7 +888,7 @@ void calc_usersTestFail(CuTest *tc) {
 
 void calc_usersTest0(CuTest *tc) {
     // set users file path
-    char *fp = "./users_0.txt";
+    char *fp = "./cutest_c/users_0.txt";
 
     // open file
     FILE *userfile = fopen(fp, "a+");
@@ -898,13 +898,13 @@ void calc_usersTest0(CuTest *tc) {
     }
 
     double actual = calc_users(userfile);
-    double expected = 0;
+    double expected = 1;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
 
 void calc_usersTest1000(CuTest *tc) {
     // set users file path
-    char *fp = "./users_1000.txt";
+    char *fp = "./cutest_c/users_1000.txt";
 
     // open file
     FILE *userfile = fopen(fp, "a+");
@@ -920,7 +920,7 @@ void calc_usersTest1000(CuTest *tc) {
 
 void calc_usersTest5000(CuTest *tc) {
     // set users file path
-    char *fp = "./users_5000.txt";
+    char *fp = "./cutest_c/users_5000.txt";
 
     // open file
     FILE *userfile = fopen(fp, "a+");
@@ -936,7 +936,7 @@ void calc_usersTest5000(CuTest *tc) {
 
 void calc_usersTest10000(CuTest *tc) {
     // set users file path
-    char *fp = "./users_10000.txt";
+    char *fp = "./cutest_c/users_10000.txt";
 
     // open file
     FILE *userfile = fopen(fp, "a+");
@@ -952,7 +952,7 @@ void calc_usersTest10000(CuTest *tc) {
 
 void calc_usersTest25000(CuTest *tc) {
     // set users file path
-    char *fp = "./users_25000.txt";
+    char *fp = "./cutest_c/users_25000.txt";
 
     // open file
     FILE *userfile = fopen(fp, "a+");
