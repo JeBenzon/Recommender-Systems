@@ -50,7 +50,6 @@ int main(int argc, char* argv[]) {
     } else if (argc > 1) {
         program(argv);
     }
-
     return 0;
 }
 
