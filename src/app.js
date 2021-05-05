@@ -21,7 +21,7 @@ const io = require('socket.io')(server) //Laver server på port "server"
 const rooms = {} //Vores rooms
 
 //Windows: "alfa.exe", Linux: "./a.out"
-const c_fil_sti = "alfa.exe"
+const c_fil_sti = "./a.out"
 
 // Define paths for express config
 const publicDirectoryPath = path.join(__dirname, '../public')

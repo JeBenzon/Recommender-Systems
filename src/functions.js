@@ -373,31 +373,31 @@ function chatMessage(index){
     let paraMessage = ""
     switch (index){
         case 0:
-            paraMessage = "Hvad er dit yndlings fodboldhold?";
+            paraMessage = "I har begge vist interesse for sport - Hvad er jeres yndlings sport?";
             break;
         case 1:
-            paraMessage = "Hvad din yndlings ret?";
+            paraMessage = "I har begge vist interesse for mad - Hvad er jeres yndlings ret?";
             break;
         case 2:
-            paraMessage = "Hvem er din yndlings kunster?";
+            paraMessage = "I har begge vist interesse for kunst - Hvad er jeres yndlings kunstner";
             break;
         case 3:
-            paraMessage = "Hvad er din yndlings film?";
+            paraMessage = "I har begge vist interesse for film - Hvad er jeres yndlings film?";
             break;
         case 4:
-            paraMessage = "Hvem er din yndlings kunster?";
+            paraMessage = "I har begge vist interesse for musik - Hvad er jeres yndlings genre?";
             break;
         case 5:
-            paraMessage = "Hvad er din yndlings udendørs aktivitet?";
+            paraMessage = "I har begge vist interesse for udendør afktiviteter - Hvad er jeres yndlings udendørs aktivitet?";
             break;
         case 6:
-            paraMessage = "Hvad er din yndlings grundstof?";
+            paraMessage = "I har begge vist interesse for videnskab - Hvad er jeres yndlings grundstof?";
             break;
         case 7:
-            paraMessage = "Hvad er dit drømme rejsemål";
+            paraMessage = "I har begge vist interesse for rejse - Hvad er jeres drømme rejsemål?";
             break;
         case 8:
-            paraMessage = "Hvorfor er klimaet vigtigt for dig?";
+            paraMessage = "I har begge vist interesse for klimaet - Hvorfor er klimaet vigtigt for dig?";
             break;
     }
     return paraMessage
@@ -448,8 +448,6 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
         fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
     } catch (e) {
         let id = checkChat(u_id1, u_id2)
-
-
 
         if (id) {
             //console.log(calc_user_parameters(id))
