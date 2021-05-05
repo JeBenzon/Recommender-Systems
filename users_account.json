@@ -130,5 +130,11 @@
     "username": "Gitte-Giz",
     "email": "gl@mail.dk",
     "password": "123"
+  },
+  {
+    "id": 23,
+    "username": "sigridjensen",
+    "email": "sigrid.e.jensen@gmail.com",
+    "password": "Carlomus1"
   }
 ]
