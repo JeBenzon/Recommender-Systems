@@ -81,6 +81,7 @@ passport.use(new Strategy(
 
 //sørger for at indsætte users ind i session (sætte id ind i session)
 passport.serializeUser(function (user, cb) {
+    console.log(user)
     cb(null, user.id);
 });
 //sørger for at fjerne users i session (ud fra id)

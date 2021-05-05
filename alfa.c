@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
 int program(char *argv[]) {
 
     // set users file path
-    char *fp = "./users.txt";
+    char *fp = "./users_100k.txt";
 
     // open file
     FILE *userfile = fopen(fp, "a+");
@@ -78,9 +78,9 @@ int program(char *argv[]) {
     // load userinfo into array
     load_users(userfile, total_users, users);
     
-        if(strcmp(argv[1], "getmatch") == 0){
-            getmatch_js(argv, users, total_users);
-        }
+    if(strcmp(argv[1], "getmatch") == 0){
+        getmatch_js(argv, users, total_users);
+    }
     else {
         getmatch_c(users, total_users);
     }
@@ -138,6 +138,7 @@ void getmatch_js(char **argv, user* users, int total_users){
     for (int i = 0; i < total_users; i++) {
         users[i].pearson = pearson(users, targetuser - 1, users[i].id -1);
     }
+    
     //Run of all users, finding the best matches for the targetuser
     user *best_matches = find_best_matches_js(users, total_users, targetuser, knn);
     //print matches back to javascript

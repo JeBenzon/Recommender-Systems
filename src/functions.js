@@ -2,9 +2,11 @@ const cp = require('child_process')
 const { stdout } = require('process')
 const fs = require('fs')
 const uuid = require('uuid');
-
-const usersAccountPath = 'users_account.json'
-const usersInterestsPath = 'users.txt'
+//const path = require('path').resolve(__dirname, '..')
+const usersAccountPath = 'generated_users/acc_100k.json'
+const usersInterestsPath = 'generated_users/users_100k.txt'
+//const usersAccountPath = 'generated_users/acc_100k.json'
+//const usersInterestsPath = 'generated_users/users_100000.txt'
 
 //gir command og får string output ud.
 function sendConsoleCommand(programPath, parameters) {
