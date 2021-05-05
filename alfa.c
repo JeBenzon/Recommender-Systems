@@ -6,6 +6,7 @@
 
 #include <ctype.h>
 #include "CuTest.h"
+#include "AllTests.c"
 
 //constants to steer calcs
 #define TOTALCRITERIA 9
@@ -41,7 +42,17 @@ user *find_best_matches(user *users, int total_users, int user_id);
 user *find_best_matches_js(user *users, int total_users, int user_id, int knn);
 void print_matches(user *best_matches);
 void print_matches_id(user *best_matches, int knn);
+int program(char *argv[]);
 
+int main(int argc, char* argv[]) {
+    if (argc > 1 && strcmp(argv[1], "start_test") == 0) {
+        RunAllTests();
+    } else if (argc > 1) {
+        program(argv);
+    }
+
+    return 0;
+}
 
 int program(char *argv[]) {
 

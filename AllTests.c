@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include "CuTest.h"
-#include "alfa.c"
 #include "CuTest.c"
 
 CuSuite* StrUtilGetSuite();
@@ -17,12 +16,3 @@ void RunAllTests(void) {
     printf("%s\n", output->buffer);
 }
 
-int main(int argc, char* argv[]) {
-    if (argc > 1 && strcmp(argv[1], "start_test") == 0) {
-        RunAllTests();
-    } else if (argc > 1) {
-        program(argv);
-    }
-
-    return 0;
-}
