@@ -1,9 +1,9 @@
 const cp = require('child_process')
 const fs = require('fs')
 
-// Sti til bruger filer
-const usersAccountPath = '/users_account.json'
-const usersInterestsPath = 'users.txt'
+const usersAccountPath = 'generated_users/acc_100k.json'
+const usersInterestsPath = 'generated_users/users_100k.txt'
+
 
 //=====BASIC FUNCTIONS=====//
 
@@ -213,31 +213,31 @@ function chatMessage(index){
     let paraMessage = ""
     switch (index){
         case 0:
-            paraMessage = "Hvad er dit yndlings fodboldhold?";
+            paraMessage = "I har begge vist interesse for sport - Hvad er jeres yndlings sport?";
             break;
         case 1:
-            paraMessage = "Hvad din yndlings ret?";
+            paraMessage = "I har begge vist interesse for mad - Hvad er jeres yndlings ret?";
             break;
         case 2:
-            paraMessage = "Hvem er din yndlings kunster?";
+            paraMessage = "I har begge vist interesse for kunst - Hvad er jeres yndlings kunstner";
             break;
         case 3:
-            paraMessage = "Hvad er din yndlings film?";
+            paraMessage = "I har begge vist interesse for film - Hvad er jeres yndlings film?";
             break;
         case 4:
-            paraMessage = "Hvem er din yndlings kunster?";
+            paraMessage = "I har begge vist interesse for musik - Hvad er jeres yndlings genre?";
             break;
         case 5:
-            paraMessage = "Hvad er din yndlings udendørs aktivitet?";
+            paraMessage = "I har begge vist interesse for udendør afktiviteter - Hvad er jeres yndlings udendørs aktivitet?";
             break;
         case 6:
-            paraMessage = "Hvad er din yndlings grundstof?";
+            paraMessage = "I har begge vist interesse for videnskab - Hvad er jeres yndlings grundstof?";
             break;
         case 7:
-            paraMessage = "Hvad er dit drømme rejsemål";
+            paraMessage = "I har begge vist interesse for rejse - Hvad er jeres drømme rejsemål?";
             break;
         case 8:
-            paraMessage = "Hvorfor er klimaet vigtigt for dig?";
+            paraMessage = "I har begge vist interesse for klimaet - Hvorfor er klimaet vigtigt for dig?";
             break;
     }
     return paraMessage

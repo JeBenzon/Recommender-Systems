@@ -186,3 +186,12 @@ option [value=""][disabled]{
 .divwithpadding {
     padding: 100px;
 }
+
+.chat-container{
+  height: 400px;
+  justify-content: left;
+  overflow: auto;
+  display: flex;
+  flex-direction: column-reverse;
+  overflow-y: scroll; 
+}

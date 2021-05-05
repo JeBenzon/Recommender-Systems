@@ -31,6 +31,7 @@ function user_gen(users){
 
             }
             let accounts = {
+                id: i,
                 username: " ",
                 password: "1234",
                 email: "email@email.com",
