@@ -1,0 +1,16 @@
+{
+  "id": 1620199855914,
+  "user_id1": 2,
+  "user_id2": 3,
+  "username1": "oscar",
+  "username2": "kasper",
+  "chat": [
+    {
+      "message": "Hvem er din yndlings kunster?"
+    },
+    {
+      "name": "oscar",
+      "message": "Hej"
+    }
+  ]
+}
