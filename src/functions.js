@@ -33,7 +33,7 @@ function textToJSON(text) {
 //læser fil og giver string output
 function getData(path) {
     const data = fs.readFileSync(path, 'utf8')
-    return data;
+    return data
 }
 
 
@@ -124,11 +124,7 @@ function makeFirstChat(uID1, uID2) {
     let roomConnection = getData('rooms/roomConnections.json')
     let roomConnectionObject = textToJSON(roomConnection)
     roomConnectionObject.push(room)
-
     jsonUsers = JSON.stringify(roomConnectionObject, null, 2)
-
-
-
     fs.writeFileSync('rooms/roomConnections.json', jsonUsers, "utf-8")
     saveChat(room.id, uID1, uID2)
 }
@@ -150,7 +146,6 @@ function saveChat(id, uID1, uID2, uName, uMessage) {
         }
 
         chatObj.chat.push(chatToAppend)
-
         jsonChat = JSON.stringify(chatObj, null, 2)
         fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
     } catch (e) {
@@ -167,7 +162,6 @@ function saveChat(id, uID1, uID2, uName, uMessage) {
             }
             //opretter hvis filen ikke eksistere
             jsonChat = JSON.stringify(chat, null, 2)
-            //console.log(jsonChat)
             fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
         } else {
             console.log("Der skete en fejl!, Der fandtes ikke 2 brugere med et room")
@@ -206,11 +200,9 @@ function calcUserParameters(id) {
             max = arrayComp[i]
         }
     }
-    //console.log(maxIndex)
-    let intrestMessage = chatMessage(maxIndex);
-    //console.log(intrestMessage)
+    let intrestMessage = chatMessage(maxIndex)
 
-    return intrestMessage;
+    return intrestMessage
 }
 
 //Returnere den rette besked, ud fra hvad calc_user_parameters
@@ -264,6 +256,7 @@ function checkAuthenticated(req, res, next) {
     }
     res.redirect('/')
 }
+//TODO find ud af hvad next() gør
 //Tjekker om en bruger IKKE er authenticated
 function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
@@ -337,7 +330,7 @@ function createAccInfo(id, parameters) {
 
         fs.appendFile(usersInterestsPath, register, function (err) {
             if (err) throw err;
-        });
+        })
         return true
     } catch (e) {
         console.log('Der skete en fejl ved tilføjelse af bruger til fil')
@@ -359,16 +352,16 @@ function SaveAccInfo(id, parameters) {
     try {
         let register = `${id} ${parameters[0]} ${parameters[1]} ${parameters[2]} ${parameters[3]} ${parameters[4]} ${parameters[5]} ${parameters[6]} ${parameters[7]} ${parameters[8]} ${parameters[9]} ${parameters[10]} ${parameters[11]}`
         // break the textblock into an array of lines
-        let lines = txtFile.split('\n');
+        let lines = txtFile.split('\n')
         // remove one line, starting at the first position
-        lines.splice(id - 1, 1, register);
+        lines.splice(id - 1, 1, register)
         for (let i = 0; i < lines.length - 1; i++) {
             lines[i] += "\n"
         }
         let linestring = lines.join("")
         fs.writeFileSync(usersInterestsPath, linestring, function (err) {
             if (err) throw err;
-        });
+        })
         let userobj = {
             id: id,
             username: parameters[13],
@@ -465,7 +458,7 @@ function findById(id, cb) {
         if (user) {
             cb(null, user)
         } else {
-            cb(new Error('User ' + id + ' does not exist'));
+            cb(new Error('User ' + id + ' does not exist'))
         }
     })
 }
