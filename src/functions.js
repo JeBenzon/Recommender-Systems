@@ -216,16 +216,16 @@ function chatMessage(index) {
             paraMessage = "I har begge vist interesse for mad - Hvad er jeres yndlings ret?";
             break;
         case 2:
-            paraMessage = "I har begge vist interesse for kunst - Hvad er jeres yndlings kunstner";
+            paraMessage = "I har begge vist interesse for kunst - Hvem er jeres yndlings kunstner";
             break;
         case 3:
             paraMessage = "I har begge vist interesse for film - Hvad er jeres yndlings film?";
             break;
         case 4:
-            paraMessage = "I har begge vist interesse for musik - Hvad er jeres yndlings genre?";
+            paraMessage = "I har begge vist interesse for musik - Hvad er jeres yndlings musik genré?";
             break;
         case 5:
-            paraMessage = "I har begge vist interesse for udendør afktiviteter - Hvad er jeres yndlings udendørs aktivitet?";
+            paraMessage = "I har begge vist interesse for udendørs aktiviteter - Hvad er jeres yndlings udendørs aktivitet?";
             break;
         case 6:
             paraMessage = "I har begge vist interesse for videnskab - Hvad er jeres yndlings grundstof?";
@@ -234,7 +234,7 @@ function chatMessage(index) {
             paraMessage = "I har begge vist interesse for rejse - Hvad er jeres drømme rejsemål?";
             break;
         case 8:
-            paraMessage = "I har begge vist interesse for klimaet - Hvorfor er klimaet vigtigt for dig?";
+            paraMessage = "I har begge vist interesse for klimaet - Hvorfor er klimaet vigtigt for jer?";
             break;
     }
     return paraMessage
