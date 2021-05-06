@@ -59,8 +59,8 @@ function getRoomConnection(id) {
         if (id == roomConnectionObject[i].id) {
             let roomConnection = {
                 id: roomConnectionObject[i].id,
-                user_id1: roomConnectionObject[i].user_id1,
-                user_id2: roomConnectionObject[i].user_id2
+                userID1: roomConnectionObject[i].userID1,
+                userID2: roomConnectionObject[i].userID2
             }
             return roomConnection
         }
@@ -75,18 +75,18 @@ function getPersonalUserChats(userid) {
 
     let personalUserChats = []
     for (let i = 0; i < roomConnectionObject.length; i++) {
-        //user_id1
-        if (roomConnectionObject[i].user_id1 == userid) {
+        //userID1
+        if (roomConnectionObject[i].userID1 == userid) {
             let userObj = {
-                name: getUserAccounts(roomConnectionObject[i].user_id2).username,
-                id: roomConnectionObject[i].user_id2
+                name: getUserAccounts(roomConnectionObject[i].userID2).username,
+                id: roomConnectionObject[i].userID2
             }
             personalUserChats.push(userObj)
-        //user_id2
-        } else if (roomConnectionObject[i].user_id2 == userid) {
+        //userID2
+        } else if (roomConnectionObject[i].userID2 == userid) {
             let userObj = {
-                name: getUserAccounts(roomConnectionObject[i].user_id1).username,
-                id: roomConnectionObject[i].user_id1
+                name: getUserAccounts(roomConnectionObject[i].userID1).username,
+                id: roomConnectionObject[i].userID1
             }
             personalUserChats.push(userObj)
         }
@@ -99,13 +99,13 @@ function getChatHistory(roomid) {
 }
 
 //Funktion der tjekker om 2 brugere har et chatroom, og hvis de er returnere den room id
-function checkChat(user_id1, user_id2) {
+function checkChat(userID1, userID2) {
     let roomConnection = getData('rooms/roomConnections.json')
     let roomConnectionObject = textToJSON(roomConnection)
 
     for (let i = 0; i < roomConnectionObject.length; i++) {
-        if (user_id1 == roomConnectionObject[i].user_id1 && user_id2 == roomConnectionObject[i].user_id2 ||
-            user_id1 == roomConnectionObject[i].user_id2 && user_id2 == roomConnectionObject[i].user_id1) {
+        if (userID1 == roomConnectionObject[i].userID1 && userID2 == roomConnectionObject[i].userID2 ||
+            userID1 == roomConnectionObject[i].userID2 && userID2 == roomConnectionObject[i].userID1) {
             return roomConnectionObject[i].id
         }
     }
@@ -113,12 +113,12 @@ function checkChat(user_id1, user_id2) {
 }
 
 //skal både oprette chat i RoomConnection og oprette et room med det rigtige room id og info
-function makeFirstChat(u_id1, u_id2) {
+function makeFirstChat(uID1, uID2) {
     //Check om brugere allerede har en chat.
     let room = {
         id: parseInt(Date.now() + Math.random()),
-        user_id1: u_id1,
-        user_id2: u_id2,
+        userID1: uID1,
+        userID2: uID2,
     }
 
     let roomConnection = getData('rooms/roomConnections.json')
@@ -130,11 +130,11 @@ function makeFirstChat(u_id1, u_id2) {
 
 
     fs.writeFileSync('rooms/roomConnections.json', jsonUsers, "utf-8")
-    saveChat(room.id, u_id1, u_id2)
+    saveChat(room.id, uID1, uID2)
 }
 
 //Gemmer en chat til et bestemt room imellem 2 brugere
-function saveChat(id, u_id1, u_id2, u_name, u_message) {
+function saveChat(id, uID1, uID2, uName, uMessage) {
     let chat
     //Prøver at hente chatten og tilføje besked til den.
     try {
@@ -142,25 +142,25 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
         chatObj = textToJSON(data)
 
         chatToAppend = {
-            name: u_name,
-            message: u_message
+            name: uName,
+            message: uMessage
         }
         chatObj.chat.push(chatToAppend)
         jsonChat = JSON.stringify(chatObj, null, 2)
         fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
     //Hvis der ikke er oprettet et room, bliver den catchet.
     } catch (e) {
-        let id = checkChat(u_id1, u_id2)
+        let id = checkChat(uID1, uID2)
         if (id) {
             let firstmessage = {
                 message: calcUserParameters(id)
             }
             chat = {
                 id: id,
-                user_id1: u_id1,
-                user_id2: u_id2,
-                username1: getUserAccounts(u_id1, null).username,
-                username2: getUserAccounts(u_id2, null).username,
+                userID1: uID1,
+                userID2: uID2,
+                username1: getUserAccounts(uID1, null).username,
+                username2: getUserAccounts(uID2, null).username,
                 chat: [firstmessage]
             }
             jsonChat = JSON.stringify(chat, null, 2)
@@ -175,8 +175,8 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
 function calcUserParameters(id){
     let roomConnect = getRoomConnection(id)
 
-    let user1para = accountInfoCheck(roomConnect.user_id1)
-    let user2para = accountInfoCheck(roomConnect.user_id2)
+    let user1para = accountInfoCheck(roomConnect.userID1)
+    let user2para = accountInfoCheck(roomConnect.userID2)
 
     let user1sum = (+user1para.art + +user1para.climate + +user1para.food + +user1para.movies + +user1para.outdoors + +user1para.sports + +user1para.music + +user1para.science + +user1para.travel)
     let user2sum = (+user2para.art + +user2para.climate + +user2para.food + +user2para.movies + +user2para.outdoors + +user2para.sports + +user2para.music + +user2para.science + +user2para.travel)
@@ -426,13 +426,13 @@ function accountInfoCheck(id) {
 
 //Tilføjer bruger til usersAccountPath
 //Dette er ikke en asynkron funktion, hvilket gør det svære at tilføje to brugere med samme ID
-function addUser(u_id, u_username, u_email, u_password) {
+function addUser(uID, uUsername, uEmail, uPassword) {
     try {
         let userobj = {
-            id: u_id,
-            username: u_username,
-            email: u_email,
-            password: u_password,
+            id: uID,
+            username: uUsername,
+            email: uEmail,
+            password: uPassword,
         }
 
         let jsonUsers = fs.readFileSync(usersAccountPath, "utf-8")
