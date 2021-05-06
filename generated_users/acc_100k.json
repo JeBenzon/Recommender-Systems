@@ -598,5 +598,11 @@
     "username": "Anaia7488",
     "password": "1234",
     "email": "email@email.com"
+  },
+  {
+    "id": 101,
+    "username": "cool1234",
+    "email": "cool@1234.dk",
+    "password": "HEjsa1234"
   }
 ]
