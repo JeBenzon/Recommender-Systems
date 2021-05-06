@@ -32,20 +32,20 @@ typedef struct user {
 
 // prototypes
 int calcUsers(FILE *userfile);
-void loadUsers(FILE *userfile, int total_users, user *users);
-void getMatchJS(char **argv, user* users, int total_users);
-void getMatchC(user* users, int total_users);
+void loadUsers(FILE *userfile, int totalUsers, user *users);
+void getMatchJS(char **argv, user* users, int totalUsers);
+void getMatchC(user* users, int totalUsers);
 double pearson(user *users, int target, int compare);
 double calcMeanofUser(user user);
 double calcSqrtofUser(user user, double mean);
-user *findBestMatches(user *users, int total_users, int user_id);
-user *findBestMatchesJS(user *users, int total_users, int user_id, int knn);
-void printMatches(user *best_matches);
-void printMatchesID(user *best_matches, int knn);
+user *findBestMatches(user *users, int totalUsers, int userID);
+user *findBestMatchesJS(user *users, int totalUsers, int userID, int knn);
+void printMatches(user *bestMatches);
+void printMatchesID(user *bestMatches, int knn);
 int program(char *argv[]);
 
 int main(int argc, char* argv[]) {
-    if (argc > 1 && strcmp(argv[1], "start_test") == 0) {
+    if (argc > 1 && strcmp(argv[1], "startTest") == 0) {
         RunAllTests();
     } else if (argc > 1) {
         program(argv);
@@ -66,23 +66,23 @@ int program(char *argv[]) {
     }
 
     // calculate number of users in database
-    int total_users = calcUsers(userfile);
+    int totalUsers = calcUsers(userfile);
     
     // allocate memory for struct array with users
-    user *users = (user *)malloc(total_users * sizeof(user));
+    user *users = (user *)malloc(totalUsers * sizeof(user));
     if (users == NULL) {
         printf("struct array error.");
         exit(EXIT_FAILURE);
     }
     
     // load userinfo into array
-    loadUsers(userfile, total_users, users);
+    loadUsers(userfile, totalUsers, users);
     
     if(strcmp(argv[1], "getmatch") == 0){
-        getMatchJS(argv, users, total_users);
+        getMatchJS(argv, users, totalUsers);
     }
     else {
-        getMatchC(users, total_users);
+        getMatchC(users, totalUsers);
     }
 
     fclose(userfile);
@@ -94,20 +94,20 @@ int program(char *argv[]) {
 int calcUsers(FILE *userfile) {
     char ch;
     fseek(userfile, 0, SEEK_SET);
-    int total_users = 1;
+    int totalUsers = 1;
     while (!feof(userfile)) {
         ch = fgetc(userfile);
         if (ch == '\n') {
-            total_users++;
+            totalUsers++;
         }
     }
     fseek(userfile, 0, SEEK_SET);
-    return total_users;
+    return totalUsers;
 }
 
-void loadUsers(FILE *userfile, int total_users, user *users) {
+void loadUsers(FILE *userfile, int totalUsers, user *users) {
     // scan in users from filepath
-    for (int i = 0; i < (int)total_users; i++) {
+    for (int i = 0; i < (int)totalUsers; i++) {
 
         fscanf(userfile, " %d", &users[i].id);
         fscanf(userfile, " %[^ ]", users[i].name);
@@ -127,7 +127,7 @@ void loadUsers(FILE *userfile, int total_users, user *users) {
     }
 }
 
-void getMatchJS(char **argv, user* users, int total_users){
+void getMatchJS(char **argv, user* users, int totalUsers){
     //select target user
     int targetuser = atoi(argv[2]);
 
@@ -135,65 +135,65 @@ void getMatchJS(char **argv, user* users, int total_users){
     int knn = atoi(argv[3]);
     
     //calc user similarity
-    for (int i = 0; i < total_users; i++) {
+    for (int i = 0; i < totalUsers; i++) {
         users[i].pearson = pearson(users, targetuser - 1, users[i].id -1);
     }
     
     //Run of all users, finding the best matches for the targetuser
-    user *best_matches = findBestMatchesJS(users, total_users, targetuser, knn);
+    user *bestMatches = findBestMatchesJS(users, totalUsers, targetuser, knn);
     //print matches back to javascript
-    printMatchesID(best_matches, knn);
+    printMatchesID(bestMatches, knn);
 
-    free(best_matches);       
+    free(bestMatches);       
 }
 
-void getMatchC(user* users, int total_users){
+void getMatchC(user* users, int totalUsers){
     //select target user
-    int user_id;
+    int userID;
     printf("Enter your user id to get matches:\n");
-    scanf("%d", &user_id);
-    printf("Calculating best matches for %s ...\n", users[user_id-1].name);
+    scanf("%d", &userID);
+    printf("Calculating best matches for %s ...\n", users[userID-1].name);
 
     //calc user similarity
-    for (int i = 0; i < total_users; i++) {
-        users[i].pearson = pearson(users, user_id-1, users[i].id -1);
+    for (int i = 0; i < totalUsers; i++) {
+        users[i].pearson = pearson(users, userID-1, users[i].id -1);
     }
 
     //Sort the coefficient based on highest similarity
-    user *best_matches = findBestMatches(users, total_users, user_id);
+    user *bestMatches = findBestMatches(users, totalUsers, userID);
     
     //prints matches to terminal
-    printMatches(best_matches);
+    printMatches(bestMatches);
 
-    free(best_matches);
+    free(bestMatches);
 }
 
 
 double pearson(user *users, int target, int compare){
-    user target_user = users[target];
-    user comp_user = users[compare];
+    user targetUser = users[target];
+    user compUser = users[compare];
 
     //finding user means
-    double t_mean = calcMeanofUser(target_user);
-    double c_mean = calcMeanofUser(comp_user);
+    double tMean = calcMeanofUser(targetUser);
+    double cMean = calcMeanofUser(compUser);
     
     //calc sqrt for each user
-    double t_sqrt = calcSqrtofUser(target_user, t_mean);
-    double c_sqrt = calcSqrtofUser(comp_user, c_mean);
+    double tSqrt = calcSqrtofUser(targetUser, tMean);
+    double cSqrt = calcSqrtofUser(compUser, cMean);
 
     //calc similarity
-    double sim =    ((target_user.sports - t_mean) * (comp_user.sports - c_mean)) + 
-                    ((target_user.food - t_mean) * (comp_user.food - c_mean)) + 
-                    ((target_user.music - t_mean) * (comp_user.music - c_mean)) +
-                    ((target_user.movies - t_mean ) * (comp_user.movies - c_mean)) +
-                    ((target_user.art - t_mean) * (comp_user.art - c_mean)) +
-                    ((target_user.outdoors - t_mean) * (comp_user.outdoors - c_mean)) +
-                    ((target_user.science - t_mean) * (comp_user.science - c_mean)) +
-                    ((target_user.travel - t_mean) * (comp_user.travel - c_mean)) +
-                    ((target_user.climate - t_mean) * (comp_user.climate - c_mean));
+    double sim =    ((targetUser.sports - tMean) * (compUser.sports - cMean)) + 
+                    ((targetUser.food - tMean) * (compUser.food - cMean)) + 
+                    ((targetUser.music - tMean) * (compUser.music - cMean)) +
+                    ((targetUser.movies - tMean ) * (compUser.movies - cMean)) +
+                    ((targetUser.art - tMean) * (compUser.art - cMean)) +
+                    ((targetUser.outdoors - tMean) * (compUser.outdoors - cMean)) +
+                    ((targetUser.science - tMean) * (compUser.science - cMean)) +
+                    ((targetUser.travel - tMean) * (compUser.travel - cMean)) +
+                    ((targetUser.climate - tMean) * (compUser.climate - cMean));
 
     //calculating similarity coeficient
-    double coeficient = sim / (t_sqrt * c_sqrt);
+    double coeficient = sim / (tSqrt * cSqrt);
     
     return coeficient; 
 }
@@ -213,7 +213,7 @@ double calcMeanofUser(user user){
 }
 
 double calcSqrtofUser(user user, double mean){
-    double user_sqrt = sqrt (pow((user.sports - mean),2) + 
+    double userSqrt = sqrt (pow((user.sports - mean),2) + 
                        pow((user.food - mean), 2) + 
                        pow((user.music - mean), 2) +
                        pow((user.movies - mean),2) +
@@ -222,68 +222,68 @@ double calcSqrtofUser(user user, double mean){
                        pow((user.science - mean),2) +
                        pow((user.travel - mean),2) +
                        pow((user.climate - mean),2));
-    return user_sqrt;
+    return userSqrt;
 }
 
-user *findBestMatches(user *users, int total_users, int user_id){
-    user *best_matches = malloc(KNN * sizeof(user));
-    if(best_matches == NULL){
+user *findBestMatches(user *users, int totalUsers, int userID){
+    user *bestMatches = malloc(KNN * sizeof(user));
+    if(bestMatches == NULL){
         exit(EXIT_FAILURE);
     }
 
     for(int i = 0; i < KNN; i++){
-        best_matches[i].pearson = -10;
+        bestMatches[i].pearson = -10;
     }
     
-    for(int i = 0; i < total_users; i++){
-        if(users[i].id != user_id){
+    for(int i = 0; i < totalUsers; i++){
+        if(users[i].id != userID){
             user x = users[i];
             for(int j = 0; j < KNN; j++){
-                if(x.pearson > best_matches[j].pearson){
-                    user temp = best_matches[j];
-                    best_matches[j] = x;
+                if(x.pearson > bestMatches[j].pearson){
+                    user temp = bestMatches[j];
+                    bestMatches[j] = x;
                     x = temp;
                 }
             } 
         }
     }
-    return best_matches;
+    return bestMatches;
 }
 
-user *findBestMatchesJS(user *users, int total_users, int user_id, int knn){
-    user *best_matches = malloc(knn * sizeof(user));
-    if(best_matches == NULL){
+user *findBestMatchesJS(user *users, int totalUsers, int userID, int knn){
+    user *bestMatches = malloc(knn * sizeof(user));
+    if(bestMatches == NULL){
         exit(EXIT_FAILURE);
     }
 
     for(int i = 0; i < knn; i++){
-        best_matches[i].pearson = -10;
+        bestMatches[i].pearson = -10;
     }
     
-    for(int i = 0; i < total_users; i++){
-        if(users[i].id != user_id){
+    for(int i = 0; i < totalUsers; i++){
+        if(users[i].id != userID){
             user x = users[i];
             for(int j = 0; j < knn; j++){
-                if(x.pearson > best_matches[j].pearson){
-                    user temp = best_matches[j];
-                    best_matches[j] = x;
+                if(x.pearson > bestMatches[j].pearson){
+                    user temp = bestMatches[j];
+                    bestMatches[j] = x;
                     x = temp;
                 }
             } 
         }
     }
-    return best_matches;
+    return bestMatches;
 }
 
-void printMatches(user *best_matches){
+void printMatches(user *bestMatches){
     for(int i = 0; i < KNN; i++){
-            printf("Userid: %d, Username: %s, Similarity: %lf\n",best_matches[i].id, best_matches[i].name, best_matches[i].pearson);
+            printf("Userid: %d, Username: %s, Similarity: %lf\n",bestMatches[i].id, bestMatches[i].name, bestMatches[i].pearson);
         }
 }
 
-void printMatchesID(user *best_matches, int knn){
+void printMatchesID(user *bestMatches, int knn){
     for(int i = 0; i < knn; i++){
-            printf("%d ", best_matches[i].id);
+            printf("%d ", bestMatches[i].id);
         }
 }
 
@@ -315,8 +315,8 @@ void pearsonTestExceptional1(CuTest *tc) {
     // actual
     double actual = pearson(input, 0, 1);
     // expected values:
-    // t_mean value:   0
-    // c_mean value:   0.111 -> 1/9
+    // tMean value:   0
+    // cMean value:   0.111 -> 1/9
     // t sqrt:       16.97056 -> 12*sqrt(2)
     // c sqrt:       9.42809 -> (20*sqrt(2))/3
     // sim:          -20
@@ -350,8 +350,8 @@ void pearsonTestExceptional2(CuTest *tc) {
     // actual
     double actual = pearson(input, 0, 1);
     // expected values:
-    // t_mean value:   28.33333 -> 85/3
-    // c_mean value:   -28.33333 -> -85/3
+    // tMean value:   28.33333 -> 85/3
+    // cMean value:   -28.33333 -> -85/3
     // t sqrt:       120.91319 -> 2*sqrt(3655)
     // c sqrt:       120.91319 -> 2*sqrt(3655)
     // sim:          5433
@@ -385,8 +385,8 @@ void pearsonTestExtreme1(CuTest *tc) {
     // actual
     double actual = pearson(input, 0, 1);
     // expected values:
-    // t_mean value:   5.001
-    // c_mean value:   5.001
+    // tMean value:   5.001
+    // cMean value:   5.001
     // t sqrt:       0.003
     // c sqrt:       0.003
     // sim:          0.000009
@@ -420,8 +420,8 @@ void pearsonTestExtreme2(CuTest *tc) {
     // actual
     double actual = pearson(input, 0, 1);
     // expected values:
-    // t_mean value:   1.001
-    // c_mean value:   10.001
+    // tMean value:   1.001
+    // cMean value:   10.001
     // t sqrt:       0.003
     // c sqrt:       0.003
     // sim:          0.000009
@@ -455,8 +455,8 @@ void pearsonTestNormal1(CuTest *tc) {
     // actual
     double actual = pearson(input, 0, 1);
     // expected values:
-    // t_mean value:   2
-    // c_mean value:   2
+    // tMean value:   2
+    // cMean value:   2
     // t sqrt:       2
     // c sqrt:       2.44948 -> sqrt(6)
     // sim:          -1
@@ -490,8 +490,8 @@ void pearsonTestNormal2(CuTest *tc) {
     // actual
     double actual = pearson(input, 0, 1);
     // expected values:
-    // t_mean value:   9
-    // c_mean value:   9
+    // tMean value:   9
+    // cMean value:   9
     // t sqrt:       2
     // c sqrt:       2.44948 -> sqrt(6)
     // sim:          -1
@@ -525,8 +525,8 @@ void pearsonTestNormal3(CuTest *tc) {
     // actual
     double actual = pearson(input, 0, 1);
     // expected values:
-    // t_mean value:   3
-    // c_mean value:   5
+    // tMean value:   3
+    // cMean value:   5
     // t sqrt:       2
     // c sqrt:       7.4833147 -> 2*sqrt(14)
     // sim:          2
@@ -560,8 +560,8 @@ void pearsonTestNormal4(CuTest *tc) {
     // actual
     double actual = pearson(input, 0, 1);
     // expected values:
-    // t_mean value:   5
-    // c_mean value:   6
+    // tMean value:   5
+    // cMean value:   6
     // t sqrt:       7.74596 -> 2*sqrt(15)
     // c sqrt:       7.74596 -> 2*sqrt(15)
     // sim:          -60

@@ -153,7 +153,7 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
         let id = checkChat(u_id1, u_id2)
         if (id) {
             let firstmessage = {
-                message: calc_user_parameters(id)
+                message: calcUserParameters(id)
             }
             chat = {
                 id: id,
@@ -172,7 +172,7 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
 }
 
 //Udregner hvilken interesser 2 brugere har tilfælles
-function calc_user_parameters(id){
+function calcUserParameters(id){
     let roomConnect = getRoomConnection(id)
 
     let user1para = accountInfoCheck(roomConnect.user_id1)
@@ -493,18 +493,18 @@ function knnButtonChecker(knn){
 }
 
 //Returnere de rigtige matches ud fra hvilken 'side' man skal stå på i matchfound
-function printMatches(programPath, target_user, knn, index){
-    let matches = sendConsoleCommand(programPath, `getmatch ${target_user} ${knn}`).split(" ")
-    let display_matches = []
+function printMatches(programPath, targetUser, knn, index){
+    let matches = sendConsoleCommand(programPath, `getmatch ${targetUser} ${knn}`).split(" ")
+    let displayMatches = []
     let l = 0
 
     if (knn <= getLastUserId()-3 && knn >= 3){
         for (let i = index; i < index +3; i++){
-            display_matches[l] = getUserCheck(matches[i], null)
+            displayMatches[l] = getUserCheck(matches[i], null)
             l++            
         }
     }
-    return display_matches
+    return displayMatches
 }
 
 
@@ -528,7 +528,7 @@ getChatHistory,
 checkChat,
 makeFirstChat,
 saveChat,
-calc_user_parameters,
+calcUserParameters,
 chatMessage,
 
 //LOGIN FUNCTIONS
