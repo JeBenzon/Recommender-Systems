@@ -188,7 +188,7 @@ option [value=""][disabled]{
 }
 
 .chat-container{
-  height: 400px;
+  height: 350px;
   justify-content: left;
   overflow: auto;
   display: flex;
