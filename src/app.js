@@ -6,7 +6,7 @@ const passport = require('passport')
 const flash = require('express-flash')
 const session = require('express-session')
 const methodOverride = require('method-override')
-let Strategy = require('passport-local').Strategy
+const Strategy = require('passport-local').Strategy
 const app = express()
 const bodyParser = require('body-parser')
 const {accountInfoCheck} = require("./functions")
@@ -43,6 +43,7 @@ app.use(session({
 }))
 //bruges til at overskrive f.eks. Delete 
 app.use(methodOverride('_method'))
+//Middelware bliver kørt imellem req og res. Sætter locals til at være authenticated.
 app.use(function (req, res, next) {
     res.locals.isAuthenticated = req.isAuthenticated()
     next()
@@ -253,10 +254,6 @@ app.get('/:room', functions.checkAuthenticated, (req, res) => {
     }
 })
 
-//Post der redirecter brugeren fra chat til matchfound via knap
-app.post('/goToMatchfound', (req, res) => {
-    res.redirect('/matchfound')
-})
 
 //Rooms
 app.post('/room', functions.checkAuthenticated, (req, res) => {
@@ -279,6 +276,10 @@ app.post('/room', functions.checkAuthenticated, (req, res) => {
     //Redirektor dem til det nye room
     res.redirect(roomId)
     
+})
+//Post der redirecter brugeren fra chat til matchfound via knap
+app.post('/goToMatchfound', (req, res) => {
+    res.redirect('/matchfound')
 })
 //Første gang bruger loader hjemmeside -> kalder funktion og giver dem et socket
 io.on('connection', socket => {
@@ -342,4 +343,4 @@ app.get('*', (req, res) => {
 })
 
 //Module export
-module.exports = server;
+module.exports = server

@@ -11,7 +11,8 @@ const usersInterestsPath = 'generated_users/users_100k.txt'
 function sendConsoleCommand(programPath, parameters) {
     try {
         let par = parameters.split(" ")
-        const { stdout, stderr } = cp.spawnSync(programPath, [par[0], par[1], par[2]])
+        //Udpakker object ind i stdout, spawnSync sender path og parametre til terminalen.
+        const  { stdout }  = cp.spawnSync(programPath, [par[0], par[1], par[2]])
         return stdout.toString()
     } catch (e) {
         console.log('C kommunikations fejl errorcode:' + e)
@@ -36,54 +37,46 @@ function getData(path) {
     return data
 }
 
-
-
+// kalder getData og textToJSON og laver daten om til et object
+function getDataTextToJSON(path){
+    let data = fs.readFileSync(path)
+    return textToJSON(data)
+}
 
 
 
 //=====CHAT FUNCTIONS=====//
 
-function getChat(id) {
-    let data = fs.readFileSync(`rooms/room${id}.json`)
-    let chats = textToJSON(data)
-
-    return chats
+function getChat(roomID) {
+    return getDataTextToJSON(`rooms/room${roomID}.json`)
 }
-//returnere en room connection 
-function getRoomConnection(id) {
-    let roomConnection = getData('rooms/roomConnections.json')
-    let roomConnectionObject = textToJSON(roomConnection)
+//returnere et roomConnection object med: id, userID1, userID2.
+function getRoomConnection(roomID) {
+    let roomConnectionObject = getDataTextToJSON('rooms/roomConnections.json')
 
     for (let i = 0; i < roomConnectionObject.length; i++) {
-        //console.log(roomConnectionObject)
-        if (id == roomConnectionObject[i].id) {
-            let roomConnection = {
-                id: roomConnectionObject[i].id,
-                userID1: roomConnectionObject[i].userID1,
-                userID2: roomConnectionObject[i].userID2
-            }
-            return roomConnection
+        if (roomID == roomConnectionObject[i].id) {
+            return roomConnectionObject[i]
         }
     }
     return false
 }
 
-//finder alle de chats en bruger har med andre brugere, og returnere dem i et array.
-function getPersonalUserChats(userid) {
-    let roomConnection = getData('rooms/roomConnections.json')
-    let roomConnectionObject = textToJSON(roomConnection)
+//finder alle de chats en bruger har med andre brugere, og returnere som et array af objecter {name,id}
+function getPersonalUserChats(userID) {
+    let roomConnectionObject = getDataTextToJSON('rooms/roomConnections.json')
 
     let personalUserChats = []
     for (let i = 0; i < roomConnectionObject.length; i++) {
         //userID1
-        if (roomConnectionObject[i].userID1 == userid) {
+        if (roomConnectionObject[i].userID1 == userID) {
             let userObj = {
                 name: getUserAccounts(roomConnectionObject[i].userID2).username,
                 id: roomConnectionObject[i].userID2
             }
             personalUserChats.push(userObj)
-            //userID2
-        } else if (roomConnectionObject[i].userID2 == userid) {
+        //userID2
+        } else if (roomConnectionObject[i].userID2 == userID) {
             let userObj = {
                 name: getUserAccounts(roomConnectionObject[i].userID1).username,
                 id: roomConnectionObject[i].userID1
@@ -93,15 +86,15 @@ function getPersonalUserChats(userid) {
     }
     return personalUserChats
 }
+
 //Henter chat historien
 function getChatHistory(roomid) {
     return (getChat(roomid).chat)
 }
 
-//Funktion der tjekker om 2 brugere har et chatroom, og hvis de er returnere den room id
+//Tjekker om 2 brugere har et chatroom, og hvis de har returnere den roomID
 function checkChat(userID1, userID2) {
-    let roomConnection = getData('rooms/roomConnections.json')
-    let roomConnectionObject = textToJSON(roomConnection)
+    let roomConnectionObject = getDataTextToJSON('rooms/roomConnections.json')
 
     for (let i = 0; i < roomConnectionObject.length; i++) {
         if (userID1 == roomConnectionObject[i].userID1 && userID2 == roomConnectionObject[i].userID2 ||
@@ -112,17 +105,15 @@ function checkChat(userID1, userID2) {
     return false
 }
 
-//skal både oprette chat i RoomConnection og oprette et room med det rigtige room id og info
+// opretter både chat i RoomConnection og et room med det rigtige room id og info
 function makeFirstChat(uID1, uID2) {
+    let roomConnectionObject = getDataTextToJSON('rooms/roomConnections.json')
     //Check om brugere allerede har en chat.
     let room = {
         id: parseInt(Date.now() + Math.random()),
         userID1: uID1,
         userID2: uID2,
     }
-
-    let roomConnection = getData('rooms/roomConnections.json')
-    let roomConnectionObject = textToJSON(roomConnection)
     roomConnectionObject.push(room)
     jsonUsers = JSON.stringify(roomConnectionObject, null, 2)
     fs.writeFileSync('rooms/roomConnections.json', jsonUsers, "utf-8")
@@ -133,12 +124,11 @@ function makeFirstChat(uID1, uID2) {
 function saveChat(id, uID1, uID2, uName, uMessage) {
     let chat
     //Så her forsøger vi at finde rummet med brugernes chats.
-    //Brugerne har måske et rum, hvis det er oprettet en "connection" imellem dem.
+    //Brugerne har måske et rum, hvis der er oprettet en "connection" imellem dem.
     //Hvis de findes, så går vi i try, ellers i catch.
     try {
         //prøver at hente room filen
-        let data = fs.readFileSync(`rooms/room${id}.json`)
-        chatObj = textToJSON(data)
+        let chatObj = getDataTextToJSON(`rooms/room${id}.json`)
 
         chatToAppend = {
             name: uName,
@@ -149,6 +139,7 @@ function saveChat(id, uID1, uID2, uName, uMessage) {
         jsonChat = JSON.stringify(chatObj, null, 2)
         fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
     } catch (e) {
+        // Hvis den catcher opretter den chat rooms filen.
         let id = checkChat(uID1, uID2)
         if (id) {
             chat = {
@@ -160,7 +151,6 @@ function saveChat(id, uID1, uID2, uName, uMessage) {
                 chat: [ 
                 ]
             }
-            //opretter hvis filen ikke eksistere
             jsonChat = JSON.stringify(chat, null, 2)
             fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
         } else {
@@ -170,15 +160,16 @@ function saveChat(id, uID1, uID2, uName, uMessage) {
 }
 
 //Udregner hvilken interesser 2 brugere har tilfælles
-function calcUserParameters(id) {
-    let roomConnect = getRoomConnection(id)
-
+function calcUserParameters(roomID) {
+    //Får roomConnection udfra et roomID
+    let roomConnect = getRoomConnection(roomID)
+    //Henter user1 og user2 fra roomConnect
     let user1para = accountInfoCheck(roomConnect.userID1)
     let user2para = accountInfoCheck(roomConnect.userID2)
-
+    //Udregner summen af user1 og user2's parametre.
     let user1sum = (+user1para.art + +user1para.climate + +user1para.food + +user1para.movies + +user1para.outdoors + +user1para.sports + +user1para.music + +user1para.science + +user1para.travel)
     let user2sum = (+user2para.art + +user2para.climate + +user2para.food + +user2para.movies + +user2para.outdoors + +user2para.sports + +user2para.music + +user2para.science + +user2para.travel)
-
+    //Finder største fælles interresse
     let artComp = (user1para.art / user1sum) * (user2para.art / user2sum)
     let climateComp = (user1para.climate / user1sum) * (user2para.climate / user2sum)
     let foodComp = (user1para.food / user1sum) * (user2para.food / user2sum)
@@ -188,24 +179,22 @@ function calcUserParameters(id) {
     let musicComp = (user1para.music / user1sum) * (user2para.music / user2sum)
     let scienceComp = (user1para.science / user1sum) * (user2para.science / user2sum)
     let travelComp = (user1para.travel / user1sum) * (user2para.travel / user2sum)
-
+    //opretter array med interresseværdi
     let arrayComp = [sportComp, foodComp, musicComp, moviesComp, artComp, outdoorsComp, scienceComp, travelComp, climateComp]
 
     let max = arrayComp[0]
     let maxIndex = 0
-
+    //Finder største interresseværdi i arrayet.
     for (let i = 0; i < arrayComp.length; i++) {
         if (arrayComp[i] > max) {
             maxIndex = i
             max = arrayComp[i]
         }
     }
-    let intrestMessage = chatMessage(maxIndex)
-
-    return intrestMessage
+    return chatMessage(maxIndex)
 }
 
-//Returnere den rette besked, ud fra hvad calc_user_parameters
+//Returnere den rette besked, ud fra hvad calcUserParameters
 function chatMessage(index) {
     let paraMessage = ""
     switch (index) {
@@ -252,6 +241,7 @@ function chatMessage(index) {
 //tjekker om en bruger er authenticated
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
+        //kalder næste middelware function
         return next()
     }
     res.redirect('/')
@@ -309,9 +299,7 @@ function getUserCheck(id) {
 
 //Giver det sidste id i userAccountPath
 function getLastUserId() {
-    let data = getData(usersAccountPath)
-    let users = textToJSON(data)
-
+    let users = getDataTextToJSON(usersAccountPath)
     return users[users.length - 1].id
 }
 
