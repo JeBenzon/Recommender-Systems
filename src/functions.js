@@ -59,8 +59,8 @@ function getRoomConnection(id) {
         if (id == roomConnectionObject[i].id) {
             let roomConnection = {
                 id: roomConnectionObject[i].id,
-                user_id1: roomConnectionObject[i].user_id1,
-                user_id2: roomConnectionObject[i].user_id2
+                userID1: roomConnectionObject[i].userID1,
+                userID2: roomConnectionObject[i].userID2
             }
             return roomConnection
         }
@@ -75,18 +75,18 @@ function getPersonalUserChats(userid) {
 
     let personalUserChats = []
     for (let i = 0; i < roomConnectionObject.length; i++) {
-        //user_id1
-        if (roomConnectionObject[i].user_id1 == userid) {
+        //userID1
+        if (roomConnectionObject[i].userID1 == userid) {
             let userObj = {
-                name: getUserAccounts(roomConnectionObject[i].user_id2).username,
-                id: roomConnectionObject[i].user_id2
+                name: getUserAccounts(roomConnectionObject[i].userID2).username,
+                id: roomConnectionObject[i].userID2
             }
             personalUserChats.push(userObj)
-        //user_id2
-        } else if (roomConnectionObject[i].user_id2 == userid) {
+            //userID2
+        } else if (roomConnectionObject[i].userID2 == userid) {
             let userObj = {
-                name: getUserAccounts(roomConnectionObject[i].user_id1).username,
-                id: roomConnectionObject[i].user_id1
+                name: getUserAccounts(roomConnectionObject[i].userID1).username,
+                id: roomConnectionObject[i].userID1
             }
             personalUserChats.push(userObj)
         }
@@ -99,13 +99,13 @@ function getChatHistory(roomid) {
 }
 
 //Funktion der tjekker om 2 brugere har et chatroom, og hvis de er returnere den room id
-function checkChat(user_id1, user_id2) {
+function checkChat(userID1, userID2) {
     let roomConnection = getData('rooms/roomConnections.json')
     let roomConnectionObject = textToJSON(roomConnection)
 
     for (let i = 0; i < roomConnectionObject.length; i++) {
-        if (user_id1 == roomConnectionObject[i].user_id1 && user_id2 == roomConnectionObject[i].user_id2 ||
-            user_id1 == roomConnectionObject[i].user_id2 && user_id2 == roomConnectionObject[i].user_id1) {
+        if (userID1 == roomConnectionObject[i].userID1 && userID2 == roomConnectionObject[i].userID2 ||
+            userID1 == roomConnectionObject[i].userID2 && userID2 == roomConnectionObject[i].userID1) {
             return roomConnectionObject[i].id
         }
     }
@@ -113,12 +113,12 @@ function checkChat(user_id1, user_id2) {
 }
 
 //skal både oprette chat i RoomConnection og oprette et room med det rigtige room id og info
-function makeFirstChat(u_id1, u_id2) {
+function makeFirstChat(uID1, uID2) {
     //Check om brugere allerede har en chat.
     let room = {
         id: parseInt(Date.now() + Math.random()),
-        user_id1: u_id1,
-        user_id2: u_id2,
+        userID1: uID1,
+        userID2: uID2,
     }
 
     let roomConnection = getData('rooms/roomConnections.json')
@@ -130,11 +130,11 @@ function makeFirstChat(u_id1, u_id2) {
 
 
     fs.writeFileSync('rooms/roomConnections.json', jsonUsers, "utf-8")
-    saveChat(room.id, u_id1, u_id2)
+    saveChat(room.id, uID1, uID2)
 }
 
 //Gemmer en chat til et bestemt room imellem 2 brugere
-function saveChat(id, u_id1, u_id2, u_name, u_message) {
+function saveChat(id, uID1, uID2, uName, uMessage) {
     let chat
     //Så her forsøger vi at finde rummet med brugernes chats.
     //Brugerne har måske et rum, hvis det er oprettet en "connection" imellem dem.
@@ -145,8 +145,8 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
         chatObj = textToJSON(data)
 
         chatToAppend = {
-            name: u_name,
-            message: u_message
+            name: uName,
+            message: uMessage
         }
 
         chatObj.chat.push(chatToAppend)
@@ -154,14 +154,14 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
         jsonChat = JSON.stringify(chatObj, null, 2)
         fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
     } catch (e) {
-        let id = checkChat(u_id1, u_id2)
+        let id = checkChat(uID1, uID2)
         if (id) {
             chat = {
                 id: id,
-                user_id1: u_id1,
-                user_id2: u_id2,
-                username1: getUserAccounts(u_id1, null).username,
-                username2: getUserAccounts(u_id2, null).username,
+                userID1: uID1,
+                userID2: uID2,
+                username1: getUserAccounts(uID1, null).username,
+                username2: getUserAccounts(uID2, null).username,
                 chat: [ 
                 ]
             }
@@ -176,11 +176,11 @@ function saveChat(id, u_id1, u_id2, u_name, u_message) {
 }
 
 //Udregner hvilken interesser 2 brugere har tilfælles
-function calc_user_parameters(id){
+function calcUserParameters(id) {
     let roomConnect = getRoomConnection(id)
 
-    let user1para = accountInfoCheck(roomConnect.user_id1)
-    let user2para = accountInfoCheck(roomConnect.user_id2)
+    let user1para = accountInfoCheck(roomConnect.userID1)
+    let user2para = accountInfoCheck(roomConnect.userID2)
 
     let user1sum = (+user1para.art + +user1para.climate + +user1para.food + +user1para.movies + +user1para.outdoors + +user1para.sports + +user1para.music + +user1para.science + +user1para.travel)
     let user2sum = (+user2para.art + +user2para.climate + +user2para.food + +user2para.movies + +user2para.outdoors + +user2para.sports + +user2para.music + +user2para.science + +user2para.travel)
@@ -195,13 +195,13 @@ function calc_user_parameters(id){
     let scienceComp = (user1para.science / user1sum) * (user2para.science / user2sum)
     let travelComp = (user1para.travel / user1sum) * (user2para.travel / user2sum)
 
-    let arrayComp = [sportComp,foodComp,musicComp,moviesComp,artComp,outdoorsComp,scienceComp,travelComp,climateComp]
+    let arrayComp = [sportComp, foodComp, musicComp, moviesComp, artComp, outdoorsComp, scienceComp, travelComp, climateComp]
 
     let max = arrayComp[0]
     let maxIndex = 0
 
-    for(let i = 0; i < arrayComp.length;i++){
-        if(arrayComp[i] > max){
+    for (let i = 0; i < arrayComp.length; i++) {
+        if (arrayComp[i] > max) {
             maxIndex = i
             max = arrayComp[i]
         }
@@ -214,9 +214,9 @@ function calc_user_parameters(id){
 }
 
 //Returnere den rette besked, ud fra hvad calc_user_parameters
-function chatMessage(index){
+function chatMessage(index) {
     let paraMessage = ""
-    switch (index){
+    switch (index) {
         case 0:
             paraMessage = "I har begge vist interesse for sport - Hvad er jeres yndlings sport?";
             break;
@@ -346,7 +346,7 @@ function createAccInfo(id, parameters) {
 }
 
 //Gemmer en bruger i både usersInterestsPath og usersAccountPath når efter man har oprettet sig.
-function SaveAccInfo(id, parameters){
+function SaveAccInfo(id, parameters) {
     let txtFile = getData(usersInterestsPath)
     if (!(parameters[0].length < 50 && parameters[1] >= 0 && parameters[1] <= 125 && parameters[2].length == 1)) {
         return false
@@ -361,13 +361,13 @@ function SaveAccInfo(id, parameters){
         // break the textblock into an array of lines
         let lines = txtFile.split('\n');
         // remove one line, starting at the first position
-        lines.splice(id-1,1,register);
-        for(let i = 0; i < lines.length-1; i++){
+        lines.splice(id - 1, 1, register);
+        for (let i = 0; i < lines.length - 1; i++) {
             lines[i] += "\n"
         }
         let linestring = lines.join("")
         fs.writeFileSync(usersInterestsPath, linestring, function (err) {
-           if (err) throw err;
+            if (err) throw err;
         });
         let userobj = {
             id: id,
@@ -377,9 +377,9 @@ function SaveAccInfo(id, parameters){
         }
         let jsonUsers = fs.readFileSync(usersAccountPath, "utf-8")
         let users = JSON.parse(jsonUsers)
-        
-        users[id-1] = userobj
-        
+
+        users[id - 1] = userobj
+
         jsonUsers = JSON.stringify(users, null, 2)
         fs.writeFileSync(usersAccountPath, jsonUsers, "utf-8")
 
@@ -430,13 +430,13 @@ function accountInfoCheck(id) {
 
 //Tilføjer bruger til usersAccountPath
 //Dette er ikke en asynkron funktion, hvilket gør det svære at tilføje to brugere med samme ID
-function addUser(u_id, u_username, u_email, u_password) {
+function addUser(uID, uUsername, uEmail, uPassword) {
     try {
         let userobj = {
-            id: u_id,
-            username: u_username,
-            email: u_email,
-            password: u_password,
+            id: uID,
+            username: uUsername,
+            email: uEmail,
+            password: uPassword,
         }
 
         let jsonUsers = fs.readFileSync(usersAccountPath, "utf-8")
@@ -489,7 +489,7 @@ function findByUsername(username, cb) {
 //=====MATCH FUNCTIONS=====//
 
 //Bruges til at spørge om knn er mindre end 3
-function knnButtonChecker(knn){
+function knnButtonChecker(knn) {
     if (knn <= 3) {
         return false
     }
@@ -497,18 +497,18 @@ function knnButtonChecker(knn){
 }
 
 //Returnere de rigtige matches ud fra hvilken 'side' man skal stå på i matchfound
-function printMatches(programPath, target_user, knn, index){
-    let matches = sendConsoleCommand(programPath, `getmatch ${target_user} ${knn}`).split(" ")
-    let display_matches = []
+function printMatches(programPath, targetUser, knn, index) {
+    let matches = sendConsoleCommand(programPath, `getmatch ${targetUser} ${knn}`).split(" ")
+    let displayMatches = []
     let l = 0
 
-    if (knn <= getLastUserId()-3 && knn >= 3){
-        for (let i = index; i < index +3; i++){
-            display_matches[l] = getUserCheck(matches[i], null)
-            l++            
+    if (knn <= getLastUserId() - 3 && knn >= 3) {
+        for (let i = index; i < index + 3; i++) {
+            displayMatches[l] = getUserCheck(matches[i], null)
+            l++
         }
     }
-    return display_matches
+    return displayMatches
 }
 
 
@@ -519,40 +519,40 @@ function printMatches(programPath, target_user, knn, index){
 //=====MODULE EXPORTS=====//
 
 module.exports = {
-//BASIC FUNCTIONS
-sendConsoleCommand,
-textToJSON,
-getData,
+    //BASIC FUNCTIONS
+    sendConsoleCommand,
+    textToJSON,
+    getData,
 
-//CHAT FUNCTIONS
-getChat,
-getRoomConnection,
-getPersonalUserChats,
-getChatHistory,
-checkChat,
-makeFirstChat,
-saveChat,
-calc_user_parameters,
-chatMessage,
+    //CHAT FUNCTIONS
+    getChat,
+    getRoomConnection,
+    getPersonalUserChats,
+    getChatHistory,
+    checkChat,
+    makeFirstChat,
+    saveChat,
+    calcUserParameters,
+    chatMessage,
 
-//LOGIN FUNCTIONS
-checkAuthenticated,
-checkNotAuthenticated,
+    //LOGIN FUNCTIONS
+    checkAuthenticated,
+    checkNotAuthenticated,
 
-//USER FUNCTIONS
-getUserAccounts,
-getUserCheck,
-getLastUserId,
-createAccInfo,
-SaveAccInfo,
-accountInfoCheck,
-addUser,
-findById,
-findByUsername,
+    //USER FUNCTIONS
+    getUserAccounts,
+    getUserCheck,
+    getLastUserId,
+    createAccInfo,
+    SaveAccInfo,
+    accountInfoCheck,
+    addUser,
+    findById,
+    findByUsername,
 
-//MATCH FUNCTIONS
-knnButtonChecker,
-printMatches
-    
+    //MATCH FUNCTIONS
+    knnButtonChecker,
+    printMatches
+
 }
 

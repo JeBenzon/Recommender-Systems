@@ -14,9 +14,9 @@ const server = require('http').Server(app) //Giver us en "Server der kan kommuni
 const io = require('socket.io')(server) //Laver server på port "server"
 
 const rooms = {} //Vores rooms
-let c_fil_sti = "./a.out"
+let cFilSti = "./a.out"
 if(process.platform == 'win32'){
-    c_fil_sti = "alfa.exe"
+    cFilSti = "alfa.exe"
 }
 
 // Define paths for express config
@@ -177,7 +177,7 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
     }
     //try{
         if(user) {
-            let display_matches = functions.printMatches(c_fil_sti, req.user.id, knn, knn -3)
+            let displayMatches = functions.printMatches(cFilSti, req.user.id, knn, knn -3)
             let userChats = functions.getPersonalUserChats(req.user.id)
             let boolean = functions.knnButtonChecker(knn)
             if(knn >= functions.getLastUserId()-3 || knn < 3){
@@ -190,9 +190,9 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
                     chats: userChats
                 })
             } else {
-                let usrTxt1 = accountInfoCheck(display_matches[0].id)
-                let usrTxt2 = accountInfoCheck(display_matches[1].id)
-                let usrTxt3 = accountInfoCheck(display_matches[2].id)
+                let usrTxt1 = accountInfoCheck(displayMatches[0].id)
+                let usrTxt2 = accountInfoCheck(displayMatches[1].id)
+                let usrTxt3 = accountInfoCheck(displayMatches[2].id)
                 res.render('matchfound', {
                     title: 'Match found',
                     loggedIn: true,
@@ -202,12 +202,12 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
                     userobj1: usrTxt1,
                     userobj2: usrTxt2,
                     userobj3: usrTxt3,
-                    matchname1: display_matches[0].username,
-                    matchname2: display_matches[1].username,
-                    matchname3: display_matches[2].username,
-                    match1id: display_matches[0].id,
-                    match2id: display_matches[1].id,
-                    match3id: display_matches[2].id,
+                    matchname1: displayMatches[0].username,
+                    matchname2: displayMatches[1].username,
+                    matchname3: displayMatches[2].username,
+                    match1id: displayMatches[0].id,
+                    match2id: displayMatches[1].id,
+                    match3id: displayMatches[2].id,
                     chats: userChats
                 })
             }
@@ -248,7 +248,7 @@ app.get('/:room', functions.checkAuthenticated, (req, res) => { //Gør så alt d
     if (rooms[req.params.room] == null) {
         return res.redirect('/')
     }
-    let intrestChat = functions.calc_user_parameters(req.params.room)
+    let intrestChat = functions.calcUserParameters(req.params.room)
     try{
     let chatHistory = functions.getChatHistory(req.session.roomid)
     
