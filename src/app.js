@@ -1,21 +1,27 @@
+
+//Modules vi skal bruge i vores program
 const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
 const functions = require('./functions')
 const passport = require('passport')
-const flash = require('express-flash')
 const session = require('express-session')
 const methodOverride = require('method-override')
 const Strategy = require('passport-local').Strategy
 const app = express()
 const bodyParser = require('body-parser')
-const {accountInfoCheck} = require("./functions")
-const server = require('http').Server(app) //Giver us en "Server der kan kommunikere med socket.io"
-const io = require('socket.io')(server) //Laver server på port "server"
+//Giver os en "Server der kan kommunikere med socket.io"
+const server = require('http').Server(app)
+//Laver server på port "server"
+const io = require('socket.io')(server)
+//Vores rooms
+const rooms = []
 
-const rooms = {} //Vores rooms
-let cFilSti = "./a.out"
-if(process.platform == 'win32'){
+let cFilSti
+//Process platform finder styresystemet af en computer. Vi bruger ./a.out, hvis ikke det er windows.
+if(process.platform == 'darwin' || process.platform == 'linux'){
+    cFilSti = "./a.out"
+} else if (process.platform == 'win32'){
     cFilSti = "alfa.exe"
 }
 
@@ -25,7 +31,6 @@ const viewsPath = path.join(__dirname, '../templates/views')
 const partialsPath = path.join(__dirname, '../templates/partials')
 const filePath = path.join(__dirname, '../public/')
 
-// Middleware - ligger imellem webapplikationen og websiden.
 app.set('view engine', 'hbs')
 app.set('views', viewsPath)
 hbs.registerPartials(partialsPath)
@@ -58,7 +63,7 @@ app.use(passport.session())
 
 //Strategien kræver en 'verify' funktion som modtager ('username' og 'password')
 //fra brugeren. Funktionen skal verificere at password er korrekt, og returnere cb (call back) med et userobject
-// som bliver sat in ved 'req.user' route handlers efter authentication.
+// som bliver sat ind ved 'req.user' route handlers efter authentication.
 passport.use(new Strategy(
     function (username, password, cb) {
         functions.findByUsername(username, function (err, user) {
@@ -106,7 +111,7 @@ app.post('/register', functions.checkNotAuthenticated, (req, res) => {
 
 })
 app.get('/editUser', functions.checkAuthenticated, (req, res) => {
-    let usrTxt = accountInfoCheck(req.user.id)
+    let usrTxt = functions.accountInfoCheck(req.user.id)
     //let usrAcc = getUserAccounts(req.user.id, null)
 
     res.render('editUser', {
@@ -172,9 +177,9 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
                     chats: userChats
                 })
             } else {
-                let usrTxt1 = accountInfoCheck(displayMatches[0].id)
-                let usrTxt2 = accountInfoCheck(displayMatches[1].id)
-                let usrTxt3 = accountInfoCheck(displayMatches[2].id)
+                let usrTxt1 = functions.accountInfoCheck(displayMatches[0].id)
+                let usrTxt2 = functions.accountInfoCheck(displayMatches[1].id)
+                let usrTxt3 = functions.accountInfoCheck(displayMatches[2].id)
                 res.render('matchfound', {
                     title: 'Match found',
                     loggedIn: true,

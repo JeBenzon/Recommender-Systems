@@ -115,34 +115,33 @@ function makeFirstChat(uID1, uID2) {
         userID2: uID2,
     }
     roomConnectionObject.push(room)
-    jsonUsers = JSON.stringify(roomConnectionObject, null, 2)
+    let jsonUsers = JSON.stringify(roomConnectionObject, null, 2)
     fs.writeFileSync('rooms/roomConnections.json', jsonUsers, "utf-8")
     saveChat(room.id, uID1, uID2)
 }
 
 //Gemmer en chat til et bestemt room imellem 2 brugere
-function saveChat(id, uID1, uID2, uName, uMessage) {
-    let chat
+function saveChat(roomID, uID1, uID2, uName, uMessage) {
     //Så her forsøger vi at finde rummet med brugernes chats.
     //Brugerne har måske et rum, hvis der er oprettet en "connection" imellem dem.
     //Hvis de findes, så går vi i try, ellers i catch.
     try {
         //prøver at hente room filen
-        let chatObj = getDataTextToJSON(`rooms/room${id}.json`)
+        let chatObj = getDataTextToJSON(`rooms/room${roomID}.json`)
 
-        chatToAppend = {
+        let chatToAppend = {
             name: uName,
             message: uMessage
         }
 
         chatObj.chat.push(chatToAppend)
-        jsonChat = JSON.stringify(chatObj, null, 2)
-        fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
+        let jsonChat = JSON.stringify(chatObj, null, 2)
+        fs.writeFileSync(`rooms/room${roomID}.json`, jsonChat, "utf-8")
     } catch (e) {
         // Hvis den catcher opretter den chat rooms filen.
         let id = checkChat(uID1, uID2)
         if (id) {
-            chat = {
+            let chat = {
                 id: id,
                 userID1: uID1,
                 userID2: uID2,
@@ -151,7 +150,7 @@ function saveChat(id, uID1, uID2, uName, uMessage) {
                 chat: [ 
                 ]
             }
-            jsonChat = JSON.stringify(chat, null, 2)
+            let jsonChat = JSON.stringify(chat, null, 2)
             fs.writeFileSync(`rooms/room${id}.json`, jsonChat, "utf-8")
         } else {
             console.log("Der skete en fejl!, Der fandtes ikke 2 brugere med et room")
