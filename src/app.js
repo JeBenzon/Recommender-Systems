@@ -89,20 +89,21 @@ passport.deserializeUser(function (id, cb) {
 //CRUD (create, update, delete)
 //Register
 app.get('/register', functions.checkNotAuthenticated, (req, res) => {
-
+    //Sender hbs view "register" til brugeren
     res.render('register', {
         title: 'Register'
     })
 })
-
+//Opretter en bruger når "submit" bliver trykket på, i webapplikationen.
 app.post('/register', functions.checkNotAuthenticated, (req, res) => {
     try {
         let userId = functions.getLastUserId() + 1
-        let parameterarray = [req.body.name, req.body.age, req.body.gender, req.body.sports, req.body.food, req.body.music, req.body.movies, req.body.art, req.body.outdoors, req.body.science, req.body.travel, req.body.climate]
+        let parameterarray = [req.body.name, req.body.age, req.body.gender, req.body.sports, req.body.food, req.body.music,
+                              req.body.movies, req.body.art, req.body.outdoors, req.body.science, req.body.travel, req.body.climate]
 
         functions.addUser(userId, req.body.username, req.body.email, req.body.password)
         functions.createAccInfo(userId,parameterarray)
-
+        //Når profilen er oprettet bliver brugeren sendt til matchfound viewet.
         res.redirect('/matchfound')
     } catch (e) {
         console.log('Error + ' + e)
@@ -110,23 +111,25 @@ app.post('/register', functions.checkNotAuthenticated, (req, res) => {
     }
 
 })
+//Giver brugren mulighed for at ændre i sine oplysninger.
 app.get('/editUser', functions.checkAuthenticated, (req, res) => {
+    //Laver object med brugerdata og sender det til editUser.hbs viewet.
     let usrTxt = functions.accountInfoCheck(req.user.id)
-    //let usrAcc = getUserAccounts(req.user.id, null)
-
     res.render('editUser', {
         title: 'Edit User',
         userobj: usrTxt
     })
 })
+//Gemmer brugerdataen, når brugeren trykker på submit i html.
 app.post('/saveUser',functions.checkAuthenticated,(req, res) => {
 
     let parameterarray = [req.body.name, req.body.age, req.body.gender, req.body.sports, req.body.food, req.body.music, req.body.movies, req.body.art, req.body.outdoors, req.body.science, req.body.travel, req.body.climate, req.body.password,req.body.username,req.body.email]
+    //Overskriver den gamle brugerdata.
     functions.SaveAccInfo(req.user.id,parameterarray)
 
     res.redirect('/matchfound')
 })
-
+//Redirecter til editUser
 app.post('/editUser', functions.checkAuthenticated, (req, res) => {
     try {
         res.redirect('/editUser')
@@ -137,13 +140,13 @@ app.post('/editUser', functions.checkAuthenticated, (req, res) => {
 
 })
 
-//Login / Logout
+//Hovedsiden hvor man kan logge ind og ud.
 app.get('/', functions.checkNotAuthenticated, (req, res) => {
     res.render('loginpage', {
         title: 'Login'
     })
 })
-//1
+//Hvis brugeren er oprettet bliver den sendt til matchfound ellers blir de sendt tilbage til loginpage.
 app.post('/loginpage', functions.checkNotAuthenticated, passport.authenticate('local', {
     successRedirect: '/matchfound',
     failureRedirect: '/'
@@ -152,13 +155,15 @@ app.post('/loginpage', functions.checkNotAuthenticated, passport.authenticate('l
 app.delete('/logout', functions.checkAuthenticated, (req, res) => {
     //Logger ud (en function fra passport der rydder op i session)
     req.logOut()
+    //Sætter knn til 3, så man bliver vist de korrekte matches, når man logger ind igen.
     req.session.knn = 3
     res.redirect('/')
 })
-
+//Finder matches og viser dem til brugeren.
 app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
     let user = functions.getUserCheck(req.user.id, null)
     let knn = 3
+    //Henter knn fra session, så brugeren bliver vist det antal matches som brugeren vil se.
     if (req.session.knn > 3){
         knn = req.session.knn
     }
@@ -167,6 +172,7 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
             let displayMatches = functions.printMatches(cFilSti, req.user.id, knn, knn -3)
             let userChats = functions.getPersonalUserChats(req.user.id)
             let boolean = functions.knnButtonChecker(knn)
+            //Hvis der ikke er flere matches vises de ikke.
             if(knn >= functions.getLastUserId()-3 || knn < 3){
                 res.render('matchfound', {
                     title: 'Match found',
@@ -174,9 +180,11 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
                     userShown: false, //fjerner 'start chat'-knappen, fordi der ikke vises en bruger
                     buttonCheck: boolean,
                     username: req.user.username,
+                    //Sender et array med chats, hvis du har skrevet med personen før.
                     chats: userChats
                 })
-            } else {
+            } //Viser matches så længe de eksistere
+            else {
                 let usrTxt1 = functions.accountInfoCheck(displayMatches[0].id)
                 let usrTxt2 = functions.accountInfoCheck(displayMatches[1].id)
                 let usrTxt3 = functions.accountInfoCheck(displayMatches[2].id)
@@ -195,6 +203,7 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
                     match1id: displayMatches[0].id,
                     match2id: displayMatches[1].id,
                     match3id: displayMatches[2].id,
+                    //Sender et array med chats, hvis du har skrevet med personen før.
                     chats: userChats
                 })
             }
@@ -210,14 +219,14 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
          })
      }
 })
-
+//Knap der lader brugeren scrolle igennem matches
 app.post('/showPreviousMatches', (req, res) => {
     if(req.session.knn > 3){
         req.session.knn -= 3
     }
     res.redirect('/matchfound')
 })
-
+//Knap der lader brugeren scrolle igennem matches
 app.post('/showMoreMatches', (req, res) => {
     if (req.session.knn === undefined){
         req.session.knn = 3
@@ -228,22 +237,25 @@ app.post('/showMoreMatches', (req, res) => {
     res.redirect('/matchfound')
     
 })
-
+//Bruger chat rum f.eks URL "/1620380596674"
 app.get('/:room', functions.checkAuthenticated, (req, res) => {
-
+    //Hvis rummet ikke findes bliver brugren redierected til startsiden
     if (rooms[req.params.room] == null) {
         return res.redirect('/')
     }
+    //Udregner fælles interesser mellem brugere
     let intrestChat = functions.calcUserParameters(req.params.room)
     try{
+        //Henter gamle chats mellem brugere.
         let chatHistory = functions.getChatHistory(req.session.roomid)
 
         res.render('room', {
             userName: req.user.username,
             roomName: req.params.room,
-            username2: req.session.username,
+            usermatch: req.session.username,
             chatData: chatHistory,
             intrestChat : intrestChat,
+            //Viser tilbage knap i viewet når true
             onChatsite: true
         })
     }catch(e){
@@ -251,27 +263,33 @@ app.get('/:room', functions.checkAuthenticated, (req, res) => {
         res.render('room', {
             userName: req.user.username,
             roomName: req.params.room,
-            username2: req.session.username,
+            usermatch: req.session.username,
             chatData: chatHistory,
             intrestChat : intrestChat,
+            //Viser tilbage knap i viewet når true
             onChatsite: true
         })
     }
 })
 
 
-//Rooms
+//Sender bruger til et chat rum
 app.post('/room', functions.checkAuthenticated, (req, res) => {
+    //Hvis rummet ikke findes bliver brugren redierected til startsiden
     if (rooms[req.body.room] != null) {
         return res.redirect('/')
     }
-    let username2 = req.body.username2
-    req.session.username = username2.toString()
+    //Henter username og gemmer i session.
+    let usermatch = req.body.usermatch
+    req.session.username = usermatch.toString()
+    //Henter ID, hvis chat eksistere og gemmer i session.
     let roomId = functions.checkChat(req.user.id, req.body.room)
     req.session.roomid = roomId
+    //Hvis chat ikke eksistere.
     if (roomId == false) {
+        //Henter user og matchuser ID og opretter chat
         let user1 = functions.getUserAccounts(null, req.user.username).id
-        let user2 = functions.getUserAccounts(null, username2).id
+        let user2 = functions.getUserAccounts(null, usermatch).id
 
         functions.makeFirstChat(user1, user2)
         roomId = functions.checkChat(req.user.id, req.body.room)
@@ -286,7 +304,7 @@ app.post('/room', functions.checkAuthenticated, (req, res) => {
 app.post('/goToMatchfound', (req, res) => {
     res.redirect('/matchfound')
 })
-//Første gang bruger loader hjemmeside -> kalder funktion og giver dem et socket
+//Når bruger går ind i en chat -> kalder funktion og giver dem et socket
 io.on('connection', socket => {
     //Funktion bliver kaldt i "scripts.js"
     socket.on('new-user', (room, name) => {
@@ -318,26 +336,7 @@ io.on('connection', socket => {
             console.log(e)
         }
     })
-    //Aktivere når en disconnecter -> socket funktion
-    socket.on('disconnect', () => {
-        getUserRooms(socket).forEach(room => {
-            try {
-                //Sender ud at brugeren er disconnected
-                socket.broadcast.to(room).emit('user-disconnected', rooms[room].users[socket.id])
-                //Sletter brugeren && bruger id
-                delete rooms[room].users[socket.id]
-            } catch (e) {
-                console.log(e)
-            }
-        })
-    })
 })
-function getUserRooms(socket) {
-    return Object.entries(rooms).reduce((names, [name, room]) => {
-        if (room.users[socket.id] != null) names.push(name)
-        return names
-    }, [])
-}
 
 // 404
 app.get('*', (req, res) => {
