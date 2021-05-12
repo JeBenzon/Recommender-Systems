@@ -12,7 +12,7 @@ function sendConsoleCommand(programPath, parameters) {
     try {
         let par = parameters.split(" ")
         //Udpakker object ind i stdout, spawnSync sender path og parametre til terminalen.
-        const  { stdout }  = cp.spawnSync(programPath, [par[0], par[1], par[2]])
+        const { stdout } = cp.spawnSync(programPath, [par[0], par[1], par[2]])
         return stdout.toString()
     } catch (e) {
         console.log('C kommunikations fejl errorcode:' + e)
@@ -38,7 +38,7 @@ function getData(path) {
 }
 
 // kalder getData og textToJSON og laver daten om til et object
-function getDataTextToJSON(path){
+function getDataTextToJSON(path) {
     let data = fs.readFileSync(path)
     return textToJSON(data)
 }
@@ -75,7 +75,7 @@ function getPersonalUserChats(userID) {
                 id: roomConnectionObject[i].userID2
             }
             personalUserChats.push(userObj)
-        //userID2
+            //userID2
         } else if (roomConnectionObject[i].userID2 == userID) {
             let userObj = {
                 name: getUserAccounts(roomConnectionObject[i].userID1).username,
@@ -147,7 +147,7 @@ function saveChat(roomID, uID1, uID2, uName, uMessage) {
                 userID2: uID2,
                 username1: getUserAccounts(uID1, null).username,
                 username2: getUserAccounts(uID2, null).username,
-                chat: [ 
+                chat: [
                 ]
             }
             let jsonChat = JSON.stringify(chat, null, 2)
@@ -245,7 +245,7 @@ function checkAuthenticated(req, res, next) {
     }
     res.redirect('/')
 }
-//TODO find ud af hvad next() gør
+
 //Tjekker om en bruger IKKE er authenticated
 function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
