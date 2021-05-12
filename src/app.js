@@ -212,7 +212,7 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
             res.redirect('/createaccinfo')
         }
      } catch (e) {
-         console.log('!ERROR! - Har du husket at compilere alfa.c?')
+         console.log('!ERROR! - Har du husket at compilere c-filen?')
          res.render('404', {
              title: '404',
              errorMessage: 'Could not find page'

@@ -1,8 +1,8 @@
 const cp = require('child_process')
 const fs = require('fs')
 
-const usersAccountPath = 'generated_users/acc_100k.json'
-const usersInterestsPath = 'generated_users/users_100k.txt'
+const usersAccountPath = 'generated_users/usersAccount.json'
+const usersInterestsPath = 'generated_users/users.txt'
 
 
 //=====BASIC FUNCTIONS=====//
@@ -261,7 +261,7 @@ function checkNotAuthenticated(req, res, next) {
 
 //=====USER FUNCTIONS=====//
 
-// Tjekker om user eksistere i users_account.json
+// Tjekker om user eksistere i usersAccount.json
 function getUserAccounts(id, username) {
     try {
         const data = getData(usersAccountPath)
@@ -285,7 +285,7 @@ function getUserAccounts(id, username) {
     return false
 }
 
-// Tjekker om bruger eksistere i både users_account.json og users.text
+// Tjekker om bruger eksistere i både usersAccount.json og users.text
 function getUserCheck(id) {
     let userAcc = getUserAccounts(id, null)
     let userInfo = accountInfoCheck(id)
