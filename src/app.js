@@ -22,7 +22,7 @@ let cFilSti
 if(process.platform == 'darwin' || process.platform == 'linux'){
     cFilSti = "./a.out"
 } else if (process.platform == 'win32'){
-    cFilSti = "alfa.exe"
+    cFilSti = "knn.exe"
 }
 
 // Define paths for express config
