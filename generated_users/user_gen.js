@@ -41,7 +41,7 @@ function user_gen(users){
 
                 User.id = i
                 User.name = arrayOfNames[Math.floor(Math.random() * arrayOfNames.length)]
-                User.age = getRandomInt(17, 69)
+                User.age = getRandomInt(18, 24)
                 User.gender = genderTypes[Math.floor(Math.random() * genderTypes.length)]
                 User.sports = getRandomInt(1, 11)
                 User.food = getRandomInt(1, 11)
@@ -70,4 +70,4 @@ function user_gen(users){
 
 
 }
-user_gen(100)
+user_gen(5000)
