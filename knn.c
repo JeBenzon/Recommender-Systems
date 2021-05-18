@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
 int program(char *argv[]) {
 
     // set users file path
-    char *fp = "./generated_users/users_100k.txt";
+    char *fp = "./generated_users/users.txt";
 
     // open file
     FILE *userfile = fopen(fp, "a+");

@@ -1,4 +1,4 @@
-1 Turmund 23 m 3 8 6 7 3 9 2 1 1
+1 Frede 23 m 3 8 6 7 3 9 2 1 1
 2 Mouhannad 23 m 3 8 10 2 7 10 5 3 6
 3 Jarik 20 f 2 2 3 1 3 5 10 7 9
 4 Yaqoob 23 f 7 3 7 10 5 10 5 2 6
