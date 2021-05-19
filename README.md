@@ -14,6 +14,9 @@ Using `npm install` from inside the main directory for this application, the rem
 ### Testing with Jest
 Simply run `npm test` to test.
 
+### Test knn.c
+Simply run `a.out startTest` for mac and `a.exe startTest` for windows
+
 ### Running the server
 Server is located at http://130.226.98.22:3000/ for testing
 
