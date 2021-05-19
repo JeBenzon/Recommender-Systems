@@ -104,7 +104,7 @@ app.post('/register', functions.checkNotAuthenticated, (req, res) => {
         functions.addUser(userId, req.body.username, req.body.email, req.body.password)
         functions.createAccInfo(userId,parameterarray)
         //Når profilen er oprettet bliver brugeren sendt til matchfound viewet.
-        res.redirect('/matchfound')
+        res.redirect('/')
     } catch (e) {
         console.log('Error + ' + e)
         res.redirect('/register')
@@ -211,13 +211,13 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
         } else {
             res.redirect('/createaccinfo')
         }
-     } catch (e) {
-         console.log('!ERROR! - Har du husket at compilere c-filen?')
-         res.render('404', {
-             title: '404',
-             errorMessage: 'Could not find page'
-         })
-     }
+    } catch (e) {
+        console.log('!ERROR! - Har du husket at compilere c-filen?')
+        res.render('404', {
+            title: '404',
+            errorMessage: 'Could not find page'
+        })
+    }
 })
 //Knap der lader brugeren scrolle igennem matches
 app.post('/showPreviousMatches', (req, res) => {
