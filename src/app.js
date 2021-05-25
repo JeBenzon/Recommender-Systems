@@ -95,16 +95,16 @@ passport.use(new Strategy(
         });
     }));
 
-//responsible for inserting user id into session
-passport.serializeUser(function (user, cb) {
-    cb(null, user.id)
-})
+    //responsible for inserting user id into session
+    passport.serializeUser(function (user, cb) {
+        cb(null, user.id)
+    })
 
-//responsible for deleting user from session based on id
-passport.deserializeUser(function (id, cb) {
-    functions.findById(id, function (err, user) {
-        if (err) { return cb(err); }
-        cb(null, user);
+    //responsible for deleting user from session based on id
+    passport.deserializeUser(function (id, cb) {
+        functions.findById(id, function (err, user) {
+            if (err) { return cb(err); }
+                cb(null, user);
     });
 });
 
