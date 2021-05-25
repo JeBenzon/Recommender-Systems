@@ -1,3 +1,14 @@
+/*
+* Titel: En recommenderbaseret, relationsskabende webapplikation for ensomme unge
+* Software - 2. semester (01/02/2021 - 27/05/2021)
+* Aalborg universitet CPH
+* 
+* Gruppe: SW-K2201
+* - Oscar Maxwell, Jonathan Benzon
+* - Frederik Skontorp, Karl-Emil Hertz
+* - Tommy Grenaae
+*/
+
 //Modules needed in program
 const path = require('path')
 const express = require('express')
@@ -19,13 +30,13 @@ const io = require('socket.io')(server)
 //chat rooms array
 const rooms = []
 
-let cFilSti
+let cFilePath
 /* Process platform finds operating system on a computer. We use ./a.out as default,
 or knn.exe if windows */
 if(process.platform == 'darwin' || process.platform == 'linux'){
-    cFilSti = "./a.out"
+    cFilePath = "./a.out"
 } else if (process.platform == 'win32'){
-    cFilSti = "knn.exe"
+    cFilePath = "knn.exe"
 }
 
 // Define paths for express config
@@ -190,7 +201,7 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
     }
     try{
         if(user) {
-            let displayMatches = functions.printMatches(cFilSti, req.user.id, knn, knn -3)
+            let displayMatches = functions.printMatches(cFilePath, req.user.id, knn, knn -3)
             let userChats = functions.getPersonalUserChats(req.user.id)
             let boolean = functions.knnButtonChecker(knn)
 
