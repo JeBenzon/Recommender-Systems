@@ -13,11 +13,12 @@ NodeJS can be installed from their [official website](https://nodejs.org/en/down
 Open up a terminal, in the root of `Recommender-Systems`-folder. Agian, make sure you have NodeJS installed correctly.
 We prefer to run the program in VisualStudio Code, with integrated terminal.
 1. The C-file, `knn.c` has to be compiled. 
-   Our program will try to determine what OS you are running, so no need to do anything else.  
+   If running Windows, make sure to rename the `a.exe` file to `knn.exe`.  
 2. If not done already, type: `npm install` to install necessary modules for the website to run.
    Alternatively, you can install main modules induvially by typing: `npm install express` and `npm install socket.io` in your terminal.  
-3. In your terminal, type: `node ./src/server.js` (make sure you are in the root of the file directory)
-4. In your webrowser and enter `http://localhost:3000/`
+3. In your terminal, type: `node ./src/server.js` (make sure you are in the root of the file directory).
+   The server should respond with message: *"Server started on port 3000"*.  
+4. In your webrowser and enter `http://localhost:3000/`.
 5. You are now good to go, enjoy!
 
 ## Additional Notes
