@@ -36,5 +36,5 @@ The tests will now run.
 
 ### Running the C-program as a standalone program
 We do NOT recommend running the C program as a standalone program, but it is optional.
-The C-program can take in additonally arguments.
-By typing: `knn.exe` (Windows) or `a.out` (macOS/Linux) followed by `getmatch 1 3` in the terminal, the program will output the best 3 matches for the user with ID 1.
+The C-program can take in additonally arguments. Make sure it is compiled.
+By typing: `knn.exe` (Windows) or `a.out` (macOS/Linux) followed by `getmatch 1 3` in the terminal, the program will output the best 3 matches (their ID's) for the user with ID 1.
