@@ -3,7 +3,6 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
-
 #include <ctype.h>
 #include "CuTest.h"
 #include "AllTests.c"
@@ -31,8 +30,8 @@ typedef struct user {
 } user;
 
 // prototypes
-int calcUsers(FILE *userfile);
-void loadUsers(FILE *userfile, int totalUsers, user *users);
+int calcUsers(FILE *userFile);
+void loadUsers(FILE *userFile, int totalUsers, user *users);
 void getMatchJS(char **argv, user* users, int totalUsers);
 void getMatchC(user* users, int totalUsers);
 double pearson(user *users, int target, int compare);
@@ -54,19 +53,18 @@ int main(int argc, char* argv[]) {
 }
 
 int program(char *argv[]) {
-
     // set users file path
     char *fp = "./generated_users/users.txt";
 
     // open file
-    FILE *userfile = fopen(fp, "a+");
-    if (userfile == NULL) {
+    FILE *userFile = fopen(fp, "a+");
+    if (userFile == NULL) {
         printf("filepath error.");
         exit(EXIT_FAILURE);
     }
 
     // calculate number of users in database
-    int totalUsers = calcUsers(userfile);
+    int totalUsers = calcUsers(userFile);
     
     // allocate memory for struct array with users
     user *users = (user *)malloc(totalUsers * sizeof(user));
@@ -76,8 +74,8 @@ int program(char *argv[]) {
     }
     
     // load userinfo into array
-    loadUsers(userfile, totalUsers, users);
-    
+    loadUsers(userFile, totalUsers, users);
+
     if(strcmp(argv[1], "getmatch") == 0){
         getMatchJS(argv, users, totalUsers);
     }
@@ -85,68 +83,71 @@ int program(char *argv[]) {
         getMatchC(users, totalUsers);
     }
 
-    fclose(userfile);
+    fclose(userFile);
     free(users);
 
     return 0;
 }
 
-int calcUsers(FILE *userfile) {
+//calculates total number of users
+int calcUsers(FILE *userFile) {
     char ch;
-    fseek(userfile, 0, SEEK_SET);
+    fseek(userFile, 0, SEEK_SET);
     int totalUsers = 1;
-    while (!feof(userfile)) {
-        ch = fgetc(userfile);
+    while (!feof(userFile)) {
+        ch = fgetc(userFile);
         if (ch == '\n') {
             totalUsers++;
         }
     }
-    fseek(userfile, 0, SEEK_SET);
+    fseek(userFile, 0, SEEK_SET);
     return totalUsers;
 }
 
-void loadUsers(FILE *userfile, int totalUsers, user *users) {
-    // scan in users from filepath
+//loads users into user-array
+void loadUsers(FILE *userFile, int totalUsers, user *users) {
     for (int i = 0; i < (int)totalUsers; i++) {
-
-        fscanf(userfile, " %d", &users[i].id);
-        fscanf(userfile, " %[^ ]", users[i].name);
-        fscanf(userfile, " %d", &users[i].age);
-        fgetc(userfile);
-        fscanf(userfile, " %1[^ ]", &users[i].gender);
-        fscanf(userfile, " %lf", &users[i].sports);
-        fscanf(userfile, " %lf", &users[i].food);
-        fscanf(userfile, " %lf", &users[i].music);
-        fscanf(userfile, " %lf", &users[i].movies);
-        fscanf(userfile, " %lf", &users[i].art);
-        fscanf(userfile, " %lf", &users[i].outdoors);
-        fscanf(userfile, " %lf", &users[i].science);
-        fscanf(userfile, " %lf", &users[i].travel);
-        fscanf(userfile, " %lf", &users[i].climate);
-        fgetc(userfile);
+        fscanf(userFile, " %d", &users[i].id);
+        fscanf(userFile, " %[^ ]", users[i].name);
+        fscanf(userFile, " %d", &users[i].age);
+        fgetc(userFile);
+        fscanf(userFile, " %1[^ ]", &users[i].gender);
+        fscanf(userFile, " %lf", &users[i].sports);
+        fscanf(userFile, " %lf", &users[i].food);
+        fscanf(userFile, " %lf", &users[i].music);
+        fscanf(userFile, " %lf", &users[i].movies);
+        fscanf(userFile, " %lf", &users[i].art);
+        fscanf(userFile, " %lf", &users[i].outdoors);
+        fscanf(userFile, " %lf", &users[i].science);
+        fscanf(userFile, " %lf", &users[i].travel);
+        fscanf(userFile, " %lf", &users[i].climate);
+        fgetc(userFile);
     }
 }
 
+//runs when knn.c is called from functions.js
 void getMatchJS(char **argv, user* users, int totalUsers){
     //select target user
-    int targetuser = atoi(argv[2]);
+    int targetUser = atoi(argv[2]);
 
     //set how many matches to get (knn)
     int knn = atoi(argv[3]);
     
     //calc user similarity
     for (int i = 0; i < totalUsers; i++) {
-        users[i].pearson = pearson(users, targetuser - 1, users[i].id -1);
+        users[i].pearson = pearson(users, targetUser - 1, users[i].id -1);
     }
     
-    //Run of all users, finding the best matches for the targetuser
-    user *bestMatches = findBestMatchesJS(users, totalUsers, targetuser, knn);
-    //print matches back to javascript
+    //finding the best matches for the targetUser
+    user *bestMatches = findBestMatchesJS(users, totalUsers, targetUser, knn);
+    
+    //print matches via standard output back to JavaScript
     printMatchesID(bestMatches, knn);
 
     free(bestMatches);       
 }
 
+//runs when knn.c is compiled and run in terminal
 void getMatchC(user* users, int totalUsers){
     //select target user
     int userID;
@@ -159,7 +160,7 @@ void getMatchC(user* users, int totalUsers){
         users[i].pearson = pearson(users, userID-1, users[i].id -1);
     }
 
-    //Sort the coefficient based on highest similarity
+    //finds the best knn matches for targetUser, based on coefficient
     user *bestMatches = findBestMatches(users, totalUsers, userID);
     
     //prints matches to terminal
@@ -198,6 +199,7 @@ double pearson(user *users, int target, int compare){
     return coeficient; 
 }
 
+//calcs mean of user ratings
 double calcMeanofUser(user user){
     double mean = (user.sports + user.food + user.music + 
                    user.movies + user.art + user.outdoors + 
@@ -212,6 +214,7 @@ double calcMeanofUser(user user){
     return mean;
 }
 
+//calcs sqrt of user ratings
 double calcSqrtofUser(user user, double mean){
     double userSqrt = sqrt (pow((user.sports - mean),2) + 
                        pow((user.food - mean), 2) + 
@@ -225,6 +228,7 @@ double calcSqrtofUser(user user, double mean){
     return userSqrt;
 }
 
+//finds best K matches for targetUser with userID
 user *findBestMatches(user *users, int totalUsers, int userID){
     user *bestMatches = malloc(KNN * sizeof(user));
     if(bestMatches == NULL){
@@ -250,6 +254,7 @@ user *findBestMatches(user *users, int totalUsers, int userID){
     return bestMatches;
 }
 
+//finds best knn matches for targetUser with userID
 user *findBestMatchesJS(user *users, int totalUsers, int userID, int knn){
     user *bestMatches = malloc(knn * sizeof(user));
     if(bestMatches == NULL){
@@ -275,12 +280,14 @@ user *findBestMatchesJS(user *users, int totalUsers, int userID, int knn){
     return bestMatches;
 }
 
+//prints bestMatches to terminal
 void printMatches(user *bestMatches){
     for(int i = 0; i < KNN; i++){
             printf("Userid: %d, Username: %s, Similarity: %lf\n",bestMatches[i].id, bestMatches[i].name, bestMatches[i].pearson);
         }
 }
 
+//prints bestMatches to standard output to be used in functions.js
 void printMatchesID(user *bestMatches, int knn){
     for(int i = 0; i < knn; i++){
             printf("%d ", bestMatches[i].id);
@@ -886,13 +893,13 @@ void calcUsersTestFail(CuTest *tc) {
     char *fp = "./cutest_c/users_fail.txt";
 
     // open file
-    FILE *userfile = fopen(fp, "a+");
-    if (userfile == NULL) {
+    FILE *userFile = fopen(fp, "a+");
+    if (userFile == NULL) {
         printf("filepath error.");
         exit(EXIT_FAILURE);
     }
 
-    double actual = calcUsers(userfile);
+    double actual = calcUsers(userFile);
     double expected = 100;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
@@ -902,13 +909,13 @@ void calcUsersTest0(CuTest *tc) {
     char *fp = "./cutest_c/users_0.txt";
 
     // open file
-    FILE *userfile = fopen(fp, "a+");
-    if (userfile == NULL) {
+    FILE *userFile = fopen(fp, "a+");
+    if (userFile == NULL) {
         printf("filepath error.");
         exit(EXIT_FAILURE);
     }
 
-    double actual = calcUsers(userfile);
+    double actual = calcUsers(userFile);
     double expected = 1;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
@@ -918,13 +925,13 @@ void calcUsersTest1000(CuTest *tc) {
     char *fp = "./cutest_c/users_1000.txt";
 
     // open file
-    FILE *userfile = fopen(fp, "a+");
-    if (userfile == NULL) {
+    FILE *userFile = fopen(fp, "a+");
+    if (userFile == NULL) {
         printf("filepath error.");
         exit(EXIT_FAILURE);
     }
 
-    double actual = calcUsers(userfile);
+    double actual = calcUsers(userFile);
     double expected = 1000;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
@@ -934,13 +941,13 @@ void calcUsersTest5000(CuTest *tc) {
     char *fp = "./cutest_c/users_5000.txt";
 
     // open file
-    FILE *userfile = fopen(fp, "a+");
-    if (userfile == NULL) {
+    FILE *userFile = fopen(fp, "a+");
+    if (userFile == NULL) {
         printf("filepath error.");
         exit(EXIT_FAILURE);
     }
 
-    double actual = calcUsers(userfile);
+    double actual = calcUsers(userFile);
     double expected = 5000;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
@@ -950,13 +957,13 @@ void calcUsersTest10000(CuTest *tc) {
     char *fp = "./cutest_c/users_10000.txt";
 
     // open file
-    FILE *userfile = fopen(fp, "a+");
-    if (userfile == NULL) {
+    FILE *userFile = fopen(fp, "a+");
+    if (userFile == NULL) {
         printf("filepath error.");
         exit(EXIT_FAILURE);
     }
 
-    double actual = calcUsers(userfile);
+    double actual = calcUsers(userFile);
     double expected = 10000;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
 }
@@ -966,13 +973,13 @@ void calcUsersTest25000(CuTest *tc) {
     char *fp = "./cutest_c/users_25000.txt";
 
     // open file
-    FILE *userfile = fopen(fp, "a+");
-    if (userfile == NULL) {
+    FILE *userFile = fopen(fp, "a+");
+    if (userFile == NULL) {
         printf("filepath error.");
         exit(EXIT_FAILURE);
     }
 
-    double actual = calcUsers(userfile);
+    double actual = calcUsers(userFile);
     double expected = 25000;
     CuAssertDblEquals(tc, expected, actual, 0.00001);
 }

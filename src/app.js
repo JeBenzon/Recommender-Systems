@@ -1,5 +1,4 @@
-
-//Modules vi skal bruge i vores program
+//Modules needed in program
 const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
@@ -10,15 +9,19 @@ const methodOverride = require('method-override')
 const Strategy = require('passport-local').Strategy
 const app = express()
 const bodyParser = require('body-parser')
-//Giver os en "Server der kan kommunikere med socket.io"
+
+//Gives access to a server which can communicate with socket.io
 const server = require('http').Server(app)
-//Laver server på port "server"
+
+//Create server at port "server"
 const io = require('socket.io')(server)
-//Vores rooms
+
+//chat rooms array
 const rooms = []
 
 let cFilSti
-//Process platform finder styresystemet af en computer. Vi bruger ./a.out, hvis ikke det er windows.
+/* Process platform finds operating system on a computer. We use ./a.out as default,
+or knn.exe if windows */
 if(process.platform == 'darwin' || process.platform == 'linux'){
     cFilSti = "./a.out"
 } else if (process.platform == 'win32'){
@@ -31,39 +34,46 @@ const viewsPath = path.join(__dirname, '../templates/views')
 const partialsPath = path.join(__dirname, '../templates/partials')
 const filePath = path.join(__dirname, '../public/')
 
+//setup view engine as hbs
 app.set('view engine', 'hbs')
 app.set('views', viewsPath)
 hbs.registerPartials(partialsPath)
-// Setup statisk folder (public folder)
+
+//setup static public folder
 app.use(express.static(publicDirectoryPath))
+
 //express session exstension
 app.use(session({
-    //bliver sat fra enviroment variable
+    //set from environment variable
     //secret: process.env.SESSION_SECRET,
     secret: "hemmelighed",
-    //siden vi aldrig ændre på Enviroment variablerne aldrig skal ændre sig
+
+    //since we dont change the environment variables, resave are set to false
     resave: false,
-    //Vi vil ikke gemme en tom variable for denne session; true
+
+    //since we dont want to save an empty variable for the session, this is set to true
     saveUninitialized: true
 }))
-//bruges til at overskrive f.eks. Delete 
+
+//used to overwrite, for instance with "delete"
 app.use(methodOverride('_method'))
-//Middelware bliver kørt imellem req og res. Sætter locals til at være authenticated.
+
+//Middleware are run between req and res. Sets locals to be authenticated
 app.use(function (req, res, next) {
     res.locals.isAuthenticated = req.isAuthenticated()
     next()
 })
-//URL endcoded, gemmer URL info i siden, så det ikke ses af brugeren
+
+//URL endcoded; saves URL-info on site so that it's not visible by user
 app.use(bodyParser.urlencoded({ extended: true }))
 
 //passport local configure:
-
 app.use(passport.initialize())
 app.use(passport.session())
 
-//Strategien kræver en 'verify' funktion som modtager ('username' og 'password')
-//fra brugeren. Funktionen skal verificere at password er korrekt, og returnere cb (call back) med et userobject
-// som bliver sat ind ved 'req.user' route handlers efter authentication.
+/* The stragegy requires a 'verify' function, which receives 'username' and 'password' from user
+The function must verify that password is correct and returns cb (call back) with a user object,
+which are available in 'req.user' route handlers after authentication. */
 passport.use(new Strategy(
     function (username, password, cb) {
         functions.findByUsername(username, function (err, user) {
@@ -74,11 +84,12 @@ passport.use(new Strategy(
         });
     }));
 
-//sørger for at indsætte users ind i session (sætte id ind i session)
+//responsible for inserting user id into session
 passport.serializeUser(function (user, cb) {
     cb(null, user.id)
 })
-//sørger for at fjerne users i session (ud fra id)
+
+//responsible for deleting user from session based on id
 passport.deserializeUser(function (id, cb) {
     functions.findById(id, function (err, user) {
         if (err) { return cb(err); }
@@ -86,15 +97,17 @@ passport.deserializeUser(function (id, cb) {
     });
 });
 
-//CRUD (create, update, delete)
-//Register
+//----- CRUD (create, update, delete) --------
+
+//register
 app.get('/register', functions.checkNotAuthenticated, (req, res) => {
     //Sender hbs view "register" til brugeren
     res.render('register', {
         title: 'Register'
     })
 })
-//Opretter en bruger når "submit" bliver trykket på, i webapplikationen.
+
+//creates a user when 'submit' are pushed in web application
 app.post('/register', functions.checkNotAuthenticated, (req, res) => {
     try {
         let userId = functions.getLastUserId() + 1
@@ -103,7 +116,8 @@ app.post('/register', functions.checkNotAuthenticated, (req, res) => {
 
         functions.addUser(userId, req.body.username, req.body.email, req.body.password)
         functions.createAccInfo(userId,parameterarray)
-        //Når profilen er oprettet bliver brugeren sendt til matchfound viewet.
+
+        //when the profile is created, the user will be redirected to 'matchfound'-view
         res.redirect('/')
     } catch (e) {
         console.log('Error + ' + e)
@@ -111,25 +125,28 @@ app.post('/register', functions.checkNotAuthenticated, (req, res) => {
     }
 
 })
-//Giver brugren mulighed for at ændre i sine oplysninger.
+
+//gives user the option to change its information
 app.get('/editUser', functions.checkAuthenticated, (req, res) => {
-    //Laver object med brugerdata og sender det til editUser.hbs viewet.
+    //Creates an object with user data and sends it to 'editUser.hbs' view
     let usrTxt = functions.accountInfoCheck(req.user.id)
     res.render('editUser', {
         title: 'Edit User',
         userobj: usrTxt
     })
 })
-//Gemmer brugerdataen, når brugeren trykker på submit i html.
+
+//saves user data when user pushes 'submit' 
 app.post('/saveUser',functions.checkAuthenticated,(req, res) => {
 
     let parameterarray = [req.body.name, req.body.age, req.body.gender, req.body.sports, req.body.food, req.body.music, req.body.movies, req.body.art, req.body.outdoors, req.body.science, req.body.travel, req.body.climate, req.body.password,req.body.username,req.body.email]
-    //Overskriver den gamle brugerdata.
+    //overwrites the old user data
     functions.SaveAccInfo(req.user.id,parameterarray)
 
     res.redirect('/matchfound')
 })
-//Redirecter til editUser
+
+//redirects to 'editUser'
 app.post('/editUser', functions.checkAuthenticated, (req, res) => {
     try {
         res.redirect('/editUser')
@@ -140,30 +157,34 @@ app.post('/editUser', functions.checkAuthenticated, (req, res) => {
 
 })
 
-//Hovedsiden hvor man kan logge ind og ud.
+//main page where users can log in/out
 app.get('/', functions.checkNotAuthenticated, (req, res) => {
     res.render('loginpage', {
         title: 'Login'
     })
 })
-//Hvis brugeren er oprettet bliver den sendt til matchfound ellers blir de sendt tilbage til loginpage.
+
+//if the user is created, it's redirected to 'matchfound'-view, else back to login page
 app.post('/loginpage', functions.checkNotAuthenticated, passport.authenticate('local', {
     successRedirect: '/matchfound',
     failureRedirect: '/'
 }))
 
 app.delete('/logout', functions.checkAuthenticated, (req, res) => {
-    //Logger ud (en function fra passport der rydder op i session)
+    //clears session when logout happens
     req.logOut()
-    //Sætter knn til 3, så man bliver vist de korrekte matches, når man logger ind igen.
+
+    //sets knn to 3 so that the correct matches are shown when user log in again
     req.session.knn = 3
     res.redirect('/')
 })
-//Finder matches og viser dem til brugeren.
+
+//finds matches and display them to user
 app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
     let user = functions.getUserCheck(req.user.id, null)
     let knn = 3
-    //Henter knn fra session, så brugeren bliver vist det antal matches som brugeren vil se.
+
+    //gets knn from session so that the user are shown the appropriate matches
     if (req.session.knn > 3){
         knn = req.session.knn
     }
@@ -172,18 +193,23 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
             let displayMatches = functions.printMatches(cFilSti, req.user.id, knn, knn -3)
             let userChats = functions.getPersonalUserChats(req.user.id)
             let boolean = functions.knnButtonChecker(knn)
-            //Hvis der ikke er flere matches vises de ikke.
+
+            //if there are less than 3 more matches to display they aren't shown
             if(knn >= functions.getLastUserId()-3 || knn < 3){
                 res.render('matchfound', {
                     title: 'Match found',
                     loggedIn: true,
-                    userShown: false, //fjerner 'start chat'-knappen, fordi der ikke vises en bruger
+
+                    //removes 'start chat' button from view
+                    userShown: false, 
                     buttonCheck: boolean,
                     username: req.user.username,
-                    //Sender et array med chats, hvis du har skrevet med personen før.
+
+                    //sends an array with chats already created by user
                     chats: userChats
                 })
-            } //Viser matches så længe de eksistere
+            }
+            //shows matches as long they are available 
             else {
                 let usrTxt1 = functions.accountInfoCheck(displayMatches[0].id)
                 let usrTxt2 = functions.accountInfoCheck(displayMatches[1].id)
@@ -191,7 +217,9 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
                 res.render('matchfound', {
                     title: 'Match found',
                     loggedIn: true,
-                    userShown: true, //viser 'start chat'-knappen når der er en bruger at vise
+
+                    //shows 'start chat' button when matches are available
+                    userShown: true, 
                     buttonCheck: boolean,
                     username: req.user.username,
                     userobj1: usrTxt1,
@@ -203,11 +231,11 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
                     match1id: displayMatches[0].id,
                     match2id: displayMatches[1].id,
                     match3id: displayMatches[2].id,
-                    //Sender et array med chats, hvis du har skrevet med personen før.
+
+                    //sends an array with chats already created by user
                     chats: userChats
                 })
-            }
-            
+            }    
         } else {
             res.redirect('/createaccinfo')
         }
@@ -219,14 +247,16 @@ app.get('/matchfound', functions.checkAuthenticated, (req, res) => {
         })
     }
 })
-//Knap der lader brugeren scrolle igennem matches
+
+//'show previous matches' button
 app.post('/showPreviousMatches', (req, res) => {
     if(req.session.knn > 3){
         req.session.knn -= 3
     }
     res.redirect('/matchfound')
 })
-//Knap der lader brugeren scrolle igennem matches
+
+//'show more matches' button
 app.post('/showMoreMatches', (req, res) => {
     if (req.session.knn === undefined){
         req.session.knn = 3
@@ -237,25 +267,27 @@ app.post('/showMoreMatches', (req, res) => {
     res.redirect('/matchfound')
     
 })
-//Bruger chat rum f.eks URL "/1620380596674"
+
+//uses chat room, like URL "/1620380596674"
 app.get('/:room', functions.checkAuthenticated, (req, res) => {
-    //Hvis rummet ikke findes bliver brugren redierected til startsiden
+    //if chat room doesn't exist, the user are redirected to main page
     if (rooms[req.params.room] == null) {
         return res.redirect('/')
     }
-    //Udregner fælles interesser mellem brugere
+
+    //calculates common interests between two users
     let intrestChat = functions.calcUserParameters(req.params.room)
     try{
-        //Henter gamle chats mellem brugere.
+        //gets old chats between users
         let chatHistory = functions.getChatHistory(req.session.roomid)
-
         res.render('room', {
             userName: req.user.username,
             roomName: req.params.room,
             usermatch: req.session.username,
             chatData: chatHistory,
             intrestChat : intrestChat,
-            //Viser tilbage knap i viewet når true
+
+            //shows 'back to match page' button
             onChatsite: true
         })
     }catch(e){
@@ -266,70 +298,82 @@ app.get('/:room', functions.checkAuthenticated, (req, res) => {
             usermatch: req.session.username,
             chatData: chatHistory,
             intrestChat : intrestChat,
-            //Viser tilbage knap i viewet når true
+
+            //shows 'back to match page' button to view when true
             onChatsite: true
         })
     }
 })
 
-
-//Sender bruger til et chat rum
+//sends a user to a chat room
 app.post('/room', functions.checkAuthenticated, (req, res) => {
-    //Hvis rummet ikke findes bliver brugren redierected til startsiden
+    //if the chat room doesn't exist, the user are redirected to main page
     if (rooms[req.body.room] != null) {
         return res.redirect('/')
     }
-    //Henter username og gemmer i session.
+
+    //gets username and saves it to session
     let usermatch = req.body.usermatch
     req.session.username = usermatch.toString()
-    //Henter ID, hvis chat eksistere og gemmer i session.
+
+    //gets room id if chat exists and saves it to session
     let roomId = functions.checkChat(req.user.id, req.body.room)
     req.session.roomid = roomId
-    //Hvis chat ikke eksistere.
+
+    //if chat room doesn't exists
     if (roomId == false) {
-        //Henter user og matchuser ID og opretter chat
+        //gets target user and match user id and creates a chat
         let user1 = functions.getUserAccounts(null, req.user.username).id
         let user2 = functions.getUserAccounts(null, usermatch).id
-
         functions.makeFirstChat(user1, user2)
         roomId = functions.checkChat(req.user.id, req.body.room)
     }
-    //Henter "room" data fra index og holder data på users
+
+    //gets 'room' data from index in array and keeps data on users
     rooms[roomId] = { users: {} }
-    //Redirektor dem til det nye room
+
+    //redirects user to the newly created chat room
     res.redirect(roomId)
     
 })
-//Post der redirecter brugeren fra chat til matchfound via knap
+
+//post, which redirects user from chat to 'matchfound' view via button
 app.post('/goToMatchfound', (req, res) => {
     res.redirect('/matchfound')
 })
-//Når bruger går ind i en chat -> kalder funktion og giver dem et socket
+
+//when users gets into a chat; calls function to give them a socket
 io.on('connection', socket => {
-    //Funktion bliver kaldt i "scripts.js"
+    //function being called in "scripts.js"
     socket.on('new-user', (room, name) => {
         try {
             socket.join(room)
-            //Sammensætter navn på bruger med socket id
+
+            //compose name on user with socket id
             rooms[room].users[socket.id] = name
-            //Sender event 'user-connected' med besked "name" -> broadcast gør så brugeren ikke selv får det
+
+            /*sends event 'user-connected' with message "name" -> 
+            broadcast makes it so that user doesn't get it */
             socket.broadcast.to(room).emit('user-connected', name)
         } catch (e) {
             console.log(e)
         }
     })
-    //Aktivere når eventen sker "Send-chat-message" med data "room" "message"
+
+    //activates when event 'send-chat-message' happens, with data "room" "message"
     socket.on('send-chat-message', (room, message, username1, username2) => {
         try {
             let userConnection = functions.getRoomConnection(room)
             let user1 = functions.getUserAccounts(null, username1).id
             let user2 = functions.getUserAccounts(null, username2).id
             functions.saveChat(room, user1, user2, username1, message)
-            //Sender beskeden til alle undtagen brugeren som sender den selv "broadcast" gør så brugeren ikke selv modtager
+
+            //sends the message to alle but the user itself
             socket.broadcast.to(room).emit('chat-message', {
-                //Laver et objekt til at holde dataen på beskeden
+                //creates an object to keep tracck of message data
                 message: message,
-                //Tilføjer navnet til objeket via socket.id
+
+                //appends the name to object via socket.id
                 name: rooms[room].users[socket.id]
             })
         } catch (e) {
@@ -338,7 +382,7 @@ io.on('connection', socket => {
     })
 })
 
-// 404
+//404
 app.get('*', (req, res) => {
     res.render('404', {
         title: '404',
@@ -346,5 +390,5 @@ app.get('*', (req, res) => {
     })
 })
 
-//Module export
+//module export
 module.exports = server

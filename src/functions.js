@@ -7,7 +7,7 @@ const usersInterestsPath = 'generated_users/users.txt'
 
 //=====BASIC FUNCTIONS=====//
 
-// Sender en komando til konsollen og returnere output som string format.
+//sends a command to console and returns out as string from standard output
 function sendConsoleCommand(programPath, parameters) {
     try {
         let par = parameters.split(" ")
@@ -20,7 +20,7 @@ function sendConsoleCommand(programPath, parameters) {
     }
 }
 
-// Omdanner tekst til JSON format
+//converts text to JSON-format
 function textToJSON(text) {
     try {
         let data = JSON.parse(text)
@@ -31,26 +31,25 @@ function textToJSON(text) {
     return false
 }
 
-//læser fil og giver string output
+//reads file 'path' and returns string as output
 function getData(path) {
     const data = fs.readFileSync(path, 'utf8')
     return data
 }
 
-// kalder getData og textToJSON og laver daten om til et object
+//calls getData and textToJSON to make data into an object
 function getDataTextToJSON(path) {
     let data = fs.readFileSync(path)
     return textToJSON(data)
 }
-
-
 
 //=====CHAT FUNCTIONS=====//
 
 function getChat(roomID) {
     return getDataTextToJSON(`rooms/room${roomID}.json`)
 }
-//returnere et roomConnection object med: id, userID1, userID2.
+
+//returns a roomConnection object with id, userID1 and userID2
 function getRoomConnection(roomID) {
     let roomConnectionObject = getDataTextToJSON('rooms/roomConnections.json')
 
@@ -62,12 +61,13 @@ function getRoomConnection(roomID) {
     return false
 }
 
-//finder alle de chats en bruger har med andre brugere, og returnere som et array af objecter {name,id}
+//finds all the chats a user have with other users, and returns an array of objects {name, id}
 function getPersonalUserChats(userID) {
     let roomConnectionObject = getDataTextToJSON('rooms/roomConnections.json')
 
     let personalUserChats = []
     for (let i = 0; i < roomConnectionObject.length; i++) {
+        
         //userID1
         if (roomConnectionObject[i].userID1 == userID) {
             let userObj = {
@@ -75,6 +75,7 @@ function getPersonalUserChats(userID) {
                 id: roomConnectionObject[i].userID2
             }
             personalUserChats.push(userObj)
+            
             //userID2
         } else if (roomConnectionObject[i].userID2 == userID) {
             let userObj = {
@@ -87,12 +88,12 @@ function getPersonalUserChats(userID) {
     return personalUserChats
 }
 
-//Henter chat historien
+//gets chat history
 function getChatHistory(roomid) {
     return (getChat(roomid).chat)
 }
 
-//Tjekker om 2 brugere har et chatroom, og hvis de har returnere den roomID
+//checks if the two users have a chat room, and returns roomID if it exists
 function checkChat(userID1, userID2) {
     let roomConnectionObject = getDataTextToJSON('rooms/roomConnections.json')
 
@@ -105,10 +106,11 @@ function checkChat(userID1, userID2) {
     return false
 }
 
-// opretter både chat i RoomConnection og et room med det rigtige room id og info
+//creates chat in roomConnection as well as a room with the correct room id and info
 function makeFirstChat(uID1, uID2) {
     let roomConnectionObject = getDataTextToJSON('rooms/roomConnections.json')
-    //Check om brugere allerede har en chat.
+
+    //check if users already have a chat
     let room = {
         id: parseInt(Date.now() + Math.random()),
         userID1: uID1,
@@ -120,13 +122,13 @@ function makeFirstChat(uID1, uID2) {
     saveChat(room.id, uID1, uID2)
 }
 
-//Gemmer en chat til et bestemt room imellem 2 brugere
+//saves a chat to the specific room between the two users
 function saveChat(roomID, uID1, uID2, uName, uMessage) {
-    //Så her forsøger vi at finde rummet med brugernes chats.
-    //Brugerne har måske et rum, hvis der er oprettet en "connection" imellem dem.
-    //Hvis de findes, så går vi i try, ellers i catch.
+    /*try to get the chat room between users if it exists
+    users may have a room if there is created a "connection" between them
+    if it exists the 'try' executes, else in 'catch' */
     try {
-        //prøver at hente room filen
+        //tries to get room file
         let chatObj = getDataTextToJSON(`rooms/room${roomID}.json`)
 
         let chatToAppend = {
@@ -138,7 +140,8 @@ function saveChat(roomID, uID1, uID2, uName, uMessage) {
         let jsonChat = JSON.stringify(chatObj, null, 2)
         fs.writeFileSync(`rooms/room${roomID}.json`, jsonChat, "utf-8")
     } catch (e) {
-        // Hvis den catcher opretter den chat rooms filen.
+
+        //if no chat room exists, creates chat room file
         let id = checkChat(uID1, uID2)
         if (id) {
             let chat = {
@@ -158,17 +161,25 @@ function saveChat(roomID, uID1, uID2, uName, uMessage) {
     }
 }
 
-//Udregner hvilken interesser 2 brugere har tilfælles
+//calculates which interest two users have most in common
 function calcUserParameters(roomID) {
-    //Får roomConnection udfra et roomID
+
+    //get roomConnection based on roomID
     let roomConnect = getRoomConnection(roomID)
-    //Henter user1 og user2 fra roomConnect
+
+    //gets user1 and user2 based on roomConnect
     let user1para = accountInfoCheck(roomConnect.userID1)
     let user2para = accountInfoCheck(roomConnect.userID2)
-    //Udregner summen af user1 og user2's parametre.
-    let user1sum = (+user1para.art + +user1para.climate + +user1para.food + +user1para.movies + +user1para.outdoors + +user1para.sports + +user1para.music + +user1para.science + +user1para.travel)
-    let user2sum = (+user2para.art + +user2para.climate + +user2para.food + +user2para.movies + +user2para.outdoors + +user2para.sports + +user2para.music + +user2para.science + +user2para.travel)
-    //Finder største fælles interresse
+
+    //calculates sum of users' parameters
+    let user1sum = (+user1para.art + +user1para.climate + +user1para.food + +user1para.movies + 
+                    +user1para.outdoors + +user1para.sports + +user1para.music + +user1para.science + 
+                    +user1para.travel)
+    let user2sum = (+user2para.art + +user2para.climate + +user2para.food + +user2para.movies + 
+                    +user2para.outdoors + +user2para.sports + +user2para.music + +user2para.science + 
+                    +user2para.travel)
+    
+    //finds most common interest
     let artComp = (user1para.art / user1sum) * (user2para.art / user2sum)
     let climateComp = (user1para.climate / user1sum) * (user2para.climate / user2sum)
     let foodComp = (user1para.food / user1sum) * (user2para.food / user2sum)
@@ -178,12 +189,14 @@ function calcUserParameters(roomID) {
     let musicComp = (user1para.music / user1sum) * (user2para.music / user2sum)
     let scienceComp = (user1para.science / user1sum) * (user2para.science / user2sum)
     let travelComp = (user1para.travel / user1sum) * (user2para.travel / user2sum)
-    //opretter array med interresseværdi
+
+    //creates array with interest-values
     let arrayComp = [sportComp, foodComp, musicComp, moviesComp, artComp, outdoorsComp, scienceComp, travelComp, climateComp]
 
     let max = arrayComp[0]
     let maxIndex = 0
-    //Finder største interresseværdi i arrayet.
+
+    //finds the largest value in interest-array
     for (let i = 0; i < arrayComp.length; i++) {
         if (arrayComp[i] > max) {
             maxIndex = i
@@ -193,7 +206,7 @@ function calcUserParameters(roomID) {
     return chatMessage(maxIndex)
 }
 
-//Returnere den rette besked, ud fra hvad calcUserParameters
+//returns the correct message, corresponding to interest found in calcUsersParameters
 function chatMessage(index) {
     let paraMessage = ""
     switch (index) {
@@ -228,25 +241,20 @@ function chatMessage(index) {
     return paraMessage
 }
 
-
-
-
-
-
 //=====LOGIN FUCNTIONS=====//
 
-//taget fra WebDevSimplified Node passport login projekt. 
-//Credit: https://github.com/WebDevSimplified/Nodejs-Passport-Login/blob/master/server.js
-//tjekker om en bruger er authenticated
+//taken from WebDevSimplified Node passport login projekt  
+//all credit: https://github.com/WebDevSimplified/Nodejs-Passport-Login/blob/master/server.js
+//checks if a user is authenticated
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
-        //kalder næste middelware function
+        //calls the next middleware function
         return next()
     }
     res.redirect('/')
 }
 
-//Tjekker om en bruger IKKE er authenticated
+//checks if a user is NOT authenticated
 function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return res.redirect('/matchfound')
@@ -254,20 +262,17 @@ function checkNotAuthenticated(req, res, next) {
     next()
 }
 
-
-
-
-
-
 //=====USER FUNCTIONS=====//
 
-// Tjekker om user eksistere i usersAccount.json
+//checks if a user exists in usersAccount.json
 function getUserAccounts(id, username) {
     try {
         const data = getData(usersAccountPath)
-        //users indeholder alle brugeren
+
+        //get all user info as string
         let users = textToJSON(data.toString())
-        //finde ud af om der endten eksistere et id der matcher eller et navn der matcher.
+        
+        //finds out if an id or a name matches
         for (let i = 0; i < users.length; i++) {
             if (id != null) {
                 if (users[i].id == id) {
@@ -285,7 +290,7 @@ function getUserAccounts(id, username) {
     return false
 }
 
-// Tjekker om bruger eksistere i både usersAccount.json og users.text
+//checks if user exists in both 'usersAccount.json' and 'users.txt'
 function getUserCheck(id) {
     let userAcc = getUserAccounts(id, null)
     let userInfo = accountInfoCheck(id)
@@ -296,13 +301,13 @@ function getUserCheck(id) {
     return false
 }
 
-//Giver det sidste id i userAccountPath
+//returns last id from 'userAccountPath'
 function getLastUserId() {
     let users = getDataTextToJSON(usersAccountPath)
     return users[users.length - 1].id
 }
 
-//Funktionen skriver brugeroplysninger fra brugeren til vores textfil
+//writes user-info from user to text file
 function createAccInfo(id, parameters) {
     if (!(parameters[0].length < 50 && parameters[1] >= 0 && parameters[1] <= 125 && parameters[2].length == 1)) {
         return false
@@ -313,8 +318,10 @@ function createAccInfo(id, parameters) {
         }
     }
     try {
-        let register = `\n${id} ${parameters[0]} ${parameters[1]} ${parameters[2]} ${parameters[3]} ${parameters[4]} ${parameters[5]} ${parameters[6]} ${parameters[7]} ${parameters[8]} ${parameters[9]} ${parameters[10]} ${parameters[11]}`
-
+        let register = `\n${id} ${parameters[0]} ${parameters[1]} ${parameters[2]} ${parameters[3]} 
+                          ${parameters[4]} ${parameters[5]} ${parameters[6]} ${parameters[7]} 
+                          ${parameters[8]} ${parameters[9]} ${parameters[10]} ${parameters[11]}`
+        
         fs.appendFile(usersInterestsPath, register, function (err) {
             if (err) throw err;
         })
@@ -325,10 +332,11 @@ function createAccInfo(id, parameters) {
     }
 }
 
-//Gemmer en bruger i både usersInterestsPath og usersAccountPath når efter man har oprettet sig.
+//saves a user in both 'usersInterestsPath' and 'usersAccountPath' when user is created
 function SaveAccInfo(id, parameters) {
     let txtFile = getData(usersInterestsPath)
-    if (!(parameters[0].length < 50 && parameters[1] >= 0 && parameters[1] <= 125 && parameters[2].length == 1)) {
+    if (!(parameters[0].length < 50 && parameters[1] >= 0 && 
+          parameters[1] <= 125 && parameters[2].length == 1)) {
         return false
     }
     for (let i = 3; i <= 11; i++) {
@@ -337,10 +345,14 @@ function SaveAccInfo(id, parameters) {
         }
     }
     try {
-        let register = `${id} ${parameters[0]} ${parameters[1]} ${parameters[2]} ${parameters[3]} ${parameters[4]} ${parameters[5]} ${parameters[6]} ${parameters[7]} ${parameters[8]} ${parameters[9]} ${parameters[10]} ${parameters[11]}`
-        // break the textblock into an array of lines
+        let register = `${id} ${parameters[0]} ${parameters[1]} ${parameters[2]} ${parameters[3]} 
+                        ${parameters[4]} ${parameters[5]} ${parameters[6]} ${parameters[7]} 
+                        ${parameters[8]} ${parameters[9]} ${parameters[10]} ${parameters[11]}`
+        
+        //break the textblock into an array of lines
         let lines = txtFile.split('\n')
-        // remove one line, starting at the first position
+
+        //remove one line, starting at the first position
         lines.splice(id - 1, 1, register)
         for (let i = 0; i < lines.length - 1; i++) {
             lines[i] += "\n"
@@ -371,7 +383,7 @@ function SaveAccInfo(id, parameters) {
     }
 }
 
-//Tjekker om user eksistere i users.txt 
+//checks if user exists in 'users.txt'
 function accountInfoCheck(id) {
     try {
         const datajson = getData(usersAccountPath)
@@ -408,8 +420,8 @@ function accountInfoCheck(id) {
     return false
 }
 
-//Tilføjer bruger til usersAccountPath
-//Dette er ikke en asynkron funktion, hvilket gør det svære at tilføje to brugere med samme ID
+//adds user to 'usersAccountPath'
+//(asynchronous function to make it harder to add two users with same ID)
 function addUser(uID, uUsername, uEmail, uPassword) {
     try {
         let userobj = {
@@ -421,9 +433,9 @@ function addUser(uID, uUsername, uEmail, uPassword) {
 
         let jsonUsers = fs.readFileSync(usersAccountPath, "utf-8")
         let users = JSON.parse(jsonUsers)
-
         users.push(userobj)
-        //stringify tager value, replacer og spacer. (replacer er null)
+
+        //stringify takes value, replacer and spacer as input (replacer is null)
         jsonUsers = JSON.stringify(users, null, 2)
 
         fs.writeFileSync(usersAccountPath, jsonUsers, "utf-8")
@@ -434,12 +446,11 @@ function addUser(uID, uUsername, uEmail, uPassword) {
     }
 }
 
-//Denne funktion finder en bruger udfra et ID
-//Vi har gået ud fra dette github eksempel: 
-//Credit: https://github.com/passport/express-4.x-local-example 
-//Funktioner fra passport, som vi har omskrevet til at benytte nogle af vores egne funktioner
+/*this function finds a user based on ID
+code based on gitHub example (credit): https://github.com/passport/express-4.x-local-example 
+functions from passport, which we have rewritten in order to use them with our own functions */
 function findById(id, cb) {
-    //Køres i næste Iteration af js Event Loop, nextTick tager funktion som parameter.
+    //runs in next iteration of JS-event loop, nextTick takes function as parameter
     process.nextTick(function () {
         let user = getUserAccounts(id, null)
         if (user) {
@@ -450,7 +461,7 @@ function findById(id, cb) {
     })
 }
 
-//Finder en bruger ud fra et username
+//finds a user based on username
 function findByUsername(username, cb) {
     process.nextTick(function () {
         let user = getUserAccounts(null, username)
@@ -461,14 +472,9 @@ function findByUsername(username, cb) {
     })
 }
 
-
-
-
-
-
 //=====MATCH FUNCTIONS=====//
 
-//Bruges til at spørge om knn er mindre end 3
+//used to check if more matches exist
 function knnButtonChecker(knn) {
     if (knn <= 3) {
         return false
@@ -476,7 +482,7 @@ function knnButtonChecker(knn) {
     return true
 }
 
-//Returnere de rigtige matches ud fra hvilken 'side' man skal stå på i matchfound
+//returns the correct matches according to which number of matches are needed
 function printMatches(programPath, targetUser, knn, index) {
     let matches = sendConsoleCommand(programPath, `getmatch ${targetUser} ${knn}`).split(" ")
     let displayMatches = []
@@ -490,11 +496,6 @@ function printMatches(programPath, targetUser, knn, index) {
     }
     return displayMatches
 }
-
-
-
-
-
 
 //=====MODULE EXPORTS=====//
 
