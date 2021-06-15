@@ -318,9 +318,7 @@ function createAccInfo(id, parameters) {
         }
     }
     try {
-        let register = `\n${id} ${parameters[0]} ${parameters[1]} ${parameters[2]} ${parameters[3]} 
-                          ${parameters[4]} ${parameters[5]} ${parameters[6]} ${parameters[7]} 
-                          ${parameters[8]} ${parameters[9]} ${parameters[10]} ${parameters[11]}`
+        let register = `\n${id} ${parameters[0]} ${parameters[1]} ${parameters[2]} ${parameters[3]} ${parameters[4]} ${parameters[5]} ${parameters[6]} ${parameters[7]} ${parameters[8]} ${parameters[9]} ${parameters[10]} ${parameters[11]}`
         
         fs.appendFile(usersInterestsPath, register, function (err) {
             if (err) throw err;
@@ -345,9 +343,7 @@ function SaveAccInfo(id, parameters) {
         }
     }
     try {
-        let register = `${id} ${parameters[0]} ${parameters[1]} ${parameters[2]} ${parameters[3]} 
-                        ${parameters[4]} ${parameters[5]} ${parameters[6]} ${parameters[7]} 
-                        ${parameters[8]} ${parameters[9]} ${parameters[10]} ${parameters[11]}`
+        let register = `${id} ${parameters[0]} ${parameters[1]} ${parameters[2]} ${parameters[3]} ${parameters[4]} ${parameters[5]} ${parameters[6]} ${parameters[7]} ${parameters[8]} ${parameters[9]} ${parameters[10]} ${parameters[11]}`
         
         //break the textblock into an array of lines
         let lines = txtFile.split('\n')
